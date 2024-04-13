@@ -10,4 +10,3 @@ $Controller = new $controllerClass;
 // var_dump($controllerClass);
 echo '<pre>';
 // var_dump($Controller);
-длофівджлао і // Якась помилка.
