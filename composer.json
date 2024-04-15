@@ -1,0 +1,5 @@
+{
+    "require": {
+        "selective/database": "^3.2"
+    }
+}

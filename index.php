@@ -1,12 +1,22 @@
 <?php
 
-require_once 'configs/main.php';
+use core\Router;
 
-$controllerClass = 'core\controllers\\'. ucfirst(ControllerName) .'Controller';
-$Controller = new $controllerClass;
+try {
 
-// var_dump(URI);exit;
+	require_once 'configs/main.php';
 
-// var_dump($controllerClass);
-echo '<pre>';
-// var_dump($Controller);
+	$Router = Router::getInstance();
+
+	$controllerClass = $Router->controllerClassName;
+	$controllerAction = $Router->actionName;
+
+	$Controller = new $controllerClass;
+
+	$Controller->$controllerAction();
+
+} catch (\Exception $th) {
+	dd($th, __FILE__, __LINE__,1);
+} catch (\Throwable $th) {
+	dd($th, __FILE__, __LINE__,1);
+}
