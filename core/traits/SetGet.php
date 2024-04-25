@@ -1,65 +1,63 @@
 <?php
 
-/**
- * Трейт получения и изменения свойств объекта, данные которого НЕ содержатся в БД.
- */
-
 namespace core\traits;
 
 use core\exceptions\ClassException;
 
 /**
- *
+ * Трейт, який реалізує базові магічні методи __set і __get.
  */
 trait SetGet {
 
   /**
-   * Возвращает значение protected или private свойства текущего объекта.
-   * @param string $name имя свойства класса
-   * @return mixed $this->$name значение свойства текущего объекта
-   * @return bool false если запрошенного свойства не существует
+   * Метод, який викликається автоматично, коли є звертання до недоступної властивості класу.
+	 * @param string $name назва властивості, до якої відбулося звернення.
    */
-  public function __get ($name) {
-		try {
-			if (property_exists($this, $name)) {
-				$method = "get_". $name;
+  public function __get (string $name) {
+		// Якщо властивість вже ініціалізована - вона портається одразу.
+		if (isset($this->$name)) return $this->$name;
 
-				if (method_exists($this, $method)) {
+		if (property_exists($this, $name)) {
+			// Цей блок виконується якщо поточний клас має вказану властивість і вона ще не ініціалізована.
 
-					return $this->$method();
-				}
+			// Формування імені метода, який повинен повернути вказану властивість.
+			$method = "get_". $name;
 
-				throw new ClassException(2000, ["name" => $name, "method" => $method]);
+			if (method_exists($this, $method)) {
+				// Метод існує, викликається і повертається результат його обчислень.
+
+				return $this->$method();
 			}
-			else {
-				throw new ClassException(2001, ["name" => $name]);
-			}
-		} catch (ClassException $th) {
-			$th->printMsg();
+
+			throw new ClassException(2000, ["name" => $name, "method" => $method]);
 		}
+
+		throw new ClassException(2001, ["name" => $name]);
   }
 
 	/**
-   *
+   * Метод, який викликається автоматично при спробі перезаписати значення недоступної властивості.
+	 * @param string $name назва властивості, до якої відбулося звернення.
+	 * @param mixed $value назва властивості, до якої відбулося звернення з метою її перезапису.
    */
-  public function __set (string $name, $value) {
-		try {
-			if (property_exists($this, $name)) {
-				$method = "set_". $name;
+  public function __set (string $name, mixed $value) {
+		if (property_exists($this, $name)) {
+			// Цей блок виконується тільки якщо поточний клас має вказану властивість.
 
-				if (method_exists($this, $method)) {
-					$this->$method($value);
-				}
-				else {
-					err("classes", 2, __FILE__, __LINE__, debug_backtrace(),
-						['class' => get_called_class(), 'name' => $name, 'method' => $method]);
-				}
+			// Формування імені метода, який повинен виконати зміну значення вказаної властивості.
+			$method = "set_". $name;
+
+			if (method_exists($this, $method)) {
+				// Метод існує і викликається.
+
+				$this->$method($value);
 			}
 			else {
-				throw new ClassException(2001, ["name" => $name]);
+				dd('', __FILE__, __LINE__,1);
 			}
-		} catch (ClassException $th) {
-			$th->printMsg();
+		}
+		else {
+			throw new ClassException(2001, ["name" => $name]);
 		}
   }
 }

@@ -4,18 +4,21 @@ namespace core\exceptions;
 
 class SingletonException extends MainException {
 
-	// int $code диапазон для данного класса: 3000 - 3999.
-	// array $p додаткові дані.
+	/**
+	 * @param int $code діапазон кодів виключень для даного класу: 3000 - 3999.
+	 * @param array $p додаткові дані.
+	 * @param \Throwable $previous попереднє виключення.
+	 */
 	public function __construct(int $code, array $p=[], \Throwable $previous=null) {
 		$message = $this->messages[$code];
 		// Викликаємо конструктор батьківського класу Exception.
-		parent::__construct($message, $code, $previous);
+		parent::__construct($message, $p, $previous);
 	}
 
 	/**
 	 * @return array
 	 */
-	private function get_messages () {
+	protected function get_messages () {
 		if (! isset($this->messages)) {
 			$this->messages = [
 				'3000' => '',
@@ -23,6 +26,6 @@ class SingletonException extends MainException {
 			];
 		}
 
-		return $this->message;
+		return $this->messages;
 	}
 }

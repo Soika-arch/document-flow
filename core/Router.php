@@ -2,13 +2,9 @@
 
 namespace core;
 
-use core\traits\Singleton;
-use core\traits\SetGet;
-
 class Router {
 
-	use traits\Singleton;
-	use traits\SetGet;
+	use traits\Singleton_SetGet;
 
 	// Всі наявні частини URI.
 	private array $URLParts;
@@ -16,18 +12,19 @@ class Router {
 	private string $URLPath;
 	// Підрядок в URI, який містить ім'я контролера.
 	private string $controllerURI;
-	// Підрядок в URI, який містить ім'я екшена контролера.
-	private string $actionURI;
+	// Підрядок в URI, який містить ім'я метода контролера (сторінки).
+	private string $pageURI;
+	// Неповне ім'я контролера.
+	private string $controllerName;
 	// Повне ім'я класу контролера.
-	private string $controllerClassName;
-	private string $actionName;
+	private string $controllerClass;
+	// Ім'я метода поточного контролера (сторінки).
+	private string $pageName;
 
 	/**
 	 * Ініціалізація singleton об'єкта.
 	 */
-	private function _init () {
-		// dd($this->get_controllerClassName(), __FILE__, __LINE__,1);
-	}
+	private function _init () {}
 
 	/**
 	 * @return array
@@ -72,63 +69,74 @@ class Router {
 	}
 
 	/**
-	 * @return string
+	 * @return
 	 */
-	protected function get_controllerClassName () {
-		if (! isset($this->controllerClassName)) {
-			$controllerURI = $this->get_controllerURI();
-			$temp = $this->convertToCamelCase($controllerURI);
+	protected function get_controllerName () {
+		if (! isset($this->controllerName)) {
+			$temp = $this->get_controllerURI();
 
-			$temp = NamespaceControllers .'\\'. ucfirst($temp) .'Controller';
-
-			if (class_exists($temp)) {
-				$this->controllerClassName = $temp;
-			}
-			else {
-				$this->controllerClassName = DefaultControllerClassName;
-			}
+			if ($temp) $this->controllerName = ucfirst($this->convertToCamelCase($temp));
+			else $this->controllerName = str_replace('Controller', '', DefaultControllerName);
 		}
 
-		return $this->controllerClassName;
+		return $this->controllerName;
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function get_actionURI () {
-		if (! isset($this->actionURI)) {
+	protected function get_controllerClass () {
+		if (! isset($this->controllerClass)) {
+			$temp = NamespaceControllers .'\\'. $this->get_controllerName() .'Controller';
+
+			if (class_exists($temp)) {
+				$this->controllerClass = $temp;
+			}
+			else {
+				$this->controllerClass = DefaultControllerClass;
+			}
+		}
+
+		return $this->controllerClass;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_pageURI () {
+		if (! isset($this->pageURI)) {
 			$controllerURI = $this->get_controllerURI();
 			$temp = trim(str_replace($controllerURI, '', $this->URLPath), '/');
 
-			if (($pos = strpos($temp, '/')) !== false) $this->actionURI = substr($temp, 0, $pos);
-			else $this->actionURI = $temp;
+			if (($pos = strpos($temp, '/')) !== false) $this->pageURI = substr($temp, 0, $pos);
+			else $this->pageURI = $temp;
 		}
 
-		return $this->actionURI;
+		return $this->pageURI;
 	}
 
 	/**
 	 * @return
 	 */
-	protected function get_actionName () {
-		if (! isset($this->actionName)) {
-			$actionURI = $this->get_actionURI();
-			$temp = lcfirst($this->convertToCamelCase($actionURI));
+	protected function get_pageName () {
+		if (! isset($this->pageName)) {
+			$pageURI = $this->get_pageURI();
+			$temp = lcfirst($this->convertToCamelCase($pageURI));
 
 			if ($temp) {
-				if (method_exists($this->get_controllerClassName(), $temp .'Action')) {
-					$this->actionName = $temp .'Action';
+				if (method_exists($this->get_controllerClass(), $temp .'Page')) {
+					$this->pageName = $temp .'Page';
 				}
 				else {
-					$this->actionName = NotFoundAction;
+					$this->pageName = NotFoundPage;
 				}
 			}
 			else {
-				$this->actionName = DefaultAction;
+				$this->pageName = DefaultPage;
 			}
 		}
 
-		return $this->actionName;
+		return $this->pageName;
 	}
 
 	/**

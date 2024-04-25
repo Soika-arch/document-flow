@@ -2,47 +2,53 @@
 
 namespace core\traits;
 
+use core\exceptions\ClassException;
+
 /**
- *
+ * Трейт, який реалізує базові магічні методи __set і __get для Singleton класа	.
  */
 trait Singleton_SetGet {
 
+	use Singleton;
+
   /**
-   * Возвращает значение protected или private свойства текущего объекта.
-   * Доступ к любому свойству вне класса через $obj::instance()->$name.
-   * @param string $name имя свойства класса
-   * @return mixed $this->$name значение свойства текущего объекта
-   * @return bool false если запрошенного свойства не существует
+   * Метод, який викликається автоматично, коли є звертання до недоступної властивості класу.
+	 * @param string $name назва властивості, до якої відбулося звернення.
    */
   public function __get ($name) {
-		dd($name, __FILE__, __LINE__,1);
 		if (isset(self::$_instance)) {
 			if ($name == "_instance") {
-				/** Частный случай для свойства _instance. */
+				// Окремий випадок для властивості _instance.
 
 				return $this::$_instance;
 			}
 			else {
+				// Якщо властивість вже ініціалізована - вона повертається одразу.
+				if (isset(self::$_instance->$name)) return self::$_instance->$name;
+
 				if (property_exists(self::$_instance, $name)) {
+					// Цей блок виконується якщо поточний клас має вказану властивість
+					// і вона ще не ініціалізована.
+
+					// Формування імені метода, який повинен повернути вказану властивість.
 					$method = "get_". $name;
 
 					if (method_exists(self::$_instance, $method)) {
+						// Метод існує, викликається і повертається результат його обчислень.
+
 						return $this::$_instance->$method();
 					}
 
 					dd('', __FILE__, __LINE__,1);
-					// err("classes", 3, __FILE__, __LINE__, debug_backtrace(),
-					// 	["class" => get_called_class(), "name" => $name, "method" => $method]);
 				}
-				else {
-					dd('', __FILE__, __LINE__,1);
-					// err("classes", 1, __FILE__, __LINE__, debug_backtrace(),
-					// 	['class' => get_called_class(), 'name' => $name]);
-				}
+
+				throw new ClassException(2000, ['calledClass' => get_called_class(), 'value' => $name]);
+
 			}
 		}
 		else {
-			throw new ClassException(9, ["class" => get_called_class(), "name" => $name]);
+			dd('', __FILE__, __LINE__,1);
+			// throw new ClassException(9, ["class" => get_called_class(), "name" => $name]);
 		}
   }
 

@@ -1,0 +1,44 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Форма авторизації користувача */
+
+.form-user_auth {
+	display: inline-block;
+	width: 100%;
+	padding: 0px 10px 0px 10px;
+}
+
+.form-user_auth label {
+	display: inline-block;
+	width: 100%;
+}
+
+.form-user_auth input {
+	/* display: inline-block; */
+	margin: 0px 0px 20px 0px;
+	/* width: 100%; */
+}
+
+.form-user_auth button {
+	cursor: pointer;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок вивода помилок користувача. */
+
+.user-errors {
+	margin: 20px 10px 20px 10px;
+	font-size: 18px;
+	font-weight: bold;
+	color: red;
+}
+
+.user-errors .error {
+	padding: 0px 0px 10px 0px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок налагоджувальної інформації, який виводится наприкінці виконання всього скрипта. */
+
+.footer-debug-info {
+	margin: 30px 0px 0px 0px;
+}

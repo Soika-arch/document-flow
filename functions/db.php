@@ -3,13 +3,14 @@
 // Функції взаємодії з БД.
 
 use core\Db;
+use core\exceptions\DbException;
 
 /**
  *
  */
 function db_queryDump (string $sql, array $binds=[]) {
 	$dumpData = [];
-	$Pdo = Db::instance()->dbh;
+	$Pdo = Db::getInstance()->dbh;
 	$Pdo->beginTransaction();
 	$Sth = $Pdo->prepare($sql);
 	ob_start();
@@ -31,18 +32,104 @@ function db_queryDump (string $sql, array $binds=[]) {
 }
 
 /**
- * @param string $sql
+ * @return \core\Db
+ */
+function db_Db () {
+
+	return Db::getInstance();
+}
+
+/**
+ * @return libs\query_builder\SelectQuery
+ */
+function db_getSelect () {
+
+	return db_Db()->getSelect();
+}
+
+/**
+ * @return libs\query_builder\InsertQuery
+ */
+function db_getInsert () {
+
+	return db_Db()->getInsert();
+}
+
+/**
+ * @return libs\query_builder\UpdateQuery
+ */
+function db_getUpdate () {
+
+	return db_Db()->getUpdate();
+}
+
+/**
  * @return array
  */
-function db_select (string $sql, array $binds=[], int $mode=PDO::FETCH_ASSOC) {
-	$sth = Db::getInstance()->dbh->prepare($sql);
+function db_update (libs\query_builder\UpdateQuery $SQL) {
 
-	$sth->execute($binds);
-	$rows = $sth->fetchAll($mode);
+	return db_Db()->update($SQL);
+}
 
-	if (intval($sth->errorCode()) !== 0) {
-		dd($sth, __FILE__, __LINE__,1);
-	}
+/**
+ * Для отримання рядків.
+ * @return array
+ */
+function db_select (libs\query_builder\SelectQuery $SQL, $mode=\PDO::FETCH_ASSOC) {
 
-	return $rows;
+	return db_Db()->select($SQL, $mode);
+}
+
+/**
+ * Для отримання рядка.
+ * @return array
+ */
+function db_selectRow (libs\query_builder\SelectQuery $SQL, $mode=\PDO::FETCH_ASSOC) {
+	$row = db_select($SQL, $mode);
+
+	if (count($row) <= 1) return isset($row[0]) ? $row[0] : [];
+
+	throw new DbException(5000, [
+		'sql' => $SQL->execute()->queryString,
+		'Select' => $SQL,
+		'rows' => $row
+	]);
+}
+
+/**
+ * Вставка одного рядка в таблицю.
+ * @return array
+ */
+function db_insertRow (libs\query_builder\InsertQuery $SQL) {
+
+	return db_Db()->insertRow($SQL);
+}
+
+/**
+ * @return libs\query_builder\DeleteQuery
+ */
+function db_getDelete () {
+
+	return db_Db()->delete();
+}
+
+/**
+ * Отримання префікса стовпців стовпців таблиці БД.
+ * @param string $tName назва таблиці
+ * @return string|null
+ */
+function db_getColumnsPrefix (string $tName) {
+
+	return db_Db()->getColPxByTableName($tName);
+}
+
+/**
+ * Перевіряє наявність стовпця таблиці БД.
+ * @param string $tName назва таблиці
+ * @param string $colName назва стовпця
+ * @return bool
+ */
+function db_isTableColumn (string $tName, string $colName) {
+
+	return db_Db()->isTableColumn($tName, $colName);
 }

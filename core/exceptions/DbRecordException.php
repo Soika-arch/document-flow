@@ -2,12 +2,10 @@
 
 namespace core\exceptions;
 
-use core\exceptions\MainException;
-
-class ClassException extends MainException {
+class DbRecordException extends MainException {
 
 	/**
-	 * @param int $code діапазон кодів виключень для даного класу: 6000 - 6999.
+	 * @param int $code діапазон кодів виключень для даного класу: 2000 - 2999.
 	 * @param array $p додаткові дані.
 	 * @param \Throwable $previous попереднє виключення.
 	 */
@@ -25,8 +23,9 @@ class ClassException extends MainException {
 	protected function get_messages () {
 		if (! isset($this->messages)) {
 			$this->messages = [
-				'6000' => 'Помилка виконання метода класа типу DbRecord::update',
-				'6999' => 'Невизначене виключення'
+				'2000' => 'Не знайдено метод для отримання властивості класу',
+				'2001' => 'Властивість класу не знайдено',
+				'2999' => 'Невизначене виключення'
 			];
 		}
 

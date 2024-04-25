@@ -2,18 +2,14 @@
 
 namespace core\exceptions;
 
-use core\exceptions\MainException;
-
-class ClassException extends MainException {
+class DbException extends MainException {
 
 	/**
-	 * @param int $code діапазон кодів виключень для даного класу: 6000 - 6999.
+	 * @param int $code діапазон кодів виключень для даного класу: 5000 - 5999.
 	 * @param array $p додаткові дані.
 	 * @param \Throwable $previous попереднє виключення.
 	 */
 	public function __construct(int $code, array $p=[], \Throwable $previous=null) {
-		$this->get_messages();
-
 		// Викликаємо конструктор батьківського класу Exception.
 		parent::__construct($code, $p, $previous);
 	}
@@ -25,8 +21,8 @@ class ClassException extends MainException {
 	protected function get_messages () {
 		if (! isset($this->messages)) {
 			$this->messages = [
-				'6000' => 'Помилка виконання метода класа типу DbRecord::update',
-				'6999' => 'Невизначене виключення'
+				'5000' => 'Отримано більше одного запису БД',
+				'5999' => 'Невизначене виключення'
 			];
 		}
 
