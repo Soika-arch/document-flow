@@ -147,6 +147,10 @@ function urlSetParams (string $url, array $p) {
 	return $url;
 }
 
+/**
+ * Отримання ip-адреси користувача.
+ * @return string
+ */
 function getUserIp () {
 	if (! empty($_SERVER['HTTP_CLIENT_IP'])) {
 		// IP адрес посетителя, если доступен
@@ -162,6 +166,10 @@ function getUserIp () {
 	return $ip;
 }
 
+/**
+ * Отримання user-agent користувача.
+ * @return string
+ */
 function getUserAgent () {
 	if (isset($_SERVER['HTTP_USER_AGENT'])) return $_SERVER['HTTP_USER_AGENT'];
 }

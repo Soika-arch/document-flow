@@ -97,6 +97,16 @@ function db_selectRow (libs\query_builder\SelectQuery $SQL, $mode=\PDO::FETCH_AS
 }
 
 /**
+ * Для отримання клітинки рядка.
+ */
+function db_selectCell (libs\query_builder\SelectQuery $SQL) {
+	$row = db_selectRow($SQL, \PDO::FETCH_NUM);
+
+	// Якщо відповідне значення не знайдено - повертається false.
+	return isset($row[0]) ? $row[0] : false;
+}
+
+/**
  * Вставка одного рядка в таблицю.
  * @return array
  */
