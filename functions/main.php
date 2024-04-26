@@ -173,3 +173,21 @@ function getUserIp () {
 function getUserAgent () {
 	if (isset($_SERVER['HTTP_USER_AGENT'])) return $_SERVER['HTTP_USER_AGENT'];
 }
+
+/**
+ * Ця функція знаходить попередній клас об'єкта $obj до кінцевого класу $endClass.
+ */
+function getPreviousClass (object $obj, string $endClass): string {
+	// Отримання назви класу поточного об'єкта $obj.
+	$currentClass = get_class($obj);
+	// У подальшому дочірній клас відносно класу $currentClass.
+	$previous = '';
+
+	// Цикл виконується поки не дійде до класу $endClass.
+	while ($currentClass !== $endClass) {
+		$previous = $currentClass;
+		$currentClass = get_parent_class($currentClass);
+	}
+
+	return $previous;
+}

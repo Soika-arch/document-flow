@@ -35,7 +35,6 @@ class DbRecord {
 	 */
 	public function __construct (int|null $id=null, array $dbRow=[]) {
 		// Отримання назви таблиці із назви поточного класу.
-
 		if ($this->get_tName()) {
 			// Ініціалізація властивостей об'єкта, якщо це не об'єкт класу DbRecord.
 
@@ -130,21 +129,20 @@ class DbRecord {
   }
 
 	/**
-	 *
+	 * Отримання назви першої у черзі успадкування класу. Це може бути будь-який клас поточної
+	 * бібліотеки окрім поточного класу \core\db_record\DbRecord, тому що таблиці DbRecord в БД
+	 * у нас не існує.
+	 * @return string
 	 */
 	protected function get_tName () {
 		if (! isset($this->tName)) {
-			$cl = get_parent_class(get_class($this));
-
-			if ($cl !== __CLASS__) {
-				$tName = substr($cl, (strrpos($cl, '\\') + 1));
+			if ($cl = getPreviousClass($this, __CLASS__)) {
+				// Отримання назви таблиці БД для поточного об'єкту з назви класу $cl.
+				$this->tName = DbPrefix . lcfirst(substr($cl, (strrpos($cl, '\\') + 1)));
 			}
 			else {
-				$cl = get_class($this);
-				$tName = substr($cl, (strrpos($cl, '\\') + 1));
+				$this->tName = '';
 			}
-
-			$this->tName = DbPrefix . $tName;
 		}
 
 		return $this->tName;
