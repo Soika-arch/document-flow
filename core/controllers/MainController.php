@@ -21,6 +21,7 @@ class MainController {
 		// Створення відповідної контролеру моделі.
 
 		$modelName = NamespaceModels .'\\'. Router::getInstance()->controllerName .'Model';
+		$modelName = str_replace('Controller', '', $modelName);
 		$this->Model = new $modelName();
 	}
 
@@ -41,6 +42,7 @@ class MainController {
 	 *
 	 */
 	public function notFoundPage () {
+		dd(__METHOD__, __FILE__, __LINE__,1);
 		dd(Router::getInstance(), __FILE__, __LINE__,1);
 	}
 
@@ -52,6 +54,7 @@ class MainController {
 	protected function getViewFile (string $viewName) {
 		if (strpos($viewName, '/') !== 0) {
 			$fName = DirViews .'/'. lcfirst(Router::getInstance()->controllerName) .'/'. $viewName .'.php';
+			$fName = str_replace('Controller', '', $fName);
 		}
 		else {
 			$fName = DirViews .'/'. $viewName .'.php';

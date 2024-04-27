@@ -69,14 +69,29 @@ class Router {
 	}
 
 	/**
-	 * @return
+	 *
 	 */
-	protected function get_controllerName () {
+	protected function get_controllerName (): string {
 		if (! isset($this->controllerName)) {
-			$temp = $this->get_controllerURI();
+			$controllerName = $this->get_controllerURI();
 
-			if ($temp) $this->controllerName = ucfirst($this->convertToCamelCase($temp));
-			else $this->controllerName = str_replace('Controller', '', DefaultControllerName);
+			if ($controllerName) {
+				$controllerName = ucfirst($this->convertToCamelCase($controllerName)) .'Controller';
+				$controllerClass = NamespaceControllers .'\\'. $controllerName;
+
+				if (class_exists($controllerClass)) {
+					$this->controllerName = $controllerName;
+					$this->controllerClass = $controllerClass;
+				}
+				else {
+					$this->controllerName = DefaultControllerName;
+					$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
+				}
+			}
+			else {
+				$this->controllerName = DefaultControllerName;
+				$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
+			}
 		}
 
 		return $this->controllerName;
@@ -86,16 +101,7 @@ class Router {
 	 * @return string
 	 */
 	protected function get_controllerClass () {
-		if (! isset($this->controllerClass)) {
-			$temp = NamespaceControllers .'\\'. $this->get_controllerName() .'Controller';
-
-			if (class_exists($temp)) {
-				$this->controllerClass = $temp;
-			}
-			else {
-				$this->controllerClass = DefaultControllerClass;
-			}
-		}
+		if (! isset($this->controllerClass)) $this->get_controllerName();
 
 		return $this->controllerClass;
 	}
@@ -116,7 +122,7 @@ class Router {
 	}
 
 	/**
-	 * @return
+	 * Повертає метод контролера, який буде обробляти поточну сторінку.
 	 */
 	protected function get_pageName () {
 		if (! isset($this->pageName)) {

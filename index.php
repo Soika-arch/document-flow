@@ -19,7 +19,7 @@ try {
 
 	// Створення об'єкта глобального користувача і збереження його в єдиний глобальний реєстр.
 	Registry::getInstance()->add('Us', (new User($idUser))->createVR());
-	dd(Registry::getInstance()->get('Us')->UserRelStatus->UserStatus->_name, __FILE__, __LINE__);
+
 	// Створення об'єкта Router.
 	$Router = Router::getInstance();
 

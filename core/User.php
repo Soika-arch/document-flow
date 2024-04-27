@@ -4,6 +4,7 @@ namespace core;
 
 use core\db_record\users;
 use core\db_record\users_rel_statuses;
+use core\db_record\user_statuses;
 use core\db_record\visitor_routes;
 
 class User extends users {
@@ -13,6 +14,8 @@ class User extends users {
 	private visitor_routes $VR;
 	// Зв'язок користувача з його статусом.
 	private UserRelStatus $UserRelStatus;
+	// Статус користувача.
+	private user_statuses $Status;
 
 	/**
 	 *
@@ -22,9 +25,17 @@ class User extends users {
 	}
 
 	/**
+	 * @return user_statuses
+	 */
+	protected function get_Status () {
+
+		return $this->get_UserRelStatus()->UserStatus;
+	}
+
+	/**
 	 * @return string
 	 */
-	private function get_ip () {
+	protected function get_ip () {
 		if (! isset($this->ip)) $this->ip = getUserIp();
 
 		return $this->ip;
@@ -33,7 +44,7 @@ class User extends users {
 	/**
 	 * @return string
 	 */
-	private function get_userAgent () {
+	protected function get_userAgent () {
 		if (! isset($this->userAgent)) $this->userAgent = getUserAgent();
 
 		return $this->userAgent;

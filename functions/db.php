@@ -2,34 +2,10 @@
 
 // Функції взаємодії з БД.
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 use core\Db;
 use core\exceptions\DbException;
-
-/**
- *
- */
-function db_queryDump (string $sql, array $binds=[]) {
-	$dumpData = [];
-	$Pdo = Db::getInstance()->dbh;
-	$Pdo->beginTransaction();
-	$Sth = $Pdo->prepare($sql);
-	ob_start();
-	$Sth->execute($binds);
-  $Sth->debugDumpParams();
-  $sqlDump = ob_get_contents();
-	$sqlDump = str_replace("\n", ' ', $sqlDump);
-	preg_match('#^(.*?\] )(.*?) Sent SQL#', $sqlDump, $m);
-	$dumpData['sql2'] = trim($m[2]);
-	preg_match('#(Sent SQL:.*?\] )(.*?) Params:#', $sqlDump, $m);
-	$dumpData['sentSql'] = trim($m[2]);
-	preg_match('#Params:.*$#', $sqlDump, $m);
-	$dumpData['params'] = trim($m[0]);
-	$dumpData['Sth'] = $Sth;
-  ob_end_clean();
-	dd([$dumpData, debug_backtrace()], __FILE__, __LINE__);
-	$Pdo->rollBack();
-	exit();
-}
 
 /**
  * @return \core\Db
@@ -64,11 +40,11 @@ function db_getUpdate () {
 }
 
 /**
- * @return array
+ * @return libs\query_builder\DeleteQuery
  */
-function db_update (libs\query_builder\UpdateQuery $SQL) {
+function db_getDelete () {
 
-	return db_Db()->update($SQL);
+	return db_Db()->getDelete();
 }
 
 /**
@@ -107,20 +83,20 @@ function db_selectCell (libs\query_builder\SelectQuery $SQL) {
 }
 
 /**
+ * @return array
+ */
+function db_update (libs\query_builder\UpdateQuery $SQL) {
+
+	return db_Db()->update($SQL);
+}
+
+/**
  * Вставка одного рядка в таблицю.
  * @return array
  */
 function db_insertRow (libs\query_builder\InsertQuery $SQL) {
 
 	return db_Db()->insertRow($SQL);
-}
-
-/**
- * @return libs\query_builder\DeleteQuery
- */
-function db_getDelete () {
-
-	return db_Db()->delete();
 }
 
 /**

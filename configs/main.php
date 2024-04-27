@@ -65,7 +65,7 @@ define(
 	str_replace('/', '\\', trim(str_replace(DirRoot, '', DirModels), '/'))
 );
 
-// Ім'я контролера за замовчуванням.
+/** @var string ім'я контролера за замовчуванням. */
 define('DefaultControllerName', 'MainController');
 // Ім'я екшена контролера за замовчуванням.
 define('DefaultPage', 'mainPage');
@@ -85,6 +85,8 @@ define('URI', ltrim($_SERVER['REQUEST_URI'], '/'));
 require_once 'db.php';
 require_once DirFunc .'/main.php';
 require_once DirFunc .'/db.php';
+require_once DirFunc .'/rg.php';
+require_once DirFunc .'/hd.php';
 
 // start_app();
 classesAutoload();

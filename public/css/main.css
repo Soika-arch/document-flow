@@ -23,6 +23,49 @@
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок меню користувача. */
+
+.user-menu-1 {
+	display: flex;
+	flex-direction: row-reverse;
+	margin: 0px 0px 10px 0px;
+}
+
+.user-menu-1 div {
+	display: inline-block;
+	width: 100px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок головного меню сайта. */
+
+.main-menu {
+	margin: 0px 0px 20px 20px;
+}
+
+.main-menu div {
+	display: inline-block;
+	width: 100px;
+	height: 26px;
+	text-align: center;
+	background-color: rgb(236, 249, 247);
+}
+
+.main-menu div:hover {
+	display: inline-block;
+	width: 100px;
+	background-color: rgb(220, 247, 243);
+}
+
+.main-menu div a {
+	display: inline-block;
+	width: 100%;
+	height: 22px;
+	font-size: 22px;
+	text-decoration: none;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Блок вивода помилок користувача. */
 
 .user-errors {
