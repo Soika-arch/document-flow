@@ -114,37 +114,34 @@ function e (string $s) {
 }
 
 /**
- * @return string
+ * Створює URL сторінки для поточного хоста згідно отриманих параметрів.
  */
-function url (null|string $s=null, array $p=[]) {
+function url (null|string $s=null, array $p=[]): string {
 	if (! is_null($s)) {
 		if ($s === '') {
-			$url = URLHome .'/';
+			// Вирізання GET-параметрів від існуючого URL.
+
+			$url = URLHome .'/'. URIPath;
 		}
 		else if (strpos($s, '/') === 0) {
-			$url = trim(URLHome .'/'. trim($s, '/'), '/') .'/';
+			// Рядок $s додається до URL корня сайта.
+
+			$url = trim(URLHome .'/'. trim($s, '/'), '/');
 		}
 		else {
-			$url = URLHome .'/'. trim($s, '/') .'/';
+			// Рядок $s додається до поточного URL.
+
+			$url = url('') .'/'. trim($s, '/');
 		}
 	}
-	else $url = $_GET ? URL : URL .'/';
+	else {
+		// Повний поточний URL.
 
-	return ($p === []) ? $url : urlSetParams($url, $p);
-}
-
-/**
- *
- */
-function urlSetParams (string $url, array $p) {
-	if ($p !== []) {
-		$urlParts = parse_url($url);
-
-		return $urlParts['scheme'] . '://' . $urlParts['host'] . rtrim($urlParts['path'], '/') . '/?'.
-			http_build_query($p);
+		$url = URL;
 	}
 
-	return $url;
+	// Якщо отримані GET-параметри - вони будуть додані до створеного URL.
+	return $p ? $url . '?'. http_build_query($p) : $url;
 }
 
 /**
@@ -177,9 +174,9 @@ function getUserAgent () {
 /**
  * Ця функція знаходить попередній клас об'єкта $obj до кінцевого класу $endClass.
  */
-function getPreviousClass (object $obj, string $endClass): string {
+function getPreviousClass (object $Obj, string $endClass): string {
 	// Отримання назви класу поточного об'єкта $obj.
-	$currentClass = get_class($obj);
+	$currentClass = get_class($Obj);
 	// У подальшому дочірній клас відносно класу $currentClass.
 	$previous = '';
 

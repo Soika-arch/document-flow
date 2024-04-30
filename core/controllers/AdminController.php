@@ -15,11 +15,10 @@ class AdminController extends MainController {
 	 *
 	 */
 	public function mainPage () {
+		$d['title'] = 'Адмін-панель';
 		$Us = rg_Rg()->get('Us');
+		$this->checkPageAccess($Us->Status->_name, ['Admin']);
 
-		if (! in_array($Us->Status->_name, ['Admin'])) {
-			hd_Hd()->addHeader('Location: '. url('/page-not-found'), __FILE__, __LINE__)->send();
-			exit;
-		}
+		return require $this->getViewFile('main');
 	}
 }

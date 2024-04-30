@@ -26,7 +26,8 @@ try {
 	// Отримання назви класу контролера.
 	$controllerClass = $Router->controllerClass;
 	// Отримання назви метода сторінки контролера.
-	$controllerMethod = $Router->pageName;
+
+	$controllerMethod = $Router->pageMethod;
 
 	// Створення об'єкта контролера.
 	$Controller = new $controllerClass();
@@ -48,7 +49,7 @@ try {
 	echo $HTML;
 
 } catch (ClassException $th) {
-	$th->printMsg();
+	dd($th, __FILE__, __LINE__,1);
 } catch (\Exception $th) {
 	dd($th, __FILE__, __LINE__,1);
 } catch (DbException $th) {

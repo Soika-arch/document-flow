@@ -10,8 +10,9 @@ date_default_timezone_set('Europe/Kiev');
 const SiteName = 'Електронний документообіг';
 /** @var string Назва головного файлу css стилей. */
 const MainCssName = 'main';
+const AdminCssName = 'admin';
 /** @var bool Чи треба контролювати максимальний час сесії користувача. */
-const SessionTimeoutEnabled = true;
+const SessionTimeoutEnabled = false;
 /** @var int Максимальний час сесії користувача в секундах після авторизації. */
 const SessionTimeout = 900;
 /** @var bool Чи треба відстежувати час бездіяльності користувача. */
@@ -24,11 +25,16 @@ const Debug = true;
 /** @var bool Чи буде відбуватись логування sql-запитів. */
 const LogSql = true;
 
-// Якщо ip-адреса поточного хоста = '127.0.0.1' - сайт працює в режимі розробки.
-if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') define('Production', false);
-else define('Production', true);
+if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
+	/** @var bool Якщо ip-адреса поточного хоста = '127.0.0.1' - сайт працює в режимі розробки. */
+	define('Production', false);
+}
+else {
+	/** @var bool Якщо ip-адреса поточного хоста = '127.0.0.1' - сайт працює в режимі розробки. */
+	define('Production', true);
+}
 
-// Масив можливих http-протоколів, за якими може працювати сервіс.
+/** @var array масив можливих http-протоколів, за якими може працювати сервіс. */
 const Protocols = [
 	'HTTP/1.1' => 'http://'
 ];
@@ -36,49 +42,76 @@ const Protocols = [
 // Автоматичне визначення протоколу HTTP на якому працює сервер.
 
 if (isset($_SERVER['SERVER_PROTOCOL'])) {
+	/** @var string поточний HTTP протокол. */
 	define('ServerProtocol', Protocols[$_SERVER['SERVER_PROTOCOL']]);
 }
 else {
+	/** @var string поточний HTTP протокол. */
 	define('ServerProtocol', 'http://');
 }
 
 // Визначення основних директорій проєкта.
 
-define('DirRoot', dirname(dirname(__FILE__))); // Корінь сайта.
-define('DirFunc', DirRoot .'/functions'); // Каталог функцій.
-define('DirCron', DirRoot .'/cron'); // Каталог для cron завдань.
-define('DirCore', DirRoot .'/core'); // Каталог ядра застосунка.
-define('DirControllers', DirCore .'/controllers'); // Каталог контролерів.
-define('DirModels', DirCore .'/models'); // Каталог моделей.
-define('DirTraits', DirCore .'/traits'); // Каталог трейтів.
-define('DirViews', DirCore .'/views'); // Каталог видів.
+/** @var string Корінь сайта */
+define('DirRoot', dirname(dirname(__FILE__)));
+/** @var string Каталог функцій. */
+define('DirFunc', DirRoot .'/functions');
+/** @var string Каталог для cron завдань. */
+define('DirCron', DirRoot .'/cron');
+/** @var string Каталог ядра застосунка. */
+define('DirCore', DirRoot .'/core');
+/** @var string Каталог контролерів. */
+define('DirControllers', DirCore .'/controllers');
+/** @var string Каталог моделей. */
+define('DirModels', DirCore .'/models');
+/** @var string Каталог трейтів. */
+define('DirTraits', DirCore .'/traits');
+/** @var string Каталог видів. */
+define('DirViews', DirCore .'/views');
 
 // Простори імен (namespaces).
 
+/** @var string namespace контролерів. */
 define(
 	'NamespaceControllers',
 	str_replace('/', '\\', trim(str_replace(DirRoot, '', DirControllers), '/'))
 );
 
+/** @var string namespace моделей. */
 define(
 	'NamespaceModels',
 	str_replace('/', '\\', trim(str_replace(DirRoot, '', DirModels), '/'))
 );
 
+/** @var string повний поточний URL-запит. */
+define('URL', ServerProtocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+
+$parsedURL = parse_url(URL);
+
+/** @var URL корня сайта (http-протокол + хост). */
+define('URLHome', ServerProtocol . $parsedURL['host']);
+/** @var string поточний URI-запит (весь URL з параметрами, якщо вони є, але без URLHome). */
+define('URI', ltrim($_SERVER['REQUEST_URI'], '/'));
+/** @var string URI від хоста (не включно) до GET-параметрів (не включно). */
+define('URIPath', trim($parsedURL['path'], '/'));
+
+if (isset($parsedURL['query'])) {
+	/** @var string повний рядок отриманих GET-параметрів. */
+	define('URIParams', $parsedURL['query']);
+}
+else {
+	/** @var string повний рядок отриманих GET-параметрів. */
+	define('URIParams', '');
+}
+
 /** @var string ім'я контролера за замовчуванням. */
 define('DefaultControllerName', 'MainController');
-// Ім'я екшена контролера за замовчуванням.
+/** @var string ім'я екшена контролера за замовчуванням. */
 define('DefaultPage', 'mainPage');
-// Ім'я екшена контролера сторінки page-not-found.
+/** @var string ім'я екшена контролера сторінки page-not-found. */
 define('NotFoundPage', 'notFoundPage');
-// Ім'я класа контролера за замовчуванням.
+/** @var string ім'я класа контролера за замовчуванням. */
 define('DefaultControllerClass', NamespaceControllers .'\\'. DefaultControllerName);
-// Повний поточний URL-запит.
-define('URL', ServerProtocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-// URL корня сайта (http-протокол + хост).
-define('URLHome', ServerProtocol . trim($_SERVER['HTTP_HOST'], '/'));
-// Поточний URI-запит (весь URL з параметрами, якщо вони є, але без URLHome).
-define('URI', ltrim($_SERVER['REQUEST_URI'], '/'));
 
 // Підключення загальних файлів застосунку.
 
@@ -88,5 +121,4 @@ require_once DirFunc .'/db.php';
 require_once DirFunc .'/rg.php';
 require_once DirFunc .'/hd.php';
 
-// start_app();
 classesAutoload();

@@ -10,9 +10,10 @@ class SingletonException extends MainException {
 	 * @param \Throwable $previous попереднє виключення.
 	 */
 	public function __construct(int $code, array $p=[], \Throwable $previous=null) {
-		$message = $this->messages[$code];
+		if (! isset($this->messages)) $this->get_messages();
+
 		// Викликаємо конструктор батьківського класу Exception.
-		parent::__construct($message, $p, $previous);
+		parent::__construct($code, $p, $previous);
 	}
 
 	/**

@@ -205,9 +205,9 @@ class Db {
 
 			foreach ($this->tblData[$tName]['columns'] as $colName => $colData) {
 				// Префікс стовпців береться зі стовпці px_id.
-				$pos = (strpos($colName, '_id') === (strlen($colName) - 3));
+				// $pos = (strpos($colName, '_id') === (strlen($colName) - 3));
 
-				if (($pos = strpos($colName, '_id')) !== false) {
+				if (($pos = strpos($colName, '_')) !== false) {
 					$this->tblData[$tName]['colPx'] = substr($colName, 0, ($pos + 1));
 				}
 			}

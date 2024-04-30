@@ -19,7 +19,7 @@ class Router {
 	// Повне ім'я класу контролера.
 	private string $controllerClass;
 	// Ім'я метода поточного контролера (сторінки).
-	private string $pageName;
+	private string $pageMethod;
 
 	/**
 	 * Ініціалізація singleton об'єкта.
@@ -27,9 +27,9 @@ class Router {
 	private function _init () {}
 
 	/**
-	 * @return array
+	 * Ініціалізує, якщо не визначене та повертає властивість $this->URLParts.
 	 */
-	protected function get_URLParts () {
+	protected function get_URLParts (): array {
 		if (! isset($this->URLParts)) {
 			$this->URLParts = parse_url(URI);
 		}
@@ -38,9 +38,9 @@ class Router {
 	}
 
 	/**
-	 * @return string
+	 * Ініціалізує, якщо не визначене та повертає властивість $this->URLPath.
 	 */
-	protected function get_URLPath () {
+	protected function get_URLPath (): string {
 		if (! isset($this->URLPath)) {
 			$this->get_URLParts();
 
@@ -51,98 +51,106 @@ class Router {
 	}
 
 	/**
-	 * @return string
+	 * Ініціалізує, якщо не визначене та повертає властивість $this->controllerURI.
 	 */
-	protected function get_controllerURI () {
-		if (! isset($this->controllerURI)) {
-			$URLPath = $this->get_URLPath();
-
-			if ($pos = strpos($URLPath, '/')) {
-				$this->controllerURI = substr($URLPath, 0, $pos);
-			}
-			else {
-				$this->controllerURI = $URLPath;
-			}
-		}
+	protected function get_controllerURI (): string {
+		if (! isset($this->controllerURI)) $this->setControllerData();
 
 		return $this->controllerURI;
 	}
 
 	/**
-	 *
+	 * Ініціалізує, якщо не визначене та повертає властивість $this->controllerClass.
 	 */
-	protected function get_controllerName (): string {
-		if (! isset($this->controllerName)) {
-			$controllerName = $this->get_controllerURI();
-
-			if ($controllerName) {
-				$controllerName = ucfirst($this->convertToCamelCase($controllerName)) .'Controller';
-				$controllerClass = NamespaceControllers .'\\'. $controllerName;
-
-				if (class_exists($controllerClass)) {
-					$this->controllerName = $controllerName;
-					$this->controllerClass = $controllerClass;
-				}
-				else {
-					$this->controllerName = DefaultControllerName;
-					$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
-				}
-			}
-			else {
-				$this->controllerName = DefaultControllerName;
-				$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
-			}
-		}
-
-		return $this->controllerName;
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function get_controllerClass () {
-		if (! isset($this->controllerClass)) $this->get_controllerName();
+	protected function get_controllerClass (): string {
+		if (! isset($this->controllerClass)) $this->setControllerData();
 
 		return $this->controllerClass;
 	}
 
 	/**
-	 * @return string
+	 * Ініціалізує, якщо не визначене та повертає властивість $this->pageURI.
 	 */
-	protected function get_pageURI () {
-		if (! isset($this->pageURI)) {
-			$controllerURI = $this->get_controllerURI();
-			$temp = trim(str_replace($controllerURI, '', $this->URLPath), '/');
-
-			if (($pos = strpos($temp, '/')) !== false) $this->pageURI = substr($temp, 0, $pos);
-			else $this->pageURI = $temp;
-		}
+	protected function get_pageURI (): string {
+		if (! isset($this->pageURI)) $this->setPageData();
 
 		return $this->pageURI;
 	}
 
 	/**
-	 * Повертає метод контролера, який буде обробляти поточну сторінку.
+	 * Ініціалізує, якщо не визначене та повертає властивість $this->pageMethod.
 	 */
-	protected function get_pageName () {
-		if (! isset($this->pageName)) {
-			$pageURI = $this->get_pageURI();
+	protected function get_pageMethod (): string {
+		if (! isset($this->pageMethod)) $this->setPageData();
+
+		return $this->pageMethod;
+	}
+
+	/**
+	 * Визначення даних для обробки метода сторінки контролера з URI запита.
+	 */
+	protected function setPageData () {
+		if (! isset($this->pageMethod)) {
+			$controllerURI = $this->get_controllerURI();
+			$temp = trim(str_replace($controllerURI, '', $this->URLPath), '/');
+
+			if (($pos = strpos($temp, '/')) !== false) $pageURI = substr($temp, 0, $pos);
+			else $pageURI = $temp;
+
 			$temp = lcfirst($this->convertToCamelCase($pageURI));
 
 			if ($temp) {
 				if (method_exists($this->get_controllerClass(), $temp .'Page')) {
-					$this->pageName = $temp .'Page';
+					$this->pageURI = $pageURI;
+					$this->pageMethod = $temp .'Page';
 				}
 				else {
-					$this->pageName = NotFoundPage;
+					$this->pageURI = '';
+					$this->pageMethod = NotFoundPage;
 				}
 			}
 			else {
-				$this->pageName = DefaultPage;
+				$this->pageURI = '';
+				$this->pageMethod = DefaultPage;
 			}
 		}
+	}
 
-		return $this->pageName;
+	/**
+	 * Визначення даних контролера з URI запита.
+	 */
+	protected function setControllerData () {
+		if (! isset($this->controllerName)) {
+			$URLPath = $this->get_URLPath();
+
+			if ($pos = strpos($URLPath, '/')) {
+				$controllerURI = substr($URLPath, 0, $pos);
+			}
+			else {
+				$controllerURI = $URLPath;
+			}
+
+			if ($controllerURI) {
+				$controllerName = ucfirst($this->convertToCamelCase($controllerURI)) .'Controller';
+				$controllerClass = NamespaceControllers .'\\'. $controllerName;
+
+				if (class_exists($controllerClass)) {
+					$this->controllerURI = $controllerURI;
+					$this->controllerName = $controllerName;
+					$this->controllerClass = $controllerClass;
+				}
+				else {
+					$this->controllerURI = '';
+					$this->controllerName = DefaultControllerName;
+					$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
+				}
+			}
+			else {
+				$this->controllerURI = '';
+				$this->controllerName = DefaultControllerName;
+				$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
+			}
+		}
 	}
 
 	/**

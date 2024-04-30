@@ -12,7 +12,7 @@ class ClassException extends MainException {
 	 * @param \Throwable $previous попереднє виключення.
 	 */
 	public function __construct(int $code, array $p=[], \Throwable $previous=null) {
-		$this->get_messages();
+		if (! isset($this->messages)) $this->get_messages();
 
 		// Викликаємо конструктор батьківського класу Exception.
 		parent::__construct($code, $p, $previous);
@@ -26,6 +26,7 @@ class ClassException extends MainException {
 		if (! isset($this->messages)) {
 			$this->messages = [
 				'6000' => 'Помилка виконання метода класа типу DbRecord::update',
+				'6001' => 'Властивість класу не знайдена',
 				'6999' => 'Невизначене виключення'
 			];
 		}

@@ -7,5 +7,4 @@ namespace core\models;
  */
 class AdminModel extends MainModel {
 
-
 }

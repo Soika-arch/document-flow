@@ -3,6 +3,7 @@
 namespace core\traits;
 
 use core\exceptions\ClassException;
+use core\exceptions\SingletonException;
 
 /**
  * Трейт, який реалізує базові магічні методи __set і __get для Singleton класа	.
@@ -39,10 +40,10 @@ trait Singleton_SetGet {
 						return $this::$_instance->$method();
 					}
 
-					dd('', __FILE__, __LINE__,1);
+					throw new SingletonException(3999, ['calledClass' => get_called_class(), 'value' => $name]);
 				}
 
-				throw new ClassException(2000, ['calledClass' => get_called_class(), 'value' => $name]);
+				throw new ClassException(6001, ['calledClass' => get_called_class(), 'value' => $name]);
 
 			}
 		}
