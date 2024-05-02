@@ -124,5 +124,6 @@ require_once DirFunc .'/main.php';
 require_once DirFunc .'/db.php';
 require_once DirFunc .'/rg.php';
 require_once DirFunc .'/hd.php';
+require_once DirFunc .'/sess.php';
 
 classesAutoload();

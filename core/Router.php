@@ -6,29 +6,31 @@ class Router {
 
 	use traits\Singleton_SetGet;
 
-	// Всі наявні частини URI.
+	/** @var array всі наявні частини URI. */
 	private array $URLParts;
-	// Підрядок в URI без GET-параметрів.
+	/** @var string підрядок в URI без GET-параметрів. */
 	private string $URLPath;
-	// Підрядок в URI, який містить ім'я контролера.
+	/** @var string підрядок в URI, який містить ім'я контролера. */
 	private string $controllerURI;
-	// Підрядок в URI, який містить ім'я метода контролера (сторінки).
+	/** @var string підрядок в URI, який містить ім'я метода контролера (сторінки). */
 	private string $pageURI;
-	// Неповне ім'я контролера.
+	/** @var string ім'я контролера. */
 	private string $controllerName;
-	// Повне ім'я класу контролера.
+	/** @var string ім'я класу контролера. */
 	private string $controllerClass;
-	// Ім'я метода поточного контролера (сторінки).
+	/** @var string ім'я метода поточного контролера (сторінки). */
 	private string $pageMethod;
-	// URI поточного модуля до якого робе запит користувач.
+	/** @var string URI поточного модуля до якого робе запит користувач. */
 	private string $moduleURI;
-	// Поточний URI без URI $this->moduleURI.
+	/** @var string поточний URI без URI $this->moduleURI. */
 	private string $URIWithoutModule;
-	// Контроллер за замовчуванням для поточного модуля.
+	/** @var string контроллер за замовчуванням для поточного модуля. */
 	private string $defaultControllerName;
+	/** @var string namespace поточного модуля за замовчуванням. */
 	private string $namespaceControllers;
+	/** @var string клас контролера поточного модуля за замовчуванням. */
 	private string $defaultControllerClass;
-	// Наявність зайвого рядка в URIPath.
+	/** @var string наявність зайвого рядка в URIPath. */
 	private bool $isExtraLineInURLPath;
 
 	/**
@@ -37,7 +39,7 @@ class Router {
 	private function _init () {}
 
 	/**
-	 * Ініціалізує, якщо не визначене та повертає властивість $this->URLParts.
+	 * Ініціалізує та повертає властивість $this->URLParts.
 	 */
 	protected function get_URLParts (): array {
 		if (! isset($this->URLParts)) {
@@ -48,7 +50,7 @@ class Router {
 	}
 
 	/**
-	 * Ініціалізує, якщо не визначене та повертає властивість $this->URLPath.
+	 * Ініціалізує та повертає властивість $this->URLPath.
 	 */
 	protected function get_URLPath (): string {
 		if (! isset($this->URLPath)) {
@@ -61,7 +63,7 @@ class Router {
 	}
 
 	/**
-	 * Ініціалізує, якщо не визначене та повертає властивість $this->controllerURI.
+	 * Ініціалізує та повертає властивість $this->controllerURI.
 	 */
 	protected function get_controllerURI (): string {
 		if (! isset($this->controllerURI)) $this->setControllerData();
@@ -70,7 +72,7 @@ class Router {
 	}
 
 	/**
-	 * Ініціалізує, якщо не визначене та повертає властивість $this->controllerClass.
+	 * Ініціалізує та повертає властивість $this->controllerClass.
 	 */
 	protected function get_controllerClass (): string {
 		if (! isset($this->controllerClass)) $this->setControllerData();
@@ -79,7 +81,7 @@ class Router {
 	}
 
 	/**
-	 * Ініціалізує, якщо не визначене та повертає властивість $this->pageURI.
+	 * Ініціалізує та повертає властивість $this->pageURI.
 	 */
 	protected function get_pageURI (): string {
 		if (! isset($this->pageURI)) $this->setPageData();
@@ -97,7 +99,7 @@ class Router {
 	}
 
 	/**
-	 * Визначає поточний модуль.
+	 * Ініціалізує та повертає властивість $this->moduleURI.
 	 */
 	protected function get_moduleURI (): string {
 		if (! isset($this->moduleURI)) {
@@ -122,7 +124,7 @@ class Router {
 	}
 
 	/**
-	 *
+	 * Ініціалізує та повертає властивість $this->URIWithoutModule.
 	 */
 	protected function get_URIWithoutModule (): string {
 		if (! isset($this->URIWithoutModule)) {
@@ -133,7 +135,7 @@ class Router {
 	}
 
 	/**
-	 * Отримання контроллера за замовчуванням для поточного модуля.
+	 * Ініціалізує та повертає властивість $this->defaultControllerName.
 	 */
 	protected function get_defaultControllerName (): string {
 		if (! isset($this->defaultControllerName)) {
@@ -144,7 +146,7 @@ class Router {
 	}
 
 	/**
-	 * Отримання імені класу контроллера за замовчуванням для поточного модуля.
+	 * Ініціалізує та повертає властивість $this->defaultControllerClass.
 	 */
 	protected function get_defaultControllerClass (): string {
 		if (! isset($this->defaultControllerClass)) {
@@ -153,6 +155,34 @@ class Router {
 		}
 
 		return $this->defaultControllerClass;
+	}
+
+	/**
+	 * Ініціалізує та повертає властивість $this->namespaceControllers.
+	 */
+	protected function get_namespaceControllers (): string {
+		if (! isset($this->namespaceControllers)) {
+			$this->namespaceControllers = Modules[$this->get_moduleURI()]['namespaceControllers'];
+		}
+
+		return $this->namespaceControllers;
+	}
+
+	/**
+	 * Ініціалізує та повертає властивість $this->isExtraLineInURLPath.
+	 */
+	protected function get_isExtraLineInURLPath (): bool {
+		if (! isset($this->isExtraLineInURLPath)) {
+			// Рядок, URLPath, який точно не може бути зайвим.
+			$str = trim($this->moduleURI .'/'. $this->controllerURI .'/'. $this->pageURI, '/');
+			// Підрядок, який можливо іде за $str, він і є зайвий, якщо є.
+			$str = trim(substr(URIPath, (strpos(URIPath, $str) + strlen($str))), '/');
+
+			// Якщо URLPath містить зайвий підрядок - приймає значення true.
+			$this->isExtraLineInURLPath = ($str !== '') ? true : false;
+		}
+
+		return $this->isExtraLineInURLPath;
 	}
 
 	/**
@@ -225,34 +255,9 @@ class Router {
 	}
 
 	/**
-	 * Отримання namespace контроллерів для поточного модуля.
+	 * Конвертує отриманий рядок у CamelCase формат.
 	 */
-	protected function get_namespaceControllers (): string {
-		if (! isset($this->namespaceControllers)) {
-			$this->namespaceControllers = Modules[$this->get_moduleURI()]['namespaceControllers'];
-		}
-
-		return $this->namespaceControllers;
-	}
-
-	/**
-	 * Ініціалізує та повертає властивість $this->isExtraLineInURLPath.
-	 */
-	protected function get_isExtraLineInURLPath (): bool {
-		if (! isset($this->isExtraLineInURLPath)) {
-			$str = trim($this->moduleURI .'/'. $this->controllerURI .'/'. $this->pageURI, '/');
-			$str = trim(substr(URIPath, (strpos(URIPath, $str) + strlen($str))), '/');
-
-			$this->isExtraLineInURLPath = ($str !== '') ? true : false;
-		}
-
-		return $this->isExtraLineInURLPath;
-	}
-
-	/**
-	 * @return string
-	 */
-	private function convertToCamelCase (string $str) {
+	private function convertToCamelCase (string $str): string {
 		if (strpos($str, '-') !== false) {
 			$arr = explode('-', $str);
 			$arr = array_map('ucfirst', $arr);

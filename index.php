@@ -33,6 +33,7 @@ try {
 	$Controller = new $controllerClass();
 	// Виклик метода сторінки контролера.
 
+	// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
 	if (Router::getInstance()->isExtraLineInURLPath) {
 		$Controller->notFoundPage();
 	}
@@ -42,12 +43,9 @@ try {
 
 	handleSessionExpiration();
 
-	// Час завершення виконання скрипта програми в секундах з точністю до стотисячних.
-	$exMktEnd = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5);
-
 	// Отримання поточного об'єкта visitor_routes глобального користувача та оновлення даних поточного
 	// запису таблиці visitor_routes.
-	Registry::getInstance()->get('Us')->upVR($exMktEnd);
+	Registry::getInstance()->get('Us')->upVR();
 
 	if (Debug) require DirViews .'/inc/footer_debug_info.php';
 

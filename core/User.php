@@ -102,15 +102,16 @@ class User extends users {
 
 	/**
 	 * Оновлення запису visitor_routes.
-	 * @return $this
+	 * @param float Час завершення виконання скрипта програми в секундах з точністю до стотисячних.
 	 */
-	public function upVR (float $exMktEnd) {
+	public function upVR (float $exMktEnd=0): self {
 		$this->get_dbRow();
 
 		$this->VR->update([
 			'vr_id_user' => isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0,
 			'vr_queries_count' => db_Db()->queriesCounter,
-			'vr_execution_time' => $exMktEnd
+			'vr_execution_time' => $exMktEnd ?
+				$exMktEnd : round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5)
 		]);
 
 		return $this;

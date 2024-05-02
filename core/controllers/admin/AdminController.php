@@ -14,13 +14,24 @@ class AdminController extends MainController {
 	}
 
 	/**
+	 * Ініціалізує та повертає властивість $this->allowedStatuses.
+	 */
+	private function get_allowedStatuses () {
+		if (! isset($this->allowedStatuses)) {
+			$this->allowedStatuses = ['Admin'];
+		}
+
+		return $this->allowedStatuses;
+	}
+
+	/**
 	 *
 	 */
 	public function mainPage () {
 		$d['title'] = 'Адмін-панель';
 		$Us = rg_Rg()->get('Us');
 
-		if ($view = $this->checkPageAccess($Us->Status->_name, ['Admin'])) return $view;
+		$this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses());
 
 		require $this->getViewFile('main');
 	}

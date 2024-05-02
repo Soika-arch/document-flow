@@ -13,6 +13,8 @@ class MainController {
 	use \core\traits\SetGet;
 
 	protected \core\models\MainModel $Model;
+	// Масив статусів користувачів, яким дозволено доступ до поточного метода сторінки.
+	protected array $allowedStatuses;
 
 	/**
 	 *

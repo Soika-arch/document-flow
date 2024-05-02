@@ -10,10 +10,11 @@ require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
 require $this->getViewFile('/inc/menu/main');
 
+if (isset($_SESSION['sysMessages'])) require $this->getViewFile('/inc/sys_messages');
 if (isset($d['errors'])) require $this->getViewFile('/inc/errors');
 
 e('<div class="form-add_user">');
-	e('<form action="'. url() .'" method="post">');
+	e('<form name="fm_userAdd" action="'. url() .'" method="post">');
 
 		e('<div>');
 			e('<label for="login">Логін<label>');

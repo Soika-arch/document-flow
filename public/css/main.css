@@ -4,18 +4,17 @@
 .form-user_auth {
 	display: inline-block;
 	width: 100%;
-	padding: 0px 10px 0px 10px;
+	padding: 20px 10px 0px 20px;
 }
 
 .form-user_auth label {
 	display: inline-block;
+	padding-top: 10px;
 	width: 100%;
 }
 
 .form-user_auth input {
-	/* display: inline-block; */
-	margin: 0px 0px 20px 0px;
-	/* width: 100%; */
+	font-size: 20px;
 }
 
 .form-user_auth button {

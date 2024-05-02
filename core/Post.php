@@ -23,20 +23,21 @@ class Post {
 	private array $errors = [];
 
 	/**
-	 * @return
-	 */
-	private function get_post () {
-		if (! isset($this->post)) $this->post = $_POST;
-
-		return $this->post;
-	}
-
-	/**
 	 *
 	 */
 	public function __construct (string $formName, array $formTypes) {
 		$this->formName = $formName;
+		$this->get_post();
 		$this->saveFormTypes($formTypes);
+	}
+
+	/**
+	 * Ініціалізує та повертає властивість $this->post.
+	 */
+	private function get_post (): array {
+		if (! isset($this->post)) $this->post = $_POST;
+
+		return $this->post;
 	}
 
 	/**

@@ -31,3 +31,36 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Форма додавання нового користувача. */
 
+.form-add_user {
+	display: inline-block;
+	padding: 20px 10px 0px 20px;
+	width: 400px;
+}
+
+.form-add_user div {
+	padding-bottom: 20px;
+}
+
+.form-add_user input {
+	display: inline-block;
+	width: 100%;
+	font-size: 20px;
+}
+
+.form-add_user label {
+	display: inline-block;
+	width: 100%;
+}
+
+.form-add_user select {
+	display: inline-block;
+	width: 100%;
+	font-size: 20px;
+}
+
+.form-add_user button {
+	display: inline-block;
+	width: 100px;
+	cursor: pointer;
+	font-size: 20px;
+}

@@ -189,9 +189,9 @@ class DbRecord {
 	}
 
 	/**
-	 * @return false|$this
+	 * Додавання нового запису в поточну таблицю і ініціалізація нею поточного об'єкту.
 	 */
-	public function set (array $columnsData) {
+	public function set (array $columnsData): false|self {
 		$SQL = db_getInsert();
 
 		$SQL
