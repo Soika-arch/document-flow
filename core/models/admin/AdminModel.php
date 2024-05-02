@@ -1,6 +1,8 @@
 <?php
 
-namespace core\models;
+namespace core\models\admin;
+
+use core\models\MainModel;
 
 /**
  * Модель адмін-панелі.

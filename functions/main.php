@@ -26,12 +26,10 @@ function classesAutoload () {
 				require_once $fname;
 			}
 			else {
-				// dd([$fname, is_file($fname)], __FILE__, __LINE__,1);
+				dd([$fname, is_file($fname)], __FILE__, __LINE__,1);
 			}
 		}
 	);
-
-	define('PetamicrClassesAutoloader', true);
 }
 
 function dd (mixed $var, string $fname, string $line, bool $stop=false, bool $saveToFile=false) {

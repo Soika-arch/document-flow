@@ -25,14 +25,20 @@ try {
 
 	// Отримання назви класу контролера.
 	$controllerClass = $Router->controllerClass;
-	// Отримання назви метода сторінки контролера.
 
+	// Отримання назви метода сторінки контролера.
 	$controllerMethod = $Router->pageMethod;
 
 	// Створення об'єкта контролера.
 	$Controller = new $controllerClass();
 	// Виклик метода сторінки контролера.
-	$Controller->$controllerMethod();
+
+	if (Router::getInstance()->isExtraLineInURLPath) {
+		$Controller->notFoundPage();
+	}
+	else {
+		$Controller->$controllerMethod();
+	}
 
 	handleSessionExpiration();
 
@@ -57,4 +63,6 @@ try {
 }
 catch (\Throwable $th) {
 	dd($th, __FILE__, __LINE__,1);
+	// echo '<pre>';
+	// var_dump($th);
 }

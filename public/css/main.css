@@ -45,15 +45,13 @@
 
 .main-menu div {
 	display: inline-block;
-	width: 100px;
+	padding: 5px 5px 5px 5px;
 	height: 26px;
 	text-align: center;
 	background-color: rgb(236, 249, 247);
 }
 
 .main-menu div:hover {
-	display: inline-block;
-	width: 100px;
 	background-color: rgb(220, 247, 243);
 }
 

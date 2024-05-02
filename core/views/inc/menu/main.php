@@ -12,6 +12,14 @@ e('<div class="main-menu">');
 		e('<a href="'. url('/') .'">Home</a>');
 	e('</div>');
 
+	if ($Us->Status->_name === 'Admin') {
+		$adminURL = '/'. URIAdmin;
+
+		e('<div>');
+			e('<a href="'. url($adminURL) .'">Адмін-панель</a>');
+		e('</div>');
+	}
+
 	if ($Us->_id && ($Us->_id > 0)) {
 		e('<div>');
 			e('<a href="'. url('/user/logout') .'">Вийти</a>');

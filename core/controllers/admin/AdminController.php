@@ -1,6 +1,8 @@
 <?php
 
-namespace core\controllers;
+namespace core\controllers\admin;
+
+use core\controllers\MainController;
 
 /**
  * Контроллер адмін-панелі.
@@ -17,8 +19,9 @@ class AdminController extends MainController {
 	public function mainPage () {
 		$d['title'] = 'Адмін-панель';
 		$Us = rg_Rg()->get('Us');
-		$this->checkPageAccess($Us->Status->_name, ['Admin']);
 
-		return require $this->getViewFile('main');
+		if ($view = $this->checkPageAccess($Us->Status->_name, ['Admin'])) return $view;
+
+		require $this->getViewFile('main');
 	}
 }

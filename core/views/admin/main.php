@@ -14,7 +14,7 @@ if (isset($d['errors'])) require $this->getViewFile('/inc/errors');
 
 e('<div class="admin-main-menu">');
 	e('<div>');
-		e('<a href="'. url('admin-users') .'">Користувачі</a>');
+		e('<a href="'. url('users') .'">Користувачі</a>');
 	e('</div>');
 e('</div>');
 

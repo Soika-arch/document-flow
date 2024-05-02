@@ -19,8 +19,8 @@ class MainController {
 	 */
 	public function __construct () {
 		// Створення відповідної контролеру моделі.
-
-		$modelName = NamespaceModels .'\\'. Router::getInstance()->controllerName .'Model';
+		$namespaceModels = Modules[Router::getInstance()->moduleURI]['namespaceModels'];
+		$modelName = $namespaceModels .'\\'. Router::getInstance()->controllerName .'Model';
 		$modelName = str_replace('Controller', '', $modelName);
 		$this->Model = new $modelName();
 	}
@@ -35,7 +35,7 @@ class MainController {
 			$d['errors'][] = 'Користувача не знайдено або неправильно введено пароль';
 		}
 
-		return require $this->getViewFile('main');
+		require $this->getViewFile('main');
 	}
 
 	/**
@@ -44,17 +44,16 @@ class MainController {
 	public function notFoundPage () {
 		$d['title'] = 'Сторінка не знайдена';
 
-		return require $this->getViewFile('/page_not_found');
+		require $this->getViewFile('/page_not_found');
 	}
 
 	/**
 	 * Отримання виду.
-	 * @return string
 	 * @param string $viewName ім'я виду файла
 	 */
-	protected function getViewFile (string $viewName) {
+	protected function getViewFile (string $viewName): string {
 		if (strpos($viewName, '/') !== 0) {
-			$fName = lcfirst(Router::getInstance()->controllerURI) .'/'. $viewName .'.php';
+			$fName = Modules[Router::getInstance()->moduleURI]['dirName'] .'/'. $viewName .'.php';
 			$fName = DirViews .'/'. str_replace(['Controller', '-'], ['', '/'], $fName);
 		}
 		else {
@@ -71,6 +70,6 @@ class MainController {
 	 * Перевірка доступу користувача до поточної сторінки.
 	 */
 	protected function checkPageAccess (string $userStatus, array $resolvedStatuses) {
-		if (! in_array($userStatus, $resolvedStatuses)) return $this->notFoundPage();
+		if (! in_array($userStatus, $resolvedStatuses)) $this->notFoundPage();
 	}
 }

@@ -3,7 +3,6 @@
 namespace core\controllers;
 
 use core\Post;
-use core\Router;
 
 /**
  * Контролер користувачів.
@@ -18,7 +17,7 @@ class UserController extends MainController {
 	 *
 	 */
 	public function mainPage () {
-		dd(Router::getInstance(), __FILE__, __LINE__,1);
+		dd(__METHOD__, __FILE__, __LINE__,1);
 	}
 
 	/**
@@ -45,7 +44,7 @@ class UserController extends MainController {
 	}
 
 	/**
-	 * @return
+	 *
 	 */
 	public function logoutPage () {
 		$this->Model->logout();
@@ -55,6 +54,6 @@ class UserController extends MainController {
 	 *
 	 */
 	public function addPage () {
-		dd(Router::getInstance(), __FILE__, __LINE__,1);
+		dd(__METHOD__, __FILE__, __LINE__,1);
 	}
 }

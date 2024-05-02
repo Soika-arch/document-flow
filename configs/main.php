@@ -10,6 +10,7 @@ date_default_timezone_set('Europe/Kiev');
 const SiteName = 'Електронний документообіг';
 /** @var string Назва головного файлу css стилей. */
 const MainCssName = 'main';
+/** @var string Назва головного файлу css стилей адмін-панелі. */
 const AdminCssName = 'admin';
 /** @var bool Чи треба контролювати максимальний час сесії користувача. */
 const SessionTimeoutEnabled = false;
@@ -69,20 +70,6 @@ define('DirTraits', DirCore .'/traits');
 /** @var string Каталог видів. */
 define('DirViews', DirCore .'/views');
 
-// Простори імен (namespaces).
-
-/** @var string namespace контролерів. */
-define(
-	'NamespaceControllers',
-	str_replace('/', '\\', trim(str_replace(DirRoot, '', DirControllers), '/'))
-);
-
-/** @var string namespace моделей. */
-define(
-	'NamespaceModels',
-	str_replace('/', '\\', trim(str_replace(DirRoot, '', DirModels), '/'))
-);
-
 /** @var string повний поточний URL-запит. */
 define('URL', ServerProtocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
@@ -104,14 +91,31 @@ else {
 	define('URIParams', '');
 }
 
-/** @var string ім'я контролера за замовчуванням. */
-define('DefaultControllerName', 'MainController');
+define('URIAdmin', 'fds');
+
+/** @var array дані модулів сайта - ['uri' => [data]]. */
+const Modules = [
+	'' => [
+		'name' => 'Main',
+		'dirName' => '', // Назва відповідних каталогів ядра.
+		'defaultControllerName' => 'MainController',
+		'namespaceControllers' => 'core\controllers',
+		'namespaceModels' => 'core\models',
+	],
+	URIAdmin => [
+		'name' => 'Admin',
+		'dirName' => 'admin', // Назва відповідних каталогів ядра.
+		'defaultControllerName' => 'AdminController',
+		'namespaceControllers' => 'core\controllers\admin',
+		'namespaceModels' => 'core\models\admin',
+	]
+];
+
 /** @var string ім'я екшена контролера за замовчуванням. */
 define('DefaultPage', 'mainPage');
 /** @var string ім'я екшена контролера сторінки page-not-found. */
 define('NotFoundPage', 'notFoundPage');
-/** @var string ім'я класа контролера за замовчуванням. */
-define('DefaultControllerClass', NamespaceControllers .'\\'. DefaultControllerName);
+define('DefaultControllerName', 'MainController');
 
 // Підключення загальних файлів застосунку.
 

@@ -20,6 +20,16 @@ class Router {
 	private string $controllerClass;
 	// Ім'я метода поточного контролера (сторінки).
 	private string $pageMethod;
+	// URI поточного модуля до якого робе запит користувач.
+	private string $moduleURI;
+	// Поточний URI без URI $this->moduleURI.
+	private string $URIWithoutModule;
+	// Контроллер за замовчуванням для поточного модуля.
+	private string $defaultControllerName;
+	private string $namespaceControllers;
+	private string $defaultControllerClass;
+	// Наявність зайвого рядка в URIPath.
+	private bool $isExtraLineInURLPath;
 
 	/**
 	 * Ініціалізація singleton об'єкта.
@@ -87,21 +97,77 @@ class Router {
 	}
 
 	/**
+	 * Визначає поточний модуль.
+	 */
+	protected function get_moduleURI (): string {
+		if (! isset($this->moduleURI)) {
+			// Отримання частини URIPath до першого символа '/'.
+
+			if ($pos = strpos(URIPath, '/')) {
+				$moduleURI = substr(URIPath, 0, $pos);
+			}
+			else {
+				$moduleURI = URIPath;
+			}
+
+			if (isset(Modules[$moduleURI])) {
+				$this->moduleURI = $moduleURI;
+			}
+			else {
+				$this->moduleURI = '';
+			}
+		}
+
+		return $this->moduleURI;
+	}
+
+	/**
+	 *
+	 */
+	protected function get_URIWithoutModule (): string {
+		if (! isset($this->URIWithoutModule)) {
+			$this->URIWithoutModule = trim(str_replace($this->get_moduleURI(), '', URI), '/');
+		}
+
+		return $this->URIWithoutModule;
+	}
+
+	/**
+	 * Отримання контроллера за замовчуванням для поточного модуля.
+	 */
+	protected function get_defaultControllerName (): string {
+		if (! isset($this->defaultControllerName)) {
+			$this->defaultControllerName = Modules[$this->get_moduleURI()]['defaultControllerName'];
+		}
+
+		return $this->defaultControllerName;
+	}
+
+	/**
+	 * Отримання імені класу контроллера за замовчуванням для поточного модуля.
+	 */
+	protected function get_defaultControllerClass (): string {
+		if (! isset($this->defaultControllerClass)) {
+			$this->defaultControllerClass = $this->get_namespaceControllers() .'\\'.
+				Modules[$this->get_moduleURI()]['defaultControllerName'];
+		}
+
+		return $this->defaultControllerClass;
+	}
+
+	/**
 	 * Визначення даних для обробки метода сторінки контролера з URI запита.
 	 */
 	protected function setPageData () {
 		if (! isset($this->pageMethod)) {
-			$controllerURI = $this->get_controllerURI();
-			$temp = trim(str_replace($controllerURI, '', $this->URLPath), '/');
+			$temp = $this->get_URIWithoutModule();
 
-			if (($pos = strpos($temp, '/')) !== false) $pageURI = substr($temp, 0, $pos);
-			else $pageURI = $temp;
-
-			$temp = lcfirst($this->convertToCamelCase($pageURI));
+			$temp = trim(str_replace($this->get_controllerURI(), '', $temp), '/');
+			$temp = lcfirst($this->convertToCamelCase($temp));
 
 			if ($temp) {
 				if (method_exists($this->get_controllerClass(), $temp .'Page')) {
-					$this->pageURI = $pageURI;
+					$this->pageURI = $temp;
 					$this->pageMethod = $temp .'Page';
 				}
 				else {
@@ -117,22 +183,31 @@ class Router {
 	}
 
 	/**
+	 * Встановлення даних контроллера за замовчуванням для поточного модуля.
+	 */
+	protected function setDefaultControllelrData () {
+		$this->controllerURI = '';
+		$this->controllerName = $this->get_defaultControllerName();
+		$this->controllerClass = $this->get_defaultControllerClass();
+	}
+
+	/**
 	 * Визначення даних контролера з URI запита.
 	 */
 	protected function setControllerData () {
 		if (! isset($this->controllerName)) {
-			$URLPath = $this->get_URLPath();
+			$URIPath = $this->get_URIWithoutModule();
 
-			if ($pos = strpos($URLPath, '/')) {
-				$controllerURI = substr($URLPath, 0, $pos);
+			if ($pos = strpos($URIPath, '/')) {
+				$controllerURI = substr($URIPath, 0, $pos);
 			}
 			else {
-				$controllerURI = $URLPath;
+				$controllerURI = $URIPath;
 			}
 
 			if ($controllerURI) {
 				$controllerName = ucfirst($this->convertToCamelCase($controllerURI)) .'Controller';
-				$controllerClass = NamespaceControllers .'\\'. $controllerName;
+				$controllerClass = $this->get_namespaceControllers() .'\\'. $controllerName;
 
 				if (class_exists($controllerClass)) {
 					$this->controllerURI = $controllerURI;
@@ -140,17 +215,38 @@ class Router {
 					$this->controllerClass = $controllerClass;
 				}
 				else {
-					$this->controllerURI = '';
-					$this->controllerName = DefaultControllerName;
-					$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
+					$this->setDefaultControllelrData();
 				}
 			}
 			else {
-				$this->controllerURI = '';
-				$this->controllerName = DefaultControllerName;
-				$this->controllerClass = NamespaceControllers .'\\'. DefaultControllerName;
+				$this->setDefaultControllelrData();
 			}
 		}
+	}
+
+	/**
+	 * Отримання namespace контроллерів для поточного модуля.
+	 */
+	protected function get_namespaceControllers (): string {
+		if (! isset($this->namespaceControllers)) {
+			$this->namespaceControllers = Modules[$this->get_moduleURI()]['namespaceControllers'];
+		}
+
+		return $this->namespaceControllers;
+	}
+
+	/**
+	 * Ініціалізує та повертає властивість $this->isExtraLineInURLPath.
+	 */
+	protected function get_isExtraLineInURLPath (): bool {
+		if (! isset($this->isExtraLineInURLPath)) {
+			$str = trim($this->moduleURI .'/'. $this->controllerURI .'/'. $this->pageURI, '/');
+			$str = trim(substr(URIPath, (strpos(URIPath, $str) + strlen($str))), '/');
+
+			$this->isExtraLineInURLPath = ($str !== '') ? true : false;
+		}
+
+		return $this->isExtraLineInURLPath;
 	}
 
 	/**
