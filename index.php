@@ -25,7 +25,6 @@ try {
 
 	/** @var string назва класу контролера. */
 	$controllerClass = $Router->controllerClass;
-
 	// Отримання назви метода сторінки контролера.
 	$controllerMethod = $Router->pageMethod;
 

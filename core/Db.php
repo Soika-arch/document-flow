@@ -3,6 +3,7 @@
 namespace core;
 
 use libs\query_builder\Connection;
+use libs\query_builder\DeleteQuery;
 use libs\query_builder\InsertQuery;
 use libs\query_builder\SelectQuery;
 use libs\query_builder\UpdateQuery;
@@ -148,6 +149,14 @@ class Db {
 	}
 
 	/**
+	 * @return DeleteQuery
+	 */
+	public function getDelete () {
+
+		return $this->Connection->delete();
+	}
+
+	/**
 	 * Для отримання рядків.
 	 * @return array
 	 */
@@ -183,6 +192,25 @@ class Db {
 		$this->queriesCounter++;
 
 		return ['result' => $SQL->execute(), 'lastInsertId' => $SQL->lastInsertId()];
+	}
+
+	/**
+	 * Видалення рядків.
+	 * @return array
+	 */
+	public function delete (DeleteQuery $SQL) {
+		$Sth = $SQL->prepare();
+
+		if (LogSql) $this->logger($SQL->prepare());
+
+		$this->queriesCounter++;
+
+		// true, якщо запит успішний і false - навпаки.
+		$res['result'] = $Sth->execute();
+		// Кількість видалених рядків.
+		$res['rowCount'] = $Sth->rowCount();
+
+		return $res;
 	}
 
 	/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

@@ -60,7 +60,7 @@ class UsersModel extends AdminModel {
 
 		$login = $Post->sanitizeValue('login');
 
-		$UserNew = (new User(0))->set([
+		$UserNew = (new User(null))->set([
 			'us_login' => $login,
 			'us_password_hash' => password_hash($Post->post['password'], PASSWORD_DEFAULT),
 			'us_add_date' => date('Y-m-d H:i:s')

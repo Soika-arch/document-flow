@@ -100,6 +100,25 @@ function db_insertRow (libs\query_builder\InsertQuery $SQL) {
 }
 
 /**
+ * Видалення рядків.
+ * @return array
+ */
+function db_delete (libs\query_builder\DeleteQuery $SQL) {
+
+	return db_Db()->delete($SQL);
+}
+
+/**
+ * Видалення рядка.
+ * @return array
+ */
+function db_deleteRow (libs\query_builder\DeleteQuery $SQL) {
+	$SQL->limit(1);
+
+	return db_delete($SQL);
+}
+
+/**
  * Отримання префікса стовпців стовпців таблиці БД.
  * @param string $tName назва таблиці
  * @return string|null

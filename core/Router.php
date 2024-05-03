@@ -40,8 +40,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->URLParts.
+	 * @return array
 	 */
-	protected function get_URLParts (): array {
+	protected function get_URLParts () {
 		if (! isset($this->URLParts)) {
 			$this->URLParts = parse_url(URI);
 		}
@@ -51,8 +52,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->URLPath.
+	 * @return string
 	 */
-	protected function get_URLPath (): string {
+	protected function get_URLPath () {
 		if (! isset($this->URLPath)) {
 			$this->get_URLParts();
 
@@ -64,8 +66,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->controllerURI.
+	 * @return string
 	 */
-	protected function get_controllerURI (): string {
+	protected function get_controllerURI () {
 		if (! isset($this->controllerURI)) $this->setControllerData();
 
 		return $this->controllerURI;
@@ -73,8 +76,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->controllerClass.
+	 * @return string
 	 */
-	protected function get_controllerClass (): string {
+	protected function get_controllerClass () {
 		if (! isset($this->controllerClass)) $this->setControllerData();
 
 		return $this->controllerClass;
@@ -82,8 +86,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->pageURI.
+	 * @return string
 	 */
-	protected function get_pageURI (): string {
+	protected function get_pageURI () {
 		if (! isset($this->pageURI)) $this->setPageData();
 
 		return $this->pageURI;
@@ -91,8 +96,9 @@ class Router {
 
 	/**
 	 * Ініціалізує, якщо не визначене та повертає властивість $this->pageMethod.
+	 * @return string
 	 */
-	protected function get_pageMethod (): string {
+	protected function get_pageMethod () {
 		if (! isset($this->pageMethod)) $this->setPageData();
 
 		return $this->pageMethod;
@@ -100,8 +106,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->moduleURI.
+	 * @return string
 	 */
-	protected function get_moduleURI (): string {
+	protected function get_moduleURI () {
 		if (! isset($this->moduleURI)) {
 			// Отримання частини URIPath до першого символа '/'.
 
@@ -125,8 +132,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->URIWithoutModule.
+	 * @return string
 	 */
-	protected function get_URIWithoutModule (): string {
+	protected function get_URIWithoutModule () {
 		if (! isset($this->URIWithoutModule)) {
 			$this->URIWithoutModule = trim(str_replace($this->get_moduleURI(), '', URI), '/');
 		}
@@ -136,8 +144,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->defaultControllerName.
+	 * @return string
 	 */
-	protected function get_defaultControllerName (): string {
+	protected function get_defaultControllerName () {
 		if (! isset($this->defaultControllerName)) {
 			$this->defaultControllerName = Modules[$this->get_moduleURI()]['defaultControllerName'];
 		}
@@ -147,8 +156,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->defaultControllerClass.
+	 * @return string
 	 */
-	protected function get_defaultControllerClass (): string {
+	protected function get_defaultControllerClass () {
 		if (! isset($this->defaultControllerClass)) {
 			$this->defaultControllerClass = $this->get_namespaceControllers() .'\\'.
 				Modules[$this->get_moduleURI()]['defaultControllerName'];
@@ -159,8 +169,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->namespaceControllers.
+	 * @return string
 	 */
-	protected function get_namespaceControllers (): string {
+	protected function get_namespaceControllers () {
 		if (! isset($this->namespaceControllers)) {
 			$this->namespaceControllers = Modules[$this->get_moduleURI()]['namespaceControllers'];
 		}
@@ -170,8 +181,9 @@ class Router {
 
 	/**
 	 * Ініціалізує та повертає властивість $this->isExtraLineInURLPath.
+	 * @return bool
 	 */
-	protected function get_isExtraLineInURLPath (): bool {
+	protected function get_isExtraLineInURLPath () {
 		if (! isset($this->isExtraLineInURLPath)) {
 			// Рядок, URLPath, який точно не може бути зайвим.
 			$str = trim($this->moduleURI .'/'. $this->controllerURI .'/'. $this->pageURI, '/');
@@ -191,6 +203,8 @@ class Router {
 	protected function setPageData () {
 		if (! isset($this->pageMethod)) {
 			$temp = $this->get_URIWithoutModule();
+			// Видалення рядка GET-параметрів разом із знаком питання, якщо вони є.
+			$temp = str_replace('?'. URIParams, '', $temp);
 
 			$temp = trim(str_replace($this->get_controllerURI(), '', $temp), '/');
 			$temp = lcfirst($this->convertToCamelCase($temp));

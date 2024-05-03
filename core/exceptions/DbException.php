@@ -22,6 +22,7 @@ class DbException extends MainException {
 		if (! isset($this->messages)) {
 			$this->messages = [
 				'5000' => 'Отримано більше одного запису БД',
+				'5001' => 'Видалено більше одного запису БД',
 				'5999' => 'Невизначене виключення'
 			];
 		}

@@ -3,6 +3,7 @@
 namespace core\db_record;
 
 use core\exceptions\ClassException;
+use core\exceptions\DbException;
 use core\exceptions\DbRecordException;
 
 /**
@@ -223,15 +224,49 @@ class DbRecord {
 
 	/**
 	 * Видалення запису поточного об'єкта за його id.
-	 * @return bool
+	 * @return array
 	 */
-	public function delete () {
+	public function delete (bool $isDeleteRelations=true) {
 		$idName = $this->px .'id';
-		$idIndex = '_id';
 
-		dd($this, __FILE__, __LINE__,1);
+		$SQL = db_getDelete();
 
-		return ;
+		$SQL
+			->from($this->tName)
+			->where($idName, '=', $this->_id);
+
+		$res = db_deleteRow($SQL);
+
+		if ($res['rowCount'] > 1) throw new DbException(5001);
+
+		if ($isDeleteRelations) $this->deleteRelations();
+
+		unset($this->dbRow);
+
+		return $res;
+	}
+
+	/**
+	 * Видалення зв'язаних записів інших таблиць.
+	 */
+	public function deleteRelations () {
+		$relations = $this->get_relations();
+
+		if ($relations) {
+			foreach ($relations as $tName => $relData) {
+				if (! $relData['onDelete']) continue;
+
+				$keyColumnName = '_'. $relData['key_column'];
+
+				$SQL = db_getDelete();
+
+				$SQL
+					->from($tName)
+					->where($relData['relation_column'], '=', $this->$keyColumnName);
+
+				db_delete($SQL);
+			}
+		}
 	}
 
 	/**

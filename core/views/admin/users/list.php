@@ -6,14 +6,11 @@
 
 $Us = rg_Rg()->get('Us');
 
-if (isset($_GET['del_user'])) {
-	dd($_GET, __FILE__, __LINE__,1);
-}
-
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
 require $this->getViewFile('/inc/menu/main');
 
+if (isset($_SESSION['sysMessages'])) require $this->getViewFile('/inc/sys_messages');
 if (isset($d['errors'])) require $this->getViewFile('/inc/errors');
 
 if ($d['users']) {

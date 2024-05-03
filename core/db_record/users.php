@@ -24,6 +24,11 @@ class users extends DbRecord {
 					'key_column' => 'id',
 					'relation_column' => 'vr_id_user',
 					'onDelete' => true
+				],
+				DbPrefix .'users_rel_statuses' => [
+					'key_column' => 'id',
+					'relation_column' => 'urs_id_user',
+					'onDelete' => true
 				]
 			];
 		}
