@@ -64,3 +64,45 @@
 	cursor: pointer;
 	font-size: 20px;
 }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Список користувачів на сторінці /admin/users/list. */
+
+.admin-users_list {
+	padding: 10px 10px 0px 20px;
+}
+
+.admin-users_list .user-data {
+	padding: 0px 0px 10px 0px;
+}
+
+.admin-users_list .user-data .user-login {
+	display: inline-block;
+	width: 100px;
+}
+
+.admin-users_list .user-data .user-login a {
+	font-size: 18px;
+	text-decoration: none;
+}
+
+.admin-users_list .user-data .user-control-buttons {
+	display: inline-block;
+	width: 100px;
+}
+
+.admin-users_list .user-data .user-control-buttons {
+	display: inline-block;
+	width: 100px;
+}
+
+.admin-users_list .user-data .user-control-buttons .img-button {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+}
+
+.admin-users_list .user-data .user-control-buttons .img-button:hover {
+	border-radius: 10px;
+	box-shadow: #2f1fd8 1px 0 15px;
+}

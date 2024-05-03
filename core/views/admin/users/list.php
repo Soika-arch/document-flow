@@ -17,8 +17,21 @@ if ($d['users']) {
 	e('<div class="admin-users_list">');
 
 		foreach ($d['users'] as $usRow) {
-			e('<div>');
-				e('<a href="'. url('', ['del_user' => $usRow['us_id']]) .'">'. $usRow['us_login'] .'</a>');
+			e('<div class="user-data">');
+
+				$profileURL = url('');
+				$delURL = url('', ['del_user' => $usRow['us_id']]);
+				$delIMG = url('/img/delete.png');
+
+				e('<div class="user-login">');
+					e('<a href="'. $profileURL .'">'. $usRow['us_login'] .'</a>');
+				e('</div>');
+
+				e('<div class="user-control-buttons">');
+					e('<a href="'. $delURL .'"><img class="img-button" src="'. $delIMG .
+						'" title="Видалити користувача"></a>');
+				e('</div>');
+
 			e('</div>');
 		}
 
