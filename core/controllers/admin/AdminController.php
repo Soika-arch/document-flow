@@ -31,7 +31,7 @@ class AdminController extends MainController {
 		$d['title'] = 'Адмін-панель';
 		$Us = rg_Rg()->get('Us');
 
-		$this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses());
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
 		require $this->getViewFile('main');
 	}

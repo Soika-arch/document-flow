@@ -225,32 +225,31 @@ class Router {
 	 * Визначення даних контролера з URI запита.
 	 */
 	protected function setControllerData () {
-		if (! isset($this->controllerName)) {
-			$URIPath = $this->get_URIWithoutModule();
+		$URIPath = $this->get_URIWithoutModule();
 
-			if ($pos = strpos($URIPath, '/')) {
-				$controllerURI = substr($URIPath, 0, $pos);
-			}
-			else {
-				$controllerURI = $URIPath;
-			}
+		if ($pos = strpos($URIPath, '/')) {
+			$controllerURI = substr($URIPath, 0, $pos);
+		}
+		else {
+			$controllerURI = $URIPath;
+		}
 
-			if ($controllerURI) {
-				$controllerName = ucfirst($this->convertToCamelCase($controllerURI)) .'Controller';
-				$controllerClass = $this->get_namespaceControllers() .'\\'. $controllerName;
+		if ($controllerURI) {
+			$controllerName = ucfirst($this->convertToCamelCase($controllerURI)) .'Controller';
+			$controllerClass = $this->get_namespaceControllers() .'\\'. $controllerName;
+			$controllerFile = DirRoot .'/'. str_replace('\\', '/', $controllerClass) .'.php';
 
-				if (class_exists($controllerClass)) {
-					$this->controllerURI = $controllerURI;
-					$this->controllerName = $controllerName;
-					$this->controllerClass = $controllerClass;
-				}
-				else {
-					$this->setDefaultControllelrData();
-				}
+			if (is_file($controllerFile)) {
+				$this->controllerURI = $controllerURI;
+				$this->controllerName = $controllerName;
+				$this->controllerClass = $controllerClass;
 			}
 			else {
 				$this->setDefaultControllelrData();
 			}
+		}
+		else {
+			$this->setDefaultControllelrData();
 		}
 	}
 

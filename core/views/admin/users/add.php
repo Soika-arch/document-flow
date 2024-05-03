@@ -33,7 +33,7 @@ e('<div class="form-add_user">');
 
 		e('<div>');
 			e('<label for="status">Статус<label>');
-			e('<select>');
+			e('<select name="status">');
 
 			foreach ($d['statuses'] as $stData) {
 				e('<option value="'. $stData['uss_id'] .'">'. $stData['uss_description'] .'</option>');

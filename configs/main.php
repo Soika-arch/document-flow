@@ -91,7 +91,7 @@ else {
 	define('URIParams', '');
 }
 
-define('URIAdmin', 'fds');
+define('URIAdmin', 'ap');
 
 /** @var array дані модулів сайта - ['uri' => [data]]. */
 const Modules = [

@@ -11,24 +11,18 @@ use core\exceptions\DbRecordException;
  */
 class DbRecord {
 
-	/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/** [1] Свойства и константы. */
-
-	// Значення стовпця id поточного рядка таблиці БД.
+	/** @var int значення стовпця id поточного рядка таблиці БД. */
 	protected int $id;
-	// Запис БД (повний рядок) на основі якого створено поточний об'єкт.
+	/** @var array запис БД (повний рядок) на основі якого створено поточний об'єкт. */
 	protected array $dbRow;
-	// Сокращенное (без префикса и БД) имя таблицы текущего объекта.
+	/** @var string|null им'я таблиці поточного об'єкта. */
 	protected string|null $tName;
-	// Префикс столбцов.
+	/** @var string префікс стовпців поточної таблиці. */
 	protected string $px;
-	// Масив даних зв'язків записів поточної таблиці з іншими таблицями.
+	/** @var array масив даних зв'язків записів поточної таблиці з іншими таблицями. */
 	protected array $relations;
-	// Дані ['ім'я_стовпця' => 'нове значення'], що готуються для оновлення запису.
+	/** @var array дані ['ім'я_стовпця' => 'нове значення'], що готуються для оновлення запису. */
 	protected array $dataForColumns;
-
-	/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	/** [1] Магические методы. */
 
 	/**
 	 * @param int|null $id поточного запису об'єкту.
@@ -78,14 +72,10 @@ class DbRecord {
 			}
 
 			// Запитуване поле таблиці НЕ існує в таблиці даного об'єкту.
-
-			err("classes.Db", 6, __FILE__, __LINE__, debug_backtrace(), [
-				'tName' => $this->tName,
-				'colName' => $name
-			]);
+			dd(__METHOD__, __FILE__, __LINE__,1);
 		}
 		else {
-			// Запит значення властивості поточного об'єта.
+			// Запит значення властивості поточного класа.
 
 			// Якщо вже існує - повернути одразу.
 			if (isset($this->$name)) return $this->$name;
@@ -101,14 +91,15 @@ class DbRecord {
 				throw new ClassException(2001, ['name' => $name, 'method' => $method]);
 			}
 			else {
-				err("classes", 1, __FILE__, __LINE__, debug_backtrace(),
-					['class' => get_called_class(), 'name' => $name]);
+				// Поточний клас не має властивості $this->$name.
+				dd(__METHOD__, __FILE__, __LINE__,1);
 			}
 		}
   }
 
 	/**
-   *
+   * Якщо властивість $this->$name існує у поточного об'єкта - буде викликано відповідний метод
+	 * перезапису властивості, інакше буде згенеровано виключення.
    */
   public function __set (string $name, $value) {
 		if (property_exists($this, $name)) {
@@ -118,24 +109,24 @@ class DbRecord {
 				$this->$method($value);
 			}
 			else {
-				err("classes", 2, __FILE__, __LINE__, debug_backtrace(),
-					['class' => get_called_class(), 'name' => $name, 'method' => $method]);
+				// Поточний клас не має метода $method.
+				dd(__METHOD__, __FILE__, __LINE__,1);
 			}
 		}
 		else {
-			err("classes", 1, __FILE__, __LINE__, debug_backtrace(),
-				['class' => get_called_class(), 'name' => $name]);
+			// Поточний клас не має властивості $this->$name.
+			dd(__METHOD__, __FILE__, __LINE__,1);
 		}
   }
 
 	/**
-	 * Отримання назви першої у черзі успадкування класу. Це може бути будь-який клас поточної
-	 * бібліотеки окрім поточного класу \core\db_record\DbRecord, тому що таблиці DbRecord в БД
-	 * у нас не існує.
 	 * @return string
 	 */
 	protected function get_tName () {
 		if (! isset($this->tName)) {
+			// Отримання назви першої у черзі успадкування класу. Це може бути будь-який клас поточної
+			// бібліотеки окрім поточного класу \core\db_record\DbRecord, тому що таблиці DbRecord в БД
+			// у нас не існує.
 			if ($cl = getPreviousClass($this, __CLASS__)) {
 				// Отримання назви таблиці БД для поточного об'єкту з назви класу $cl.
 				$this->tName = DbPrefix . lcfirst(substr($cl, (strrpos($cl, '\\') + 1)));
@@ -149,6 +140,7 @@ class DbRecord {
 	}
 
 	/**
+	 * Якщо поточний об'єкт не ініціалізований рядком БД, то $this->dbRow буде пустим масивом.
 	 * @return array
 	 */
 	protected function get_dbRow () {
@@ -172,26 +164,37 @@ class DbRecord {
 
 	/**
 	 * Ініціалізація $this->dbRow по вказаному значенню стовпця id
+	 * @param int $id
+	 * @param array $columnsData якщо отримано дані поточного запису, то select запит не буде
+	 * виконуватись.
 	 * @return $this
 	 */
-	public function initById (int $id) {
+	public function initById (int $id, array $columnsData=[]) {
+		/** @var string $idColName повна назва стовпця id з префіксом поточної таблиці. */
 		$idColName = $this->px .'id';
-		$SQL = db_getSelect();
 
-		$SQL
-			->columns(['*'])
-			->from($this->get_tName())
-			->where($idColName, '=', $id);
+		if ($columnsData) {
+			$this->dbRow = $columnsData;
+		}
+		else {
+			$SQL = db_getSelect();
 
-		$this->dbRow = db_selectRow($SQL);
+			$SQL
+				->columns(['*'])
+				->from($this->get_tName())
+				->where($idColName, '=', $id);
+
+			$this->dbRow = db_selectRow($SQL);
+		}
 
 		return $this;
 	}
 
 	/**
 	 * Додавання нового запису в поточну таблицю і ініціалізація нею поточного об'єкту.
+	 * @return false|$this
 	 */
-	public function set (array $columnsData): false|self {
+	public function set (array $columnsData) {
 		$SQL = db_getInsert();
 
 		$SQL
@@ -200,17 +203,26 @@ class DbRecord {
 
 		$res = db_insertRow($SQL);
 
+		// Якщо запит вставки виконано успішно.
 		if ($res['result']) {
+			// id нового запису.
 			$this->id = $res['lastInsertId'];
+			// Додавання стовпця id з його значенням в $columnsData.
+			$columnsData[$this->px .'id'] = $this->id;
+			/** @var int $c реальна кількість стовпців поточної таблиці. */
+			$c = count(db_Db()->tblData[$this->get_tName()]['columns']);
 
-			return $this->initById($this->id);
+			// Якщо реальна кількість стовпців поточної таблиці співпадає з кількістю стовпців в
+			// $columnsData - $columnsData передається в метод $this->initById.
+			return ($c === count($columnsData)) ?
+				$this->initById($this->id, $columnsData) : $this->initById($this->id);
 		}
 
 		return false;
 	}
 
 	/**
-	 * Удаление записи текущего объекта по ее id.
+	 * Видалення запису поточного об'єкта за його id.
 	 * @return bool
 	 */
 	public function delete () {
@@ -223,8 +235,8 @@ class DbRecord {
 	}
 
 	/**
-	 * Удаление записи текущего объекта в случае значения null указанных полей.
-	 * @param array $columns названия столбцов, которые должны иметь значение null для удаления записи.
+	 * Видалення запису поточного об'єкта у разі значення null зазначених полів.
+	 * @param array $columns назви стовпців, які повинні мати значення null видалення запису.
 	 */
 	function deleteIfNullable (array $columns) {
 		$idName = $this->px .'id';
@@ -263,9 +275,13 @@ class DbRecord {
 	 * @return array
 	 */
 	public function update (array $updated) {
-		$tName = $this->tName;
+		/** @var string ім'я поточної таблиці. */
+		$tName = $this->get_tName();
+		/** @var string префікс стовпців поточної таблиці. */
 		$px = $this->px;
+		/** @var string можлива назва поля часу останньої зміни поточного запису. */
 		$chDtColName = $px .'change_date';
+		/** @var string можлива назва поля часу останнього доступу до поточного запису. */
 		$acDtColName = $px .'access_date';
 
 		if (db_Db()->isTableColumn($tName, $chDtColName)) {
@@ -281,15 +297,9 @@ class DbRecord {
 
 		$res = db_update($SQL);
 
+		// Якщо запит оновлення запису успішний - повертається $this.
 		if ($res['result'] && ($res['affectedRowCount'] <= 1)) return $this;
 
 		throw new DbRecordException(6000);
-	}
-
-	/**
-	 *
-	 */
-	public function absorbObject (string $valName, core\db_record\DbRecord $Obj) {
-		$this->$valName = $Obj;
 	}
 }

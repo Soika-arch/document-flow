@@ -35,6 +35,10 @@ class UserController extends MainController {
 			'password' => [
 				'type' => 'varchar',
 				'pattern' => '^[a-zA-Z0-9!@#$%^&*()_+=_-]{5,32}$'
+			],
+			'bt_loging' => [
+				'type' => 'varchar',
+				'pattern' => '^$'
 			]
 		]);
 

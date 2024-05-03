@@ -44,18 +44,28 @@ class Post {
 	 * Зберігання дозволених імен POST масиву та їх типів для поточної форми.
 	 */
 	private function saveFormTypes (array $formTypes) {
+		$post = $this->get_post();
+
 		foreach ($formTypes as $name => $typeData) {
 			if (in_array($typeData['type'], $this->allowedTypes)) {
 				$checkMethod = 'check'. ucfirst($typeData['type']);
 
-				if (! $this->$checkMethod($name, $typeData)) {
+				// Перевірка типу даних отриманого поля.
 
+				if (! $this->$checkMethod($name, $typeData)) {
 					$this->errors[] = 'Поле '. $name .' не пройшло перевірку типу даних метода '. $checkMethod;
 				}
 			}
 			else {
 				$this->errors[] = 'Отримано недозволений тип даних: '. $typeData['type'];
 			}
+
+			unset($post[$name]);
+		}
+
+		foreach ($post as $name => $value) {
+			$this->errors[] = 'Отримано непередбачене значення форми: $_POST["'. $name .'"] - '.
+				var_export($value, true);
 		}
 	}
 
@@ -75,9 +85,10 @@ class Post {
 	/**
 	 * @return bool
 	 */
-	private function checkInt (int $v) {
+	private function checkInt (string $name, array $typeData) {
+		$this->get_post();
 
-		return is_int($v);
+		return is_int(intval($this->post[$name]));
 	}
 
 	/**

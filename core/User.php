@@ -13,7 +13,7 @@ class User extends users {
 	private string $userAgent;
 	private visitor_routes $VR;
 	// Зв'язок користувача з його статусом.
-	private UserRelStatus $UserRelStatus;
+	private UserRelStatus|null $UserRelStatus;
 	// Статус користувача.
 	private user_statuses $Status;
 
@@ -28,8 +28,7 @@ class User extends users {
 	 * @return user_statuses
 	 */
 	protected function get_Status () {
-
-		return $this->get_UserRelStatus()->UserStatus;
+		if ($this->get_UserRelStatus()) return $this->get_UserRelStatus()->UserStatus;
 	}
 
 	/**
@@ -73,10 +72,46 @@ class User extends users {
 
 			$row = db_selectRow($SQL);
 
-			$this->UserRelStatus = new UserRelStatus($row['urs_id'], $row);
+			if ($row) {
+				$this->UserRelStatus = new UserRelStatus($row['urs_id'], $row);
+			}
+			else {
+				$this->UserRelStatus = null;
+			}
 		}
 
 		return $this->UserRelStatus;
+	}
+
+	/**
+	 * Збереження статуса пацієнта, якщо пацієнт ще не має статуса.
+	 * @return false|$this
+	 */
+	public function setStatus (int $idStatus) {
+		if (! $this->get_Status()) {
+			// Перевірка існування статуса
+			$SQL = db_getSelect();
+
+			$SQL
+				->columns(['uss_id'])
+				->from(DbPrefix .'user_statuses')
+				->where('uss_id', '=', $idStatus);
+
+			// Статуса з id $idStatus не знайдено.
+			if (! db_selectCell($SQL)) return false;
+
+			$this->UserRelStatus = new UserRelStatus(0);
+			$nowDt = date('Y-m-d H:i:s');
+
+			$this->UserRelStatus->set([
+				'urs_id_user' => $this->_id,
+				'urs_id_status' => $idStatus,
+				'urs_add_date' => $nowDt,
+				'urs_change_date' => $nowDt
+			]);
+		}
+
+		return $this;
 	}
 
 	/**

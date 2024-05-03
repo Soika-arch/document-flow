@@ -20,10 +20,10 @@ try {
 	// Створення об'єкта глобального користувача і збереження його в єдиний глобальний реєстр.
 	Registry::getInstance()->add('Us', (new User($idUser))->createVR());
 
-	// Створення об'єкта Router.
+	/** @var Router об'єкт класса Router у змінну. */
 	$Router = Router::getInstance();
 
-	// Отримання назви класу контролера.
+	/** @var string назва класу контролера. */
 	$controllerClass = $Router->controllerClass;
 
 	// Отримання назви метода сторінки контролера.
@@ -58,8 +58,7 @@ try {
 	dd($th, __FILE__, __LINE__,1);
 } catch (DbException $th) {
 	dd($th, __FILE__, __LINE__,1);
-}
-catch (\Throwable $th) {
+} catch (\Throwable $th) {
 	dd($th, __FILE__, __LINE__,1);
 	// echo '<pre>';
 	// var_dump($th);

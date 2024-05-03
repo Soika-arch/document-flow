@@ -47,16 +47,19 @@ class MainController {
 		$d['title'] = 'Сторінка не знайдена';
 
 		require $this->getViewFile('/page_not_found');
+
+		return false;
 	}
 
 	/**
 	 * Отримання виду.
 	 * @param string $viewName ім'я виду файла
+	 * @return string
 	 */
-	protected function getViewFile (string $viewName): string {
+	protected function getViewFile (string $viewName) {
 		if (strpos($viewName, '/') !== 0) {
-			$fName = Modules[Router::getInstance()->moduleURI]['dirName'] .'/'. $viewName .'.php';
-			$fName = DirViews .'/'. str_replace(['Controller', '-'], ['', '/'], $fName);
+			$fName = DirViews .'/'. Modules[Router::getInstance()->moduleURI]['dirName'] .'/'.
+				$viewName .'.php';
 		}
 		else {
 			$fName = DirViews .'/'. $viewName .'.php';
@@ -72,6 +75,8 @@ class MainController {
 	 * Перевірка доступу користувача до поточної сторінки.
 	 */
 	protected function checkPageAccess (string $userStatus, array $resolvedStatuses) {
-		if (! in_array($userStatus, $resolvedStatuses)) $this->notFoundPage();
+		if (! in_array($userStatus, $resolvedStatuses)) return $this->notFoundPage();
+
+		return true;
 	}
 }
