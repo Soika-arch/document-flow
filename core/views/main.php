@@ -10,7 +10,8 @@ require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
 require $this->getViewFile('/inc/menu/main');
 
-if (isset($d['errors'])) require $this->getViewFile('/inc/errors');
+if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
+if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 if (! $Us->_id || ($Us->_id === 0)) {
 	// Вивід форми авторизації користувача.

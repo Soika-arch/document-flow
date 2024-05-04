@@ -12,7 +12,7 @@ class MainController {
 
 	use \core\traits\SetGet;
 
-	protected \core\models\MainModel $Model;
+	private \core\models\MainModel $Model;
 	// Масив статусів користувачів, яким дозволено доступ до поточного метода сторінки.
 	protected array $allowedStatuses;
 
@@ -20,22 +20,28 @@ class MainController {
 	 *
 	 */
 	public function __construct () {
-		// Створення відповідної контролеру моделі.
-		$namespaceModels = Modules[Router::getInstance()->moduleURI]['namespaceModels'];
-		$modelName = $namespaceModels .'\\'. Router::getInstance()->controllerName .'Model';
-		$modelName = str_replace('Controller', '', $modelName);
-		$this->Model = new $modelName();
+		$this->Model = $this->get_Model();
+	}
+
+	/**
+	 * Ініціалізує та повертає властивість $this->Model.
+	 */
+	protected function get_Model () {
+		if (! isset($this->Model)) {
+			$namespaceModels = Modules[Router::getInstance()->moduleURI]['namespaceModels'];
+			$modelName = $namespaceModels .'\\'. Router::getInstance()->controllerName .'Model';
+			$modelName = str_replace('Controller', '', $modelName);
+			$this->Model = new $modelName();
+		}
+
+		return $this->Model;
 	}
 
 	/**
 	 * Сторінка ''.
 	 */
 	public function mainPage () {
-		$d = $this->Model->getMain();
-
-		if (isset($_SESSION['errors'])) {
-			$d['errors'][] = 'Користувача не знайдено або неправильно введено пароль';
-		}
+		$d = $this->Model->mainPage();
 
 		require $this->getViewFile('main');
 	}

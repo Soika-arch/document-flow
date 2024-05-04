@@ -9,9 +9,10 @@ $Us = rg_Rg()->get('Us');
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
 require $this->getViewFile('/inc/menu/main');
+require $this->getViewFile('inc/menu/main');
 
-if (isset($_SESSION['sysMessages'])) require $this->getViewFile('/inc/sys_messages');
-if (isset($d['errors'])) require $this->getViewFile('/inc/errors');
+if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
+if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 e('<div class="form-add_user">');
 	e('<form name="fm_userAdd" action="'. url() .'" method="post">');

@@ -10,19 +10,10 @@ $url = url('');
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
 require $this->getViewFile('/inc/menu/main');
+require $this->getViewFile('inc/menu/main');
+require $this->getViewFile('inc/menu/users_1');
 
-if (isset($d['errors'])) require $this->getViewFile('/inc/errors');
-
-e('<div class="admin-main-menu">');
-
-	e('<div>');
-		e('<a href="'. $url .'/list">Усі користувачі</a>');
-	e('</div>');
-
-	e('<div>');
-		e('<a href="'. $url .'/add">Додати користувача</a>');
-	e('</div>');
-
-e('</div>');
+if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
+if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 require $this->getViewFile('/inc/footer');

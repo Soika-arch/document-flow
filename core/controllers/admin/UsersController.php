@@ -2,7 +2,6 @@
 
 namespace core\controllers\admin;
 
-use core\Header;
 use core\User;
 
 /**
@@ -10,8 +9,10 @@ use core\User;
  */
 class UsersController extends AdminController {
 
+	private \core\models\admin\UsersModel $Model;
+
 	public function __construct () {
-		parent::__construct();
+		$this->Model = $this->get_Model();
 	}
 
 	/**

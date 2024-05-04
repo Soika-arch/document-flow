@@ -2,12 +2,11 @@
 /* Головне меню адмін-панелі. */
 
 .admin-main-menu {
-	margin: 30px 10px 0px 20px;
+	margin: 10px 10px 0px 20px;
 }
 
 .admin-main-menu div {
 	display: inline-block;
-	width: 50%;
 	padding: 4px 4px 4px 4px;
 	margin: 0px 0px 5px 0px;
 	text-align: center;
@@ -26,6 +25,26 @@
 	height: 100%;
 	text-decoration: none;
 	font-size: 18px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* core/views/admin/inc/menu/users_1.php. */
+
+.admin-user_1-menu {
+	padding: 20px 10px 0px 30px;
+}
+
+.admin-user_1-menu div {
+	margin: 0px 0px 10px 0px;
+}
+
+.admin-user_1-menu div a {
+	font-size: 18px;
+	text-decoration: none;
+}
+
+.admin-user_1-menu div a:hover {
+	color: #0400ff;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

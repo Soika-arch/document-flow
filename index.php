@@ -10,11 +10,13 @@ try {
 
 	require_once 'configs/main.php';
 
+	classesAutoload();
 	startApp();
 
+	/** @var string поточний HTML-код сторінки. */
 	$HTML = '';
 
-	// id користувача або береться з сесії, або буде 0.
+	/** @var int id користувача або береться з сесії, або буде 0 */
 	$idUser = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0;
 
 	// Створення об'єкта глобального користувача і збереження його в єдиний глобальний реєстр.
@@ -25,10 +27,10 @@ try {
 
 	/** @var string назва класу контролера. */
 	$controllerClass = $Router->controllerClass;
-	// Отримання назви метода сторінки контролера.
+	/** @var string назва метода сторінки контролера. */
 	$controllerMethod = $Router->pageMethod;
 
-	// Створення об'єкта контролера.
+	/** @var \core\controllers\MainController поточний об'єкт контролера. */
 	$Controller = new $controllerClass();
 	// Виклик метода сторінки контролера.
 

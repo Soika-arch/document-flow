@@ -12,6 +12,31 @@ function sess_addSysMessage (string $msg) {
 }
 
 /**
+ * Перевірка наявності sysMessages повідомленнь.
+ * @return bool
+ */
+function sess_isSysMessages () {
+
+	return (isset($_SESSION['sysMessages']) && $_SESSION['sysMessages']);
+}
+
+/**
+ * Додавання нового повідомлення в масив $_SESSION['errors'].
+ */
+function sess_addErrMessage (string $msg) {
+	$_SESSION['errors'][] = $msg;
+}
+
+/**
+ * Перевірка наявності errors повідомленнь.
+ * @return bool
+ */
+function sess_isErrMessages () {
+
+	return (isset($_SESSION['errors']) && $_SESSION['errors']);
+}
+
+/**
  * Додавання повідомлення в масиві $_SESSION['sysMessages'].
  */
 function sess_deleteSysMessage (int $key) {

@@ -9,19 +9,15 @@ use core\Post;
  */
 class UserController extends MainController {
 
+	private \core\models\UserModel $Model;
+
 	public function __construct () {
 		parent::__construct();
+		$this->Model = $this->get_Model();
 	}
 
 	/**
-	 *
-	 */
-	public function mainPage () {
-		dd(__METHOD__, __FILE__, __LINE__,1);
-	}
-
-	/**
-	 *
+	 * Сторінка створення сесії користувача.
 	 */
 	public function loginPage () {
 		// Якщо відсутні дані форми авторизації користувача - сторінка не знайдена.
@@ -44,20 +40,17 @@ class UserController extends MainController {
 
 		if ($Post->errors) dd($Post->errors, __FILE__, __LINE__,1);
 
-		$this->Model->login($Post);
+		if (! $this->Model->login($Post)) {
+			sess_addErrMessage('Користувача не знайдено або введено неправильний пароль.');
+		}
+
+		hd_sendHeader('Location: '. url('/'), __FILE__, __LINE__);
 	}
 
 	/**
-	 *
+	 * Сторінка завершення сесії користувача.
 	 */
 	public function logoutPage () {
-		$this->Model->logout();
-	}
-
-	/**
-	 *
-	 */
-	public function addPage () {
-		dd(__METHOD__, __FILE__, __LINE__,1);
+		if ($this->Model->logout()) hd_sendHeader('Location: '. url('/'), __FILE__, __LINE__);
 	}
 }

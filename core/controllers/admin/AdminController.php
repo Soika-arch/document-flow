@@ -9,8 +9,10 @@ use core\controllers\MainController;
  */
 class AdminController extends MainController {
 
+	private \core\models\admin\AdminModel $Model;
+
 	public function __construct () {
-		parent::__construct();
+		$this->Model = $this->get_Model();
 	}
 
 	/**

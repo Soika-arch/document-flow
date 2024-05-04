@@ -91,23 +91,33 @@ else {
 	define('URIParams', '');
 }
 
+/** @var string URI модуля адмін-панелі. */
 define('URIAdmin', 'ap');
+/** @var string URI модуля cron-задач. */
+define('URICron', 'cron');
 
 /** @var array дані модулів сайта - ['uri' => [data]]. */
 const Modules = [
 	'' => [
-		'name' => 'Main',
+		'name' => 'Main', // Назва модуля.
 		'dirName' => '', // Назва відповідних каталогів ядра.
 		'defaultControllerName' => 'MainController',
 		'namespaceControllers' => 'core\controllers',
 		'namespaceModels' => 'core\models',
 	],
 	URIAdmin => [
-		'name' => 'Admin',
+		'name' => 'Admin', // Назва модуля.
 		'dirName' => 'admin', // Назва відповідних каталогів ядра.
 		'defaultControllerName' => 'AdminController',
 		'namespaceControllers' => 'core\controllers\admin',
 		'namespaceModels' => 'core\models\admin',
+	],
+	URICron => [
+		'name' => 'Cron', // Назва модуля.
+		'dirName' => 'cron', // Назва відповідних каталогів ядра.
+		'defaultControllerName' => 'CronController',
+		'namespaceControllers' => 'core\controllers\cron',
+		'namespaceModels' => 'core\models\cron',
 	]
 ];
 
@@ -125,5 +135,3 @@ require_once DirFunc .'/db.php';
 require_once DirFunc .'/rg.php';
 require_once DirFunc .'/hd.php';
 require_once DirFunc .'/sess.php';
-
-classesAutoload();
