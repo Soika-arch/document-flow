@@ -20,7 +20,7 @@ class AdminController extends MainController {
 	 */
 	private function get_allowedStatuses () {
 		if (! isset($this->allowedStatuses)) {
-			$this->allowedStatuses = ['Admin'];
+			$this->allowedStatuses = ['SuperAdmin'];
 		}
 
 		return $this->allowedStatuses;

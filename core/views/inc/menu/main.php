@@ -12,7 +12,7 @@ e('<div class="main-menu">');
 		e('<a href="'. url('/') .'">Home</a>');
 	e('</div>');
 
-	if ($Us->Status->_name === 'Admin') {
+	if ($Us->Status->_access_level === 1) {
 		$adminURL = '/'. URIAdmin;
 
 		e('<div>');

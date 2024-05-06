@@ -13,7 +13,7 @@ e('<html lang="ua">');
 		e('<meta name="viewport" content="width=device-width, initial-scale=1">');
 		e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. MainCssName .'.css">');
 
-		if ($Us->Status->_name === 'Admin') {
+		if ($Us->Status->_name === 'SuperAdmin') {
 			e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. AdminCssName .'.css">');
 		}
 

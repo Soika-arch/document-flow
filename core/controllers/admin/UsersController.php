@@ -2,6 +2,7 @@
 
 namespace core\controllers\admin;
 
+use core\Pagination;
 use core\User;
 
 /**
@@ -20,7 +21,7 @@ class UsersController extends AdminController {
 	 */
 	private function get_allowedStatuses () {
 		if (! isset($this->allowedStatuses)) {
-			$this->allowedStatuses = ['Admin'];
+			$this->allowedStatuses = ['SuperAdmin'];
 		}
 
 		return $this->allowedStatuses;
@@ -54,8 +55,10 @@ class UsersController extends AdminController {
 
 	public function listPage () {
 		$Us = rg_Rg()->get('Us');
+
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
+		// Видалення користувача.
 		if (isset($_GET['del_user'])) {
 			$UsDeleted = new User($_GET['del_user']);
 			$login = $UsDeleted->_login;
@@ -66,6 +69,14 @@ class UsersController extends AdminController {
 				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 			}
 		}
+
+		$Pagin = new Pagination(1, 2);
+
+		$Pagin
+			->from('helsi_patients')
+			->orderBy('hp_id');
+
+		dd($Pagin->select(), __FILE__, __LINE__,1);
 
 		$d['title'] = 'Адмін-панель - Користувачі';
 		$d['users'] = $this->Model->selectList();
