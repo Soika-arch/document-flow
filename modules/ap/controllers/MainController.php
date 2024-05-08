@@ -1,15 +1,15 @@
 <?php
 
-namespace core\controllers\admin;
+namespace modules\ap\controllers;
 
-use core\controllers\MainController;
+use core\controllers\MainController as MC;
 
 /**
  * Контроллер адмін-панелі.
  */
-class AdminController extends MainController {
+class MainController extends MC {
 
-	private \core\models\admin\AdminModel $Model;
+	private \modules\ap\models\MainModel $Model;
 
 	public function __construct () {
 		$this->Model = $this->get_Model();

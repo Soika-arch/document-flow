@@ -2,6 +2,8 @@
 
 namespace core;
 
+use core\exceptions\RouterException;
+
 class Router {
 
 	use traits\Singleton_SetGet;
@@ -20,8 +22,6 @@ class Router {
 	private string $controllerClass;
 	/** @var string ім'я метода поточного контролера (сторінки). */
 	private string $pageMethod;
-	/** @var string URI поточного модуля до якого робе запит користувач. */
-	private string $moduleURI;
 	/** @var string поточний URI без URI $this->moduleURI. */
 	private string $URIWithoutModule;
 	/** @var string контроллер за замовчуванням для поточного модуля. */
@@ -105,53 +105,15 @@ class Router {
 	}
 
 	/**
-	 * Ініціалізує та повертає властивість $this->moduleURI.
-	 * @return string
-	 */
-	protected function get_moduleURI () {
-		if (! isset($this->moduleURI)) {
-			// Отримання частини URIPath до першого символа '/'.
-
-			if ($pos = strpos(URIPath, '/')) {
-				$moduleURI = substr(URIPath, 0, $pos);
-			}
-			else {
-				$moduleURI = URIPath;
-			}
-
-			if (isset(Modules[$moduleURI])) {
-				$this->moduleURI = $moduleURI;
-			}
-			else {
-				$this->moduleURI = '';
-			}
-		}
-
-		return $this->moduleURI;
-	}
-
-	/**
 	 * Ініціалізує та повертає властивість $this->URIWithoutModule.
 	 * @return string
 	 */
 	protected function get_URIWithoutModule () {
 		if (! isset($this->URIWithoutModule)) {
-			$this->URIWithoutModule = trim(str_replace($this->get_moduleURI(), '', URI), '/');
+			$this->URIWithoutModule = trim(str_replace(URIModule, '', URI), '/');
 		}
 
 		return $this->URIWithoutModule;
-	}
-
-	/**
-	 * Ініціалізує та повертає властивість $this->defaultControllerName.
-	 * @return string
-	 */
-	protected function get_defaultControllerName () {
-		if (! isset($this->defaultControllerName)) {
-			$this->defaultControllerName = Modules[$this->get_moduleURI()]['defaultControllerName'];
-		}
-
-		return $this->defaultControllerName;
 	}
 
 	/**
@@ -160,8 +122,7 @@ class Router {
 	 */
 	protected function get_defaultControllerClass () {
 		if (! isset($this->defaultControllerClass)) {
-			$this->defaultControllerClass = $this->get_namespaceControllers() .'\\'.
-				Modules[$this->get_moduleURI()]['defaultControllerName'];
+			$this->defaultControllerClass = $this->get_namespaceControllers() .'\\'. DefaultControllerName;
 		}
 
 		return $this->defaultControllerClass;
@@ -173,7 +134,22 @@ class Router {
 	 */
 	protected function get_namespaceControllers () {
 		if (! isset($this->namespaceControllers)) {
-			$this->namespaceControllers = Modules[$this->get_moduleURI()]['namespaceControllers'];
+			if (URIModule) {
+				// URL-запит до модуля, тому namespace контролера буде у відповідному каталогу цього модуля.
+
+				$temp = DirModules .'/'. URIModule .'/controllers';
+
+				if (! is_dir($temp)) {
+					throw new RouterException(4000, ['temp' => $temp]);
+				}
+
+				// namespace контролера ініціалізується тільки за наявністю відповідного каталога.
+				$this->namespaceControllers = str_replace([DirRoot, '/'], ['', '\\'], $temp);
+			}
+			else {
+				// namespace контролерів ініціалізується каталогом ядра.
+				$this->namespaceControllers = DefaultControllerNamespace;
+			}
 		}
 
 		return $this->namespaceControllers;
@@ -186,7 +162,7 @@ class Router {
 	protected function get_isExtraLineInURLPath () {
 		if (! isset($this->isExtraLineInURLPath)) {
 			// Рядок, URLPath, який точно не може бути зайвим.
-			$str = trim($this->moduleURI .'/'. $this->controllerURI .'/'. $this->pageURI, '/');
+			$str = trim(URIModule .'/'. $this->controllerURI .'/'. $this->pageURI, '/');
 			// Підрядок, який можливо іде за $str, він і є зайвий, якщо є.
 			$str = trim(substr(URIPath, (strpos(URIPath, $str) + strlen($str))), '/');
 
@@ -231,7 +207,7 @@ class Router {
 	 */
 	protected function setDefaultControllelrData () {
 		$this->controllerURI = '';
-		$this->controllerName = $this->get_defaultControllerName();
+		$this->controllerName = DefaultControllerName;
 		$this->controllerClass = $this->get_defaultControllerClass();
 	}
 

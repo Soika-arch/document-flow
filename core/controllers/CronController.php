@@ -1,6 +1,6 @@
 <?php
 
-namespace core\controllers\cron;
+namespace core\controllers;
 
 use core\controllers\MainController;
 

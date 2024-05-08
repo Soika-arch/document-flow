@@ -1,15 +1,15 @@
 <?php
 
-namespace core\models\admin;
+namespace modules\ap\models;
 
-use core\models\admin\AdminModel;
-use core\Post;
-use core\User;
+use \modules\ap\models\MainModel;
+use \core\Post;
+use \core\User;
 
 /**
  * Модель адмін-панелі управління користувачами.
  */
-class UsersModel extends AdminModel {
+class UsersModel extends MainModel {
 
 	/**
 	 *

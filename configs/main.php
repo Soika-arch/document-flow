@@ -69,6 +69,8 @@ define('DirModels', DirCore .'/models');
 define('DirTraits', DirCore .'/traits');
 /** @var string Каталог видів. */
 define('DirViews', DirCore .'/views');
+/** @var string Каталог модулів. */
+define('DirModules', DirRoot .'/modules');
 
 /** @var string повний поточний URL-запит. */
 define('URL', ServerProtocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -96,36 +98,37 @@ define('URIAdmin', 'ap');
 /** @var string URI модуля cron-задач. */
 define('URICron', 'cron');
 
-/** @var array дані модулів сайта - ['uri' => [data]]. */
-const Modules = [
-	'' => [
-		'name' => 'Main', // Назва модуля.
-		'dirName' => '', // Назва відповідних каталогів ядра.
-		'defaultControllerName' => 'MainController',
-		'namespaceControllers' => 'core\controllers',
-		'namespaceModels' => 'core\models',
-	],
-	URIAdmin => [
-		'name' => 'Admin', // Назва модуля.
-		'dirName' => 'admin', // Назва відповідних каталогів ядра.
-		'defaultControllerName' => 'AdminController',
-		'namespaceControllers' => 'core\controllers\admin',
-		'namespaceModels' => 'core\models\admin',
-	],
-	URICron => [
-		'name' => 'Cron', // Назва модуля.
-		'dirName' => 'cron', // Назва відповідних каталогів ядра.
-		'defaultControllerName' => 'CronController',
-		'namespaceControllers' => 'core\controllers\cron',
-		'namespaceModels' => 'core\models\cron',
-	]
-];
+// Визначення URI поточного модуля.
+
+if ($pos = strpos(URIPath, '/')) {
+	$URIModule = substr(URIPath, 0, $pos);
+}
+else {
+	$URIModule = URIPath;
+}
+
+$dirModule = DirModules .'/'. $URIModule;
+
+if (! is_dir($dirModule)) {
+	$URIModule = '';
+}
+
+/** @var string URI поточного модуля. */
+define('URIModule', $URIModule);
+/** @var string URL поточного модуля. */
+define('URLModule', URLHome .'/'. URIModule);
 
 /** @var string ім'я екшена контролера за замовчуванням. */
 define('DefaultPage', 'mainPage');
 /** @var string ім'я екшена контролера сторінки page-not-found. */
 define('NotFoundPage', 'notFoundPage');
+/** @var string ім'я контролера за замовчуванням. */
 define('DefaultControllerName', 'MainController');
+
+$dName = str_replace([DirRoot, '/'], ['', '\\'], DirControllers);
+
+/** @var string namespace контролерів за замовчуванням. */
+define('DefaultControllerNamespace', $dName);
 
 // Підключення загальних файлів застосунку.
 
@@ -133,5 +136,6 @@ require_once 'db.php';
 require_once DirFunc .'/main.php';
 require_once DirFunc .'/db.php';
 require_once DirFunc .'/rg.php';
+require_once DirFunc .'/rt.php';
 require_once DirFunc .'/hd.php';
 require_once DirFunc .'/sess.php';

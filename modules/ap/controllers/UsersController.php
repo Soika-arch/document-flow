@@ -1,16 +1,18 @@
 <?php
 
-namespace core\controllers\admin;
+namespace modules\ap\controllers;
 
-use core\Pagination;
-use core\User;
+use \modules\ap\controllers\MainController;
+use \modules\ap\models\UsersModel;
+use \core\Pagination;
+use \core\User;
 
 /**
  * Контроллер адмін-панелі управління користувачами.
  */
-class UsersController extends AdminController {
+class UsersController extends MainController {
 
-	private \core\models\admin\UsersModel $Model;
+	private UsersModel $Model;
 
 	public function __construct () {
 		$this->Model = $this->get_Model();
@@ -33,7 +35,7 @@ class UsersController extends AdminController {
 
 		$d['title'] = 'Адмін-панель - Користувачі';
 
-		require $this->getViewFile('/admin/users/main');
+		require $this->getViewFile('users/main');
 	}
 
 	public function addPage () {
@@ -70,13 +72,16 @@ class UsersController extends AdminController {
 			}
 		}
 
-		$Pagin = new Pagination(1, 2);
+		$Pagin = new Pagination(50);
 
 		$Pagin
 			->from('helsi_patients')
-			->orderBy('hp_id');
+			->columns(['hp_id'])
+			->orderBy('hp_id')
+			->where('hp_id', '>', 500);
 
-		dd($Pagin->select(), __FILE__, __LINE__,1);
+		$patients = $Pagin->select(1);
+		dd($Pagin->keepDynamicPagination(6, 6), __FILE__, __LINE__,1);
 
 		$d['title'] = 'Адмін-панель - Користувачі';
 		$d['users'] = $this->Model->selectList();

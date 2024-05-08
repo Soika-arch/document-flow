@@ -21,8 +21,8 @@ class RouterException extends MainException {
 	protected function get_messages () {
 		if (! isset($this->messages)) {
 			$this->messages = [
-				// '4000' => 'Не знайдено метод для отримання властивості класу',
-				// '4999' => 'Невизначене виключення'
+				'4000' => 'Каталог контролерів для відповідного модуля не знайдено',
+				'4999' => 'Невизначене виключення'
 			];
 		}
 

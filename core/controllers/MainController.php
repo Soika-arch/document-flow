@@ -28,7 +28,7 @@ class MainController {
 	 */
 	protected function get_Model () {
 		if (! isset($this->Model)) {
-			$namespaceModels = Modules[Router::getInstance()->moduleURI]['namespaceModels'];
+			$namespaceModels = str_replace('controllers', 'models', rt_Rt()->namespaceControllers);
 			$modelName = $namespaceModels .'\\'. Router::getInstance()->controllerName .'Model';
 			$modelName = str_replace('Controller', '', $modelName);
 			$this->Model = new $modelName();
@@ -43,7 +43,7 @@ class MainController {
 	public function mainPage () {
 		$d = $this->Model->mainPage();
 
-		require $this->getViewFile('main');
+		require $this->getViewFile('/main');
 	}
 
 	/**
@@ -64,10 +64,13 @@ class MainController {
 	 */
 	protected function getViewFile (string $viewName) {
 		if (strpos($viewName, '/') !== 0) {
-			$fName = DirViews .'/'. Modules[Router::getInstance()->moduleURI]['dirName'] .'/'.
-				$viewName .'.php';
+			// Підключення виду поточного модуля.
+
+			$fName = DirModules .'/'. URIModule .'/views/'. $viewName .'.php';
 		}
 		else {
+			// Підключення виду ядра.
+
 			$fName = DirViews .'/'. $viewName .'.php';
 		}
 

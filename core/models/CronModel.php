@@ -1,8 +1,8 @@
 <?php
 
-namespace core\models\cron;
+namespace core\models;
 
-use core\models\MainModel;
+use \core\models\MainModel;
 
 /**
  * Модель cron-задач.

@@ -704,4 +704,34 @@ final class SelectQuery implements QueryInterface
 
         return $result;
     }
+
+		/**
+		 * Очищення масиву $this->columns.
+		 * @return self
+		 */
+		public function clearColumns () {
+				$this->columns = [];
+
+				return $this;
+		}
+
+		/**
+		 * Очищення $this->offset.
+		 * @return self
+		 */
+		public function clearOffset () {
+				if (isset($this->offset)) unset($this->offset);
+
+				return $this;
+		}
+
+		/**
+		 * Очищення $this->limit.
+		 * @return self
+		 */
+		public function clearLimit () {
+				if (isset($this->limit)) unset($this->limit);
+
+				return $this;
+		}
 }

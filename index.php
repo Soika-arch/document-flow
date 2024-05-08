@@ -2,8 +2,6 @@
 
 use core\exceptions\ClassException;
 use core\exceptions\DbException;
-use core\Registry;
-use core\Router;
 use core\User;
 
 try {
@@ -20,22 +18,19 @@ try {
 	$idUser = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0;
 
 	// Створення об'єкта глобального користувача і збереження його в єдиний глобальний реєстр.
-	Registry::getInstance()->add('Us', (new User($idUser))->createVR());
-
-	/** @var Router об'єкт класса Router у змінну. */
-	$Router = Router::getInstance();
+	rg_Rg()->add('Us', (new User($idUser))->createVR());
 
 	/** @var string назва класу контролера. */
-	$controllerClass = $Router->controllerClass;
+	$controllerClass = rt_Rt()->controllerClass;
 	/** @var string назва метода сторінки контролера. */
-	$controllerMethod = $Router->pageMethod;
+	$controllerMethod = rt_Rt()->pageMethod;
 
 	/** @var \core\controllers\MainController поточний об'єкт контролера. */
 	$Controller = new $controllerClass();
 	// Виклик метода сторінки контролера.
 
 	// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
-	if (Router::getInstance()->isExtraLineInURLPath) {
+	if (rt_Rt()->isExtraLineInURLPath) {
 		$Controller->notFoundPage();
 	}
 	else {
@@ -46,7 +41,7 @@ try {
 
 	// Отримання поточного об'єкта visitor_routes глобального користувача та оновлення даних поточного
 	// запису таблиці visitor_routes.
-	Registry::getInstance()->get('Us')->upVR();
+	rg_Rg()->get('Us')->upVR();
 
 	if (Debug) require DirViews .'/inc/footer_debug_info.php';
 
