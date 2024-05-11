@@ -53,7 +53,7 @@ trait SetGet {
 				$this->$method($value);
 			}
 			else {
-				dd('', __FILE__, __LINE__,1);
+				throw new ClassException(6002, ['value' => $value, 'method' => $method]);
 			}
 		}
 		else {

@@ -4,8 +4,8 @@
 
 // Автопідключення класів.
 
-use core\Debug;
-use core\Header;
+use \core\Debug;
+use \core\Header;
 
 /**
  *

@@ -14,8 +14,13 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-if ($d['users']) {
+if (isset($d['usersData']) && $d['usersData']) {
+	// dd($d['usersData'], __FILE__, __LINE__,1);
 	e('<div class="admin-users_list">');
+
+		if (isset($d['usersData']['pagin']) && $d['usersData']['pagin']) {
+			dd($d['usersData']['pagin'], __FILE__, __LINE__,1);
+		}
 
 		foreach ($d['users'] as $usRow) {
 			e('<div class="user-data">');

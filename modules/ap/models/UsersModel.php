@@ -4,7 +4,9 @@ namespace modules\ap\models;
 
 use \modules\ap\models\MainModel;
 use \core\Post;
+use core\RecordSliceRetriever;
 use \core\User;
+use libs\Paginator;
 
 /**
  * Модель адмін-панелі управління користувачами.
@@ -79,16 +81,25 @@ class UsersModel extends MainModel {
 	}
 
 	/**
+	 * @param int $pageNum
 	 * @return array
 	 */
-	public function selectList () {
-		$SQL = db_getSelect();
+	public function listPage () {
+		$SQLUsers = (new RecordSliceRetriever())
+			->from('df_users')
+			->columns(['us_id'])
+			->orderBy('us_id');
 
-		$SQL
-			->columns(['*'])
-			->from(DbPrefix .'users');
+		$pageNum = 1;
+		$itemsPerPage = 1;
 
-		return db_select($SQL);
+		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);
+
+		$Pagin = new Paginator($SQLUsers->getRowsCount(), 1, 1);
+
+		$d['pagin'] = $Pagin->getPages();
+
+		return $d;
 	}
 
 	/**

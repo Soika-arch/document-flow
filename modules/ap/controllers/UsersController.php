@@ -2,10 +2,11 @@
 
 namespace modules\ap\controllers;
 
+use core\Get;
 use \modules\ap\controllers\MainController;
 use \modules\ap\models\UsersModel;
-use \core\Pagination;
 use \core\User;
+use \libs\Paginator;
 
 /**
  * Контроллер адмін-панелі управління користувачами.
@@ -60,6 +61,15 @@ class UsersController extends MainController {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
+		$Get = new Get([
+			'pg' => [
+				'type' => 'int',
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
+
 		// Видалення користувача.
 		if (isset($_GET['del_user'])) {
 			$UsDeleted = new User($_GET['del_user']);
@@ -72,20 +82,9 @@ class UsersController extends MainController {
 			}
 		}
 
-		$Pagin = new Pagination(50);
-
-		$Pagin
-			->from('helsi_patients')
-			->columns(['hp_id'])
-			->orderBy('hp_id')
-			->where('hp_id', '>', 500);
-
-		$patients = $Pagin->select(1);
-		dd($Pagin->keepDynamicPagination(6, 6), __FILE__, __LINE__,1);
-
 		$d['title'] = 'Адмін-панель - Користувачі';
-		$d['users'] = $this->Model->selectList();
+		$d['usersData'] = $this->Model->listPage($Get->get['pg']);
 
-		require $this->getViewFile('/admin/users/list');
+		require $this->getViewFile('users/list');
 	}
 }

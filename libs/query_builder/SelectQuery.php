@@ -720,7 +720,7 @@ final class SelectQuery implements QueryInterface
 		 * @return self
 		 */
 		public function clearOffset () {
-				if (isset($this->offset)) unset($this->offset);
+				if (isset($this->offset)) $this->offset = null;
 
 				return $this;
 		}
@@ -730,7 +730,7 @@ final class SelectQuery implements QueryInterface
 		 * @return self
 		 */
 		public function clearLimit () {
-				if (isset($this->limit)) unset($this->limit);
+				if (isset($this->limit)) $this->limit = null;
 
 				return $this;
 		}

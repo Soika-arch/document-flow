@@ -1,8 +1,8 @@
 <?php
 
-use core\exceptions\ClassException;
-use core\exceptions\DbException;
-use core\User;
+use \core\exceptions\ClassException;
+use \core\exceptions\DbException;
+use \core\User;
 
 try {
 

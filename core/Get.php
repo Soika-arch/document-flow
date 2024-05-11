@@ -3,17 +3,22 @@
 namespace core;
 
 /**
- * Клас надає методи роботи з даними, відправленими методом POST.
+ * Клас надає методи роботи з даними, відправленими методом GET.
  */
-class Post {
+class Get {
 
 	use \core\traits\SetGet;
 
-	// Містить масив $_POST
-	private array $post;
-	// Значення атрибуту name форми, яку обробляє поточний об'єкт.
-	private string $formName;
-	private array $formTypes;
+	/**
+	 * @var array $_GET
+	 */
+	private array $get;
+
+	/**
+	 * @var string значення атрибуту name форми, яку обробляє поточний об'єкт
+	 */
+
+	private array $types;
 
 	// Дозволені типи даних
 	private array $allowedTypes = [
@@ -25,46 +30,46 @@ class Post {
 	/**
 	 *
 	 */
-	public function __construct (string $formName, array $formTypes) {
-		$this->formName = $formName;
-		$this->get_post();
-		$this->saveFormTypes($formTypes);
+	public function __construct (array $types) {
+		$this->get_get();
+		$this->saveTypes($types);
 	}
 
 	/**
 	 * Ініціалізує та повертає властивість $this->post.
 	 */
-	private function get_post (): array {
-		if (! isset($this->post)) $this->post = $_POST;
+	private function get_get () {
+		if (! isset($this->get)) $this->get = $_GET;
 
-		return $this->post;
+		return $this->get;
 	}
 
 	/**
-	 * Зберігання дозволених імен POST масиву та їх типів для поточної форми.
+	 * Зберігання дозволених імен GET масиву та їх типів для поточного запиту.
 	 */
-	private function saveFormTypes (array $formTypes) {
-		$post = $this->get_post();
+	private function saveTypes (array $types) {
+		$get = $this->get_get();
 
-		foreach ($formTypes as $name => $typeData) {
+		foreach ($types as $name => $typeData) {
 			if (in_array($typeData['type'], $this->allowedTypes)) {
 				$checkMethod = 'check'. ucfirst($typeData['type']);
 
-				// Перевірка типу даних отриманого поля.
+				// Перевірка типу даних отриманого параметра.
 
 				if (! $this->$checkMethod($name, $typeData)) {
-					$this->errors[] = 'Поле '. $name .' не пройшло перевірку типу даних метода '. $checkMethod;
+					$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+						$checkMethod;
 				}
 			}
 			else {
 				$this->errors[] = 'Отримано недозволений тип даних: '. $typeData['type'];
 			}
 
-			unset($post[$name]);
+			unset($get[$name]);
 		}
 
-		foreach ($post as $name => $value) {
-			$this->errors[] = 'Отримано непередбачене значення форми: $_POST["'. $name .'"] - '.
+		foreach ($get as $name => $value) {
+			$this->errors[] = 'Отримано непередбачене значення параметру: $_GET["'. $name .'"] - '.
 				var_export($value, true);
 		}
 	}
@@ -74,9 +79,9 @@ class Post {
 	 * @return string
 	 */
 	public function sanitizeValue (string $name) {
-		if (isset($this->post[$name])) {
+		if (isset($this->get[$name])) {
 
-			return htmlspecialchars(trim($this->post[$name]));
+			return htmlspecialchars(trim($this->get[$name]));
 		}
 
 		return null;
@@ -118,9 +123,9 @@ class Post {
 	 * @return bool
 	 */
 	private function checkVarchar (string $name, array $typeData) {
-		if (preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
+		if (preg_match('/'. $typeData['pattern'] .'/', $this->get[$name])) {
 
-			return $this->checkText($this->post[$name], 255);
+			return $this->checkText($this->get[$name], 255);
 		}
 
 		return false;
