@@ -5,7 +5,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 $Us = rg_Rg()->get('Us');
-// Зміни для ptmkr
+// Зміни для ptmkr 2
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
 require $this->getViewFile('/inc/menu/main');
