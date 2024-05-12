@@ -84,13 +84,12 @@ class UsersModel extends MainModel {
 	 * @param int $pageNum
 	 * @return array
 	 */
-	public function listPage () {
+	public function listPage (int $pageNum=1) {
 		$SQLUsers = (new RecordSliceRetriever())
 			->from('df_users')
-			->columns(['us_id'])
+			->columns(['us_id', 'us_login'])
 			->orderBy('us_id');
 
-		$pageNum = 1;
 		$itemsPerPage = 1;
 
 		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);

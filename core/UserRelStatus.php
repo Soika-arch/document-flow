@@ -29,8 +29,8 @@ class UserRelStatus extends users_rel_statuses {
 			$SQL
 				->columns([$tName .'.*'])
 				->from($tName)
-				->join(DbPrefix .'users_rel_statuses', 'urs_id_status', '=', 'uss_id')
-				->where('urs_id', '=', $this->_id);
+				->join(DbPrefix .'users_rel_statuses', 'usr_id_status', '=', 'uss_id')
+				->where('usr_id', '=', $this->_id);
 
 			$row = db_selectRow($SQL);
 

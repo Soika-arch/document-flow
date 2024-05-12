@@ -18,10 +18,16 @@ if (isset($d['usersData']) && $d['usersData']) {
 	e('<div class="admin-users_list">');
 
 		if (isset($d['usersData']['pagin']) && $d['usersData']['pagin']) {
-			dd($d['usersData']['pagin'], __FILE__, __LINE__,1);
+			e('<div>');
+
+				foreach ($d['usersData']['pagin'] as $pagin) {
+					e('<a href="'. url('', ['pg' => $pagin['num']]) .'">'. $pagin['num'] .'</a>');
+				}
+
+			e('</div>');
 		}
 
-		foreach ($d['users'] as $usRow) {
+		foreach ($d['usersData']['users'] as $usRow) {
 			e('<div class="user-data">');
 
 				$profileURL = url('');

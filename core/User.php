@@ -67,13 +67,13 @@ class User extends users {
 			$SQL
 				->columns([$tName .'.*'])
 				->from($tName)
-				->join(DbPrefix .'users', 'us_id', '=', 'urs_id_user')
+				->join(DbPrefix .'users', 'us_id', '=', 'usr_id_user')
 				->where('us_id', '=', $this->_id);
 
 			$row = db_selectRow($SQL);
 
 			if ($row) {
-				$this->UserRelStatus = new UserRelStatus($row['urs_id'], $row);
+				$this->UserRelStatus = new UserRelStatus($row['usr_id'], $row);
 			}
 			else {
 				$this->UserRelStatus = null;
@@ -104,10 +104,10 @@ class User extends users {
 			$nowDt = date('Y-m-d H:i:s');
 
 			$this->UserRelStatus->set([
-				'urs_id_user' => $this->_id,
-				'urs_id_status' => $idStatus,
-				'urs_add_date' => $nowDt,
-				'urs_change_date' => $nowDt
+				'usr_id_user' => $this->_id,
+				'usr_id_status' => $idStatus,
+				'usr_add_date' => $nowDt,
+				'usr_change_date' => $nowDt
 			]);
 		}
 

@@ -25,10 +25,10 @@ class Post {
 	/**
 	 *
 	 */
-	public function __construct (string $formName, array $formTypes) {
+	public function __construct (string $formName, array $types) {
 		$this->formName = $formName;
 		$this->get_post();
-		$this->saveFormTypes($formTypes);
+		$this->validateAndProcessPostData($types);
 	}
 
 	/**
@@ -41,30 +41,53 @@ class Post {
 	}
 
 	/**
-	 * Зберігання дозволених імен POST масиву та їх типів для поточної форми.
-	 */
-	private function saveFormTypes (array $formTypes) {
+   * Перевіряє та обробляє параметри, передані через масив $_POST, ґрунтуючись на описаних типах
+	 * даних та їх правилах валідації.
+   * @param array $types Масив, що містить інформацію про типи даних та їх правила перевірки.
+   * @return void
+   */
+	private function validateAndProcessPostData (array $types) {
+		// Отримуємо поточні параметри з масиву $_POST.
 		$post = $this->get_post();
 
-		foreach ($formTypes as $name => $typeData) {
+		// Проходимо по всіх зазначених типах даних для перевірки та обробки.
+		foreach ($types as $name => $typeData) {
+			// Перевіряємо, чи існує параметр у масиві $_POST.
+			$issetParam = isset($post[$name]);
+
+			// Перевіряємо, чи належить тип даних до дозволених типів.
 			if (in_array($typeData['type'], $this->allowedTypes)) {
+				// Перевіряємо, чи є параметр обов'язковим
+				if (isset($typeData['isRequired']) && $typeData['isRequired']) {
+					// Якщо параметр обов'язковий, але відсутній, додаємо повідомлення про помилку.
+					if (! $issetParam) {
+						$this->errors[] = 'Відсутній обов\'язковий параметр $_POST["'. $name .'"]';
+
+						continue;
+					}
+				}
+
+				// Формуємо ім'я методу перевірки типу даних.
 				$checkMethod = 'check'. ucfirst($typeData['type']);
 
-				// Перевірка типу даних отриманого поля.
-
-				if (! $this->$checkMethod($name, $typeData)) {
-					$this->errors[] = 'Поле '. $name .' не пройшло перевірку типу даних метода '. $checkMethod;
+				// Перевіряємо параметр за допомогою відповідного методу, якщо він існує.
+				if ($issetParam && (! $this->$checkMethod($name, $typeData))) {
+					$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+						$checkMethod;
 				}
 			}
 			else {
+				// Якщо тип даних не є дозволеним, додаємо повідомлення про помилку.
 				$this->errors[] = 'Отримано недозволений тип даних: '. $typeData['type'];
 			}
 
+			// Видаляємо оброблений параметр із масиву $_GET.
 			unset($post[$name]);
 		}
 
+		// Перевіряємо, чи є непередбачені параметри в масиві $_GET.
 		foreach ($post as $name => $value) {
-			$this->errors[] = 'Отримано непередбачене значення форми: $_POST["'. $name .'"] - '.
+			$this->errors[] = 'Отримано непередбачене значення параметру: $_GET["'. $name .'"] - '.
 				var_export($value, true);
 		}
 	}

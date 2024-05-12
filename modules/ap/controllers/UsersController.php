@@ -64,6 +64,7 @@ class UsersController extends MainController {
 		$Get = new Get([
 			'pg' => [
 				'type' => 'int',
+				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
 			]
 		]);
@@ -83,7 +84,10 @@ class UsersController extends MainController {
 		}
 
 		$d['title'] = 'Адмін-панель - Користувачі';
-		$d['usersData'] = $this->Model->listPage($Get->get['pg']);
+
+		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
+
+		$d['usersData'] = $this->Model->listPage($pageNum);
 
 		require $this->getViewFile('users/list');
 	}
