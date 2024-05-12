@@ -1,5 +1,2 @@
 .vscode/
 configs/db.php
-
-# Отменить игнорирование для каталога modules/hs/ на ветке main
-!main/modules/hs/
