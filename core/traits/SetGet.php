@@ -32,7 +32,7 @@ trait SetGet {
 			throw new ClassException(2000, ["name" => $name, "method" => $method]);
 		}
 
-		throw new ClassException(2001, ["name" => $name]);
+		throw new ClassException(6001, ['calledClass' => get_called_class(), 'name' => $name]);
   }
 
 	/**

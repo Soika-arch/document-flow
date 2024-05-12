@@ -2,11 +2,10 @@
 
 namespace modules\ap\controllers;
 
-use core\Get;
+use \core\Get;
 use \modules\ap\controllers\MainController;
 use \modules\ap\models\UsersModel;
 use \core\User;
-use \libs\Paginator;
 
 /**
  * Контроллер адмін-панелі управління користувачами.

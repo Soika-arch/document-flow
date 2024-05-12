@@ -110,13 +110,13 @@ class Post {
 	 */
 	private function checkInt (string $name, array $typeData) {
 		if (isset($typeData['pattern'])) {
-			if (! preg_match('/'. $typeData['pattern'] .'/', $this->get[$name])) {
+			if (! preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
 				$this->errors[] = 'Параметр: $_GET["'. $name .'"] - не відповідає шаблону [ '.
 					$typeData['pattern'] .' ]';
 			}
 		}
 
-		return ctype_digit($this->get[$name]);
+		return ctype_digit($this->post[$name]);
 	}
 
 	/**
