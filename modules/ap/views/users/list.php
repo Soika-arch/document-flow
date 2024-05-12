@@ -15,7 +15,6 @@ if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 if (isset($d['usersData']) && $d['usersData']) {
-	// dd($d['usersData'], __FILE__, __LINE__,1);
 	e('<div class="admin-users_list">');
 
 		if (isset($d['usersData']['pagin']) && $d['usersData']['pagin']) {
