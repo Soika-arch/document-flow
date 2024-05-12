@@ -1,2 +1,7 @@
 .vscode/
 configs/db.php
+
+# Игнорировать все изменения в каталоге modules/hs/ на ветке ptmkr
+ptmkr/modules/hs/
+# Отменить игнорирование для каталога modules/hs/ на ветке main
+!main/modules/hs/
