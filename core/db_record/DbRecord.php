@@ -21,7 +21,7 @@ class DbRecord {
 	/** @var string префікс стовпців поточної таблиці. */
 	protected string $px;
 	/** @var array масив даних зв'язків записів поточної таблиці з іншими таблицями. */
-	protected array $relations;
+	protected array $foreignKeys;
 	/** @var array дані ['ім'я_стовпця' => 'нове значення'], що готуються для оновлення запису. */
 	protected array $dataForColumns;
 
@@ -161,6 +161,19 @@ class DbRecord {
 		return $this->dataForColumns;
 	}
 
+	/**
+	 * Повертає інформацію про зовнішні ключі для цього об'єкта.
+	 * @return array Асоціативний масив з інформацією про зовнішні ключі.
+	 * Структура элемента массива:
+	 * [
+ 	 *		'key_column' => 'назва_колонки_з_ключом', // Назва колонки із ключем.
+ 	 *    'relation_column' => 'назва_колонки_з_відношенням', // Назва колонки з відношенням.
+ 	 *    'onDelete' => true/false // Прапор, що вказує, що видаляти пов'язані записи під час видалення
+	 *														 // основного запису.
+ 	 * ]
+	 */
+	protected function get_foreignKeys () {}
+
 	/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
@@ -227,6 +240,8 @@ class DbRecord {
 	 * @return array
 	 */
 	public function delete (bool $isDeleteRelations=true) {
+		$this->deleteRelations();
+
 		$idName = $this->px .'id';
 
 		$SQL = db_getDelete();
@@ -239,7 +254,7 @@ class DbRecord {
 
 		if ($res['rowCount'] > 1) throw new DbException(5001);
 
-		if ($isDeleteRelations) $this->deleteRelations();
+		if ($isDeleteRelations)
 
 		unset($this->dbRow);
 
@@ -250,10 +265,10 @@ class DbRecord {
 	 * Видалення зв'язаних записів інших таблиць.
 	 */
 	public function deleteRelations () {
-		$relations = $this->get_relations();
+		$foreignKeys = $this->get_foreignKeys();
 
-		if ($relations) {
-			foreach ($relations as $tName => $relData) {
+		if ($foreignKeys) {
+			foreach ($foreignKeys as $tName => $relData) {
 				if (! $relData['onDelete']) continue;
 
 				$keyColumnName = '_'. $relData['key_column'];

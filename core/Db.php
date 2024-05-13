@@ -317,6 +317,41 @@ class Db {
 	}
 
 	/**
+	 * ! Не працює на хостингу. Хостинг не зберігає дані в таблиці REFERENTIAL_CONSTRAINTS.
+	 * Отримує інформацію про зв'язки таблиці у базі даних.
+	 * @param string $tableName Ім'я таблиці, для якої потрібно отримати інформацію про зв'язки.
+ 	 * @param string $databaseName Назва бази даних. За замовчуванням використовується значення
+	 * константи DbName.
+ 	 * @param string $relatedColumn Ім'я стовпця, який є зовнішнім ключем у пов'язаній таблиці.
+	 * За замовчуванням 'id'.
+	 * @return array Масив, що містить інформацію про зв'язки таблиці.
+	 */
+	public function getTableForeignKeys (string $tName, string $dbName=DbName, string $relatedColumn='id') {
+		if (! isset($this->tblData[$tName]['foreignKeys'])) {
+			// Отримуємо префікс первинного ключа для таблиці.
+			$px = $this->getColPxByTableName($tName);
+
+			// Формуємо повне ім'я стовпця посилання, якщо необхідно.
+			$relatedColumn = ($relatedColumn === 'id') ? $px . $relatedColumn : $relatedColumn;
+
+			// Підготовляємо SQL-запит для отримання інформації про зв'язки.
+			$Sth = db_Db()->PDO->prepare('SELECT rc.CONSTRAINT_CATALOG AS RC_CONSTRAINT_CATALOG, rc.CONSTRAINT_SCHEMA AS RC_CONSTRAINT_SCHEMA, rc.CONSTRAINT_NAME AS RC_CONSTRAINT_NAME, rc.UNIQUE_CONSTRAINT_CATALOG AS RC_UNIQUE_CONSTRAINT_CATALOG, rc.UNIQUE_CONSTRAINT_SCHEMA AS RC_UNIQUE_CONSTRAINT_SCHEMA, rc.UNIQUE_CONSTRAINT_NAME AS RC_UNIQUE_CONSTRAINT_NAME, rc.MATCH_OPTION AS RC_MATCH_OPTION, rc.UPDATE_RULE AS RC_UPDATE_RULE, rc.DELETE_RULE AS RC_DELETE_RULE, rc.TABLE_NAME AS RC_TABLE_NAME, rc.REFERENCED_TABLE_NAME AS RC_REFERENCED_TABLE_NAME, kcu.CONSTRAINT_CATALOG AS KCU_CONSTRAINT_CATALOG, kcu.CONSTRAINT_SCHEMA AS KCU_CONSTRAINT_SCHEMA, kcu.CONSTRAINT_NAME AS KCU_CONSTRAINT_NAME, kcu.TABLE_CATALOG AS KCU_TABLE_CATALOG, kcu.TABLE_SCHEMA AS KCU_TABLE_SCHEMA, kcu.TABLE_NAME AS KCU_TABLE_NAME, kcu.COLUMN_NAME AS KCU_COLUMN_NAME, kcu.ORDINAL_POSITION AS KCU_ORDINAL_POSITION, kcu.POSITION_IN_UNIQUE_CONSTRAINT AS KCU_POSITION_IN_UNIQUE_CONSTRAINT, kcu.REFERENCED_TABLE_SCHEMA AS KCU_REFERENCED_TABLE_SCHEMA, kcu.REFERENCED_TABLE_NAME AS KCU_REFERENCED_TABLE_NAME, kcu.REFERENCED_COLUMN_NAME AS KCU_REFERENCED_COLUMN_NAME FROM information_schema.REFERENTIAL_CONSTRAINTS rc INNER JOIN information_schema.KEY_COLUMN_USAGE kcu ON rc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME WHERE rc.CONSTRAINT_SCHEMA = :dbName AND rc.REFERENCED_TABLE_NAME = :tName  AND kcu.REFERENCED_COLUMN_NAME = :relatedColumn;');
+
+			// Підставляємо значення параметрів та виконуємо запит.
+			$Sth->execute(['dbName' => $dbName, 'tName' => $tName, 'relatedColumn' => $relatedColumn]);
+
+			$res = $Sth->fetchAll(\PDO::FETCH_ASSOC);
+
+			// Групуємо результати запиту за іменами пов'язаних таблиць.
+			foreach ($res as $row) {
+				$this->tblData[$tName]['foreignKeys'][$row['KCU_TABLE_NAME']][] = $row;
+			}
+		}
+
+		return $this->tblData[$tName]['foreignKeys'];
+	}
+
+	/**
 	 * Перевірка наявності відповідного поля у відповідній таблиці.
 	 * @return bool
 	 */

@@ -81,13 +81,13 @@ class Post {
 				$this->errors[] = 'Отримано недозволений тип даних: '. $typeData['type'];
 			}
 
-			// Видаляємо оброблений параметр із масиву $_GET.
+			// Видаляємо оброблений параметр із масиву $_POST.
 			unset($post[$name]);
 		}
 
-		// Перевіряємо, чи є непередбачені параметри в масиві $_GET.
+		// Перевіряємо, чи є непередбачені параметри в масиві $_POST.
 		foreach ($post as $name => $value) {
-			$this->errors[] = 'Отримано непередбачене значення параметру: $_GET["'. $name .'"] - '.
+			$this->errors[] = 'Отримано непередбачене значення параметру: $_POST["'. $name .'"] - '.
 				var_export($value, true);
 		}
 	}
@@ -111,7 +111,7 @@ class Post {
 	private function checkInt (string $name, array $typeData) {
 		if (isset($typeData['pattern'])) {
 			if (! preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
-				$this->errors[] = 'Параметр: $_GET["'. $name .'"] - не відповідає шаблону [ '.
+				$this->errors[] = 'Параметр: $_POST["'. $name .'"] - не відповідає шаблону [ '.
 					$typeData['pattern'] .' ]';
 			}
 		}

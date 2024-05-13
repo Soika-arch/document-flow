@@ -22,6 +22,10 @@ e('<div class="main-menu">');
 
 	if ($Us->_id && ($Us->_id > 0)) {
 		e('<div>');
+			e('<a href="'. url('/df') .'">ЕД</a>');
+		e('</div>');
+
+		e('<div>');
 			e('<a href="'. url('/user/logout') .'">Вийти</a>');
 		e('</div>');
 	}

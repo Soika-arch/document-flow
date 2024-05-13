@@ -1,0 +1,128 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Головне меню ЕД. */
+
+.df-main-menu {
+	margin: 10px 10px 0px 20px;
+}
+
+.df-main-menu div {
+	display: inline-block;
+	padding: 4px 4px 4px 4px;
+	margin: 0px 0px 5px 0px;
+	text-align: center;
+	background-color: rgb(243, 243, 233);
+}
+
+.df-main-menu div:hover {
+	/* background-color: rgb(249, 249, 244); */
+	border-left: 5px solid;
+	border-left-color: rgb(158, 217, 233);
+}
+
+.df-main-menu div a {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+	font-size: 18px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Головне меню (1) типів документів. */
+
+.df-document-types-menu_1 {
+	padding: 20px 10px 0px 30px;
+}
+
+.df-document-types-menu_1 div {
+	margin: 0px 0px 10px 0px;
+}
+
+.df-document-types-menu_1 div a {
+	font-size: 18px;
+	text-decoration: none;
+}
+
+.df-document-types-menu_1 div a:hover {
+	color: #0400ff;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Список типів документів на сторінці /df/document-types/list. */
+
+.df-dt_list {
+	padding: 10px 10px 0px 20px;
+}
+
+.df-dt_list .dt-data {
+	padding: 0px 0px 10px 0px;
+}
+
+.df-dt_list .dt-data .dt-name {
+	display: inline-block;
+	width: 300px;
+}
+
+.df-dt_list .dt-data .dt-name a {
+	font-size: 18px;
+	text-decoration: none;
+}
+
+.df-dt_list .dt-data .dt-control-buttons {
+	display: inline-block;
+	width: 100px;
+}
+
+.df-dt_list .dt-data .dt-control-buttons {
+	display: inline-block;
+	width: 100px;
+}
+
+.df-dt_list .dt-data .dt-control-buttons .img-button {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+}
+
+.df-dt_list .dt-data .dt-control-buttons .img-button:hover {
+	border-radius: 10px;
+	box-shadow: #2f1fd8 1px 0 15px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Форма додавання нового типу документів. */
+
+.form-add_dt {
+	display: inline-block;
+	padding: 20px 10px 0px 20px;
+	width: 400px;
+}
+
+.form-add_dt div {
+	padding-bottom: 20px;
+}
+
+.form-add_dt .dt-type_name {
+	display: inline-block;
+	width: 100%;
+	height: 48px;
+	font-size: 20px;
+}
+
+.form-add_dt label {
+	display: inline-block;
+	width: 100%;
+}
+
+.form-add_dt textarea {
+	display: inline-block;
+	width: 400px;
+	height: 200px;
+}
+
+.form-add_dt button {
+	display: inline-block;
+	width: 100px;
+	cursor: pointer;
+	font-size: 20px;
+}

@@ -1,18 +1,17 @@
 <?php
 
-namespace modules\ap\controllers;
+namespace modules\df\controllers;
 
 use \core\Get;
-use \modules\ap\controllers\MainController;
-use \modules\ap\models\UsersModel;
-use \core\User;
+use \core\controllers\MainController;
+use \modules\df\models\DocumentTypesModel;
 
 /**
- * Контроллер адмін-панелі управління користувачами.
+ * Контроллер типів документів.
  */
-class UsersController extends MainController {
+class DocumentTypesController extends MainController {
 
-	private UsersModel $Model;
+	private DocumentTypesModel $Model;
 
 	public function __construct () {
 		$this->Model = $this->get_Model();
@@ -23,7 +22,7 @@ class UsersController extends MainController {
 	 */
 	private function get_allowedStatuses () {
 		if (! isset($this->allowedStatuses)) {
-			$this->allowedStatuses = ['SuperAdmin'];
+			$this->allowedStatuses = ['Viewer', 'User', 'Admin', 'SuperAdmin'];
 		}
 
 		return $this->allowedStatuses;
@@ -33,9 +32,9 @@ class UsersController extends MainController {
 		$Us = rg_Rg()->get('Us');
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$d['title'] = 'Адмін-панель - Користувачі';
+		$d['title'] = 'ЕД - Типи документів';
 
-		require $this->getViewFile('users/main');
+		require $this->getViewFile('document_types/main');
 	}
 
 	public function addPage () {
@@ -43,16 +42,16 @@ class UsersController extends MainController {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		if (isset($_POST['bt_addUser'])) {
-			if ($this->Model->addUser()) {
+		if (isset($_POST['bt_addDt'])) {
+			if ($this->Model->addDocumentType()) {
 				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 			}
 		}
 
-		$d['title'] = 'Адмін-панель - Додавання користувача';
+		$d['title'] = 'ЕД - Додавання типу документа';
 		$d = array_merge($d, $this->Model->add());
 
-		require $this->getViewFile('users/add');
+		require $this->getViewFile('document_types/add');
 	}
 
 	public function listPage () {
@@ -66,7 +65,7 @@ class UsersController extends MainController {
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
 			],
-			'del_user' => [
+			'del_type' => [
 				'type' => 'int',
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
@@ -75,9 +74,9 @@ class UsersController extends MainController {
 
 		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
 
-		// Видалення користувача.
-		if (isset($_GET['del_user'])) {
-			$UsDeleted = new User($_GET['del_user']);
+		// Видалення типу документа.
+		if (isset($_GET['del_type'])) {
+			// $UsDeleted = new User($_GET['del_type']);
 			$login = $UsDeleted->_login;
 			$resDel = $UsDeleted->delete();
 
@@ -87,12 +86,12 @@ class UsersController extends MainController {
 			}
 		}
 
-		$d['title'] = 'Адмін-панель - Користувачі';
+		$d['title'] = 'ЕД - Типи документів';
 
 		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
 
-		$d['usersData'] = $this->Model->listPage($pageNum);
+		$d['DTData'] = $this->Model->listPage($pageNum);
 
-		require $this->getViewFile('users/list');
+		require $this->getViewFile('document_types/list');
 	}
 }

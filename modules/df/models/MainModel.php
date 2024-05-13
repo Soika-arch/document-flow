@@ -1,17 +1,17 @@
 <?php
 
-namespace modules\ap\models;
+namespace modules\df\models;
 
-use \modules\ap\models\MainModel;
+use \core\models\MainModel as MM;
 use \core\Post;
 use \core\RecordSliceRetriever;
 use \core\User;
 use \libs\Paginator;
 
 /**
- * Модель адмін-панелі управління користувачами.
+ * Модель типів документів.
  */
-class UsersModel extends MainModel {
+class MainModel extends MM {
 
 	/**
 	 *
@@ -86,33 +86,19 @@ class UsersModel extends MainModel {
 	 * @return array
 	 */
 	public function listPage (int $pageNum=1) {
-		$SQLUsers = (new RecordSliceRetriever())
-			->from('df_users')
-			->columns(['us_id', 'us_login'])
-			->orderBy('us_id');
+		$SQLDt = (new RecordSliceRetriever())
+			->from(DbPrefix .'document_types')
+			->columns(['dt_id', 'dt_name'])
+			->orderBy('dt_id');
 
-		$itemsPerPage = 1;
+		$itemsPerPage = 2;
 
-		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);
+		$d['dt'] = $SQLDt->select($itemsPerPage, $pageNum);
 
-		$Pagin = new Paginator($SQLUsers->getRowsCount(), 1, 1);
+		$Pagin = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, 1);
 
 		$d['pagin'] = $Pagin->getPages();
 
 		return $d;
-	}
-
-	/**
-	 * Отримання таблиці user_statuses (усіх статусів користувачів).
-	 * @return array
-	 */
-	public function getUserStatuses () {
-		$SQL = db_getSelect();
-
-		$SQL
-			->columns(['*'])
-			->from(DbPrefix .'user_statuses');
-
-		return db_select($SQL);
 	}
 }

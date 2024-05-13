@@ -13,8 +13,9 @@ e('<html lang="ua">');
 		e('<meta name="viewport" content="width=device-width, initial-scale=1">');
 		e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. MainCssName .'.css">');
 
-		if ($Us->Status->_name === 'SuperAdmin') {
-			e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. AdminCssName .'.css">');
+		if (URIModule) {
+			// Підключення css поточного модуля.
+			e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. URIModule .'.css">');
 		}
 
 		e("<title>". SiteName ." - {$d['title']}</title>");

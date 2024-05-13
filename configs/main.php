@@ -10,8 +10,6 @@ date_default_timezone_set('Europe/Kiev');
 const SiteName = 'Електронний документообіг';
 /** @var string Назва головного файлу css стилей. */
 const MainCssName = 'main';
-/** @var string Назва головного файлу css стилей адмін-панелі. */
-const AdminCssName = 'admin';
 /** @var bool Чи треба контролювати максимальний час сесії користувача. */
 const SessionTimeoutEnabled = false;
 /** @var int Максимальний час сесії користувача в секундах після авторизації. */

@@ -15,11 +15,11 @@ class users extends DbRecord {
 	}
 
 	/**
-	 * @return array
+	 * PHPDoc у класі DbRecord.
 	 */
-	protected function get_relations () {
-		if (! isset($this->relations)) {
-			$this->relations = [
+	protected function get_foreignKeys () {
+		if (! isset($this->foreignKeys)) {
+			$this->foreignKeys = [
 				DbPrefix .'visitor_routes' => [
 					'key_column' => 'id',
 					'relation_column' => 'vr_id_user',
@@ -29,10 +29,15 @@ class users extends DbRecord {
 					'key_column' => 'id',
 					'relation_column' => 'usr_id_user',
 					'onDelete' => true
+				],
+				DbPrefix .'user_rel_departament' => [
+					'key_column' => 'id',
+					'relation_column' => 'urd_id_user',
+					'onDelete' => true
 				]
 			];
 		}
 
-		return $this->relations;
+		return $this->foreignKeys;
 	}
 }
