@@ -2,11 +2,10 @@
 
 namespace modules\df\models;
 
-use core\db_record\document_types;
+use \core\db_record\document_types;
 use \core\models\MainModel;
 use \core\Post;
 use \core\RecordSliceRetriever;
-use \core\User;
 use \libs\Paginator;
 
 /**

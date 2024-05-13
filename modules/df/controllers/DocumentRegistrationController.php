@@ -3,16 +3,17 @@
 namespace modules\df\controllers;
 
 use \core\Get;
-use \core\controllers\MainController;
 use \core\db_record\document_types;
-use \modules\df\models\DocumentTypesModel;
+use core\Post;
+use \modules\df\controllers\MainController as MC;
+use \modules\df\models\DocumentRegistrationModel;
 
 /**
- * Контроллер типів документів.
+ * Контроллер реєстрації документів.
  */
-class DocumentTypesController extends MainController {
+class DocumentRegistrationController extends MC {
 
-	private DocumentTypesModel $Model;
+	private DocumentRegistrationModel $Model;
 
 	public function __construct () {
 		$this->Model = $this->get_Model();
@@ -29,13 +30,13 @@ class DocumentTypesController extends MainController {
 		return $this->allowedStatuses;
 	}
 
-	public function mainPage () {
+	public function typeSelectionPage () {
 		$Us = rg_Rg()->get('Us');
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$d['title'] = 'ЕД - Типи документів';
+		$d['title'] = 'ЕД - Оберіть джерело документа';
 
-		require $this->getViewFile('document_types/main');
+		require $this->getViewFile('document_registration/type_selection');
 	}
 
 	public function addPage () {
@@ -55,12 +56,12 @@ class DocumentTypesController extends MainController {
 		require $this->getViewFile('document_types/add');
 	}
 
-	public function listPage () {
+	public function incomingPage () {
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$Get = new Get([
+		$Post = new Post('fm_addIncomingDocument', [
 			'pg' => [
 				'type' => 'int',
 				'isRequired' => false,
@@ -73,26 +74,20 @@ class DocumentTypesController extends MainController {
 			]
 		]);
 
-		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
+		$d['title'] = 'ЕД - Реєстрація вхідного документа';
 
-		// Видалення типу документа.
-		if (isset($_GET['del_type'])) {
-			$DtDeleted = new document_types($_GET['del_type']);
-			$dtName = $DtDeleted->_name;
-			$resDel = $DtDeleted->delete();
+		$pageNum = isset($Post->post['pg']) ? $Post->post['pg'] : 1;
 
-			if ($resDel['rowCount']) {
-				sess_addSysMessage('Тип документу <b>"'. $dtName .'"</b> видалено.');
-				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
-			}
-		}
+		$d['incomingData'] = $this->Model->incomingPage($pageNum);
 
-		$d['title'] = 'ЕД - Типи документів';
+		require $this->getViewFile('document_registration/incoming');
+	}
 
-		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
-
-		$d['DTData'] = $this->Model->listPage($pageNum);
-
-		require $this->getViewFile('document_types/list');
+	/**
+	 * Реєстрація вхідного документа.
+	 * @return
+	 */
+	protected function incomingRegisterPage () {
+		dd(__METHOD__, __FILE__, __LINE__,1);
 	}
 }

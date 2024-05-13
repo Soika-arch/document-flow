@@ -31,7 +31,7 @@ if (isset($d['DTData']) && $d['DTData']) {
 			e('<div class="dt-data">');
 
 				$profileURL = url('');
-				$delURL = url('', ['del_user' => $usRow['dt_id']]);
+				$delURL = url('', ['del_type' => $usRow['dt_id']]);
 				$delIMG = url('/img/delete.png');
 
 				e('<div class="dt-name">');

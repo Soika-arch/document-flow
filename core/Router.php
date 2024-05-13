@@ -178,16 +178,16 @@ class Router {
 	 */
 	protected function setPageData () {
 		if (! isset($this->pageMethod)) {
-			$temp = $this->get_URIWithoutModule();
+			$pageURI = $this->get_URIWithoutModule();
 			// Видалення рядка GET-параметрів разом із знаком питання, якщо вони є.
-			$temp = str_replace('?'. URIParams, '', $temp);
+			$pageURI = str_replace('?'. URIParams, '', $pageURI);
 
-			$temp = trim(str_replace($this->get_controllerURI(), '', $temp), '/');
-			$temp = lcfirst($this->convertToCamelCase($temp));
+			$pageURI = trim(str_replace($this->get_controllerURI(), '', $pageURI), '/');
+			$temp = lcfirst($this->convertToCamelCase($pageURI));
 
 			if ($temp) {
 				if (method_exists($this->get_controllerClass(), $temp .'Page')) {
-					$this->pageURI = $temp;
+					$this->pageURI = $pageURI;
 					$this->pageMethod = $temp .'Page';
 				}
 				else {

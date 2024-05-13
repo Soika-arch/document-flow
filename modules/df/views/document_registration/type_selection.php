@@ -1,6 +1,6 @@
 <?php
 
-// Вид головної типів документів.
+// Вид сторінки вибору джерела документа для реєстрації.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -16,10 +16,18 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 $url = url('/df');
 
-e('<div class="df-document-types-menu_1">');
+e('<div class="df-selecting_source_document">');
 
 	e('<div>');
-		e('<a href="'. $url .'/document-types">Типи документів</a>');
+		e('<a href="'. $url .'/document-registration/incoming">Вхідний</a>');
+	e('</div>');
+
+	e('<div>');
+		e('<a href="'. $url .'/document-registration/outgoing">Вихідний</a>');
+	e('</div>');
+
+	e('<div>');
+		e('<a href="'. $url .'/document-registration/internal">Внутрішній</a>');
 	e('</div>');
 
 e('</div>');

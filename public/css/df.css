@@ -126,3 +126,71 @@
 	cursor: pointer;
 	font-size: 20px;
 }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок вибору джерела документа для реєстрації. */
+
+.df-selecting_source_document {
+	padding: 20px 0px 0px 30px;
+}
+
+.df-selecting_source_document div {
+	display: inline-block;
+	width: 100%;
+	margin: 0px 0px 20px 0px;
+}
+
+.df-selecting_source_document div a {
+	display: inline-block;
+	width: 250px;
+	text-decoration: none;
+	font-size: 26px;
+	padding-left: 40px;
+	background-color: rgb(236, 249, 247);
+}
+
+.df-selecting_source_document div a:hover {
+	background-color: rgb(220, 247, 243);
+	border: #0400ff 1px solid;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Форма реєстрації вхідного документа. */
+
+.df-fm-reg_incoming_document {
+	padding: 0px 0px 0px 20px;
+}
+
+.df-fm-reg_incoming_document form {
+	display: inline-block;
+	width: 400px;
+}
+
+.df-fm-reg_incoming_document .label_block {
+	padding-top: 20px;
+}
+
+.label_block label {
+	display: block;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.label_block input[type=date] {
+	display: inline-block;
+	font-size: 20px;
+}
+
+.label_block select {
+	display: inline-block;
+	font-size: 20px;
+	width: 100%;
+}
+
+.df-fm-reg_incoming_document .bt_add button {
+	display: inline-block;
+	margin-top: 20px;
+	font-size: 20px;
+	width: 300px;
+	cursor: pointer;
+}
