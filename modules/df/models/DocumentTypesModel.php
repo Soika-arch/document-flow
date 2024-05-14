@@ -83,7 +83,7 @@ class DocumentTypesModel extends MainModel {
 
 		$d['dt'] = $SQLDt->select($itemsPerPage, $pageNum);
 
-		$Pagin = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, 1);
+		$Pagin = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, $pageNum);
 
 		$d['pagin'] = $Pagin->getPages();
 

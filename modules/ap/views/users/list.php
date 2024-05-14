@@ -18,10 +18,13 @@ if (isset($d['usersData']) && $d['usersData']) {
 	e('<div class="admin-users_list">');
 
 		if (isset($d['usersData']['pagin']) && $d['usersData']['pagin']) {
-			e('<div>');
+			e('<div class="menu-pagin">');
 
 				foreach ($d['usersData']['pagin'] as $pagin) {
-					e('<a href="'. url('', ['pg' => $pagin['num']]) .'">'. $pagin['num'] .'</a>');
+					$sccClass = $pagin['isCurrent'] ? ' class="current"' : '';
+
+					e('<span'. $sccClass .'><a href="'. url('', ['pg' => $pagin['num']]) .'">'.
+						$pagin['num'] .'</a></span>');
 				}
 
 			e('</div>');

@@ -91,11 +91,11 @@ class UsersModel extends MainModel {
 			->columns(['us_id', 'us_login'])
 			->orderBy('us_id');
 
-		$itemsPerPage = 1;
+		$itemsPerPage = 2;
 
 		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);
 
-		$Pagin = new Paginator($SQLUsers->getRowsCount(), 1, 1);
+		$Pagin = new Paginator($SQLUsers->getRowsCount(), $itemsPerPage, $pageNum);
 
 		$d['pagin'] = $Pagin->getPages();
 

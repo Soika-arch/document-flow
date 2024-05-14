@@ -77,6 +77,43 @@
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Типове меню пагінації. */
+
+.menu-pagin {
+	padding: 3px 5px 3px 5px;
+}
+
+.menu-pagin span {
+	display: inline-block;
+	min-width: 25px;
+	max-width: 50px;
+	margin-right: 5px;
+	background-color: azure;
+	text-align: center;
+}
+
+.menu-pagin span:hover {
+	background-color: rgb(221, 245, 245);
+}
+
+.menu-pagin .current {
+	background-color: rgb(221, 245, 245);
+	font-weight: bold;
+}
+
+.menu-pagin span a {
+	display: inline-block;
+	border-radius: 8px;
+	width: 100%;
+	border: 1px solid silver;
+	text-decoration: none;
+}
+
+.menu-pagin span a:hover {
+	color: rgb(234, 59, 11);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Блок налагоджувальної інформації, який виводится наприкінці виконання всього скрипта. */
 
 .footer-debug-info {

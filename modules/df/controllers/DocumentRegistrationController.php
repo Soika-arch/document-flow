@@ -2,9 +2,7 @@
 
 namespace modules\df\controllers;
 
-use \core\Get;
-use \core\db_record\document_types;
-use core\Post;
+use \core\Post;
 use \modules\df\controllers\MainController as MC;
 use \modules\df\models\DocumentRegistrationModel;
 
@@ -30,7 +28,7 @@ class DocumentRegistrationController extends MC {
 		return $this->allowedStatuses;
 	}
 
-	public function typeSelectionPage () {
+	public function sourceSelectionPage () {
 		$Us = rg_Rg()->get('Us');
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
