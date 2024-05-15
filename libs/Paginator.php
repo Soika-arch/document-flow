@@ -57,13 +57,13 @@ class Paginator
   	 * Текст для «попереднього» елемента керування розбивкою на сторінки.
   	 * @var string
   	 */
-		protected $previousText = 'Previous';
+		protected $previousText = '&#8656;';
 
 		/**
   	 * Текст для «наступного» елемента керування розбивкою на сторінки.
   	 * @var string
   	 */
-		protected $nextText = 'Next';
+		protected $nextText = '&#8658;';
 
     /**
      * @param int $totalItems загальна кількість елементів, які будуть розбиті на сторінки.
@@ -342,29 +342,30 @@ class Paginator
   	 * Відображає елемент керування розбивкою на сторінки HTML.
   	 * @return string HTML-представлення елемента керування розбивкою на сторінки.
   	 */
-    public function toHtml()
+    public function toHtml(string $sccClass='menu-pagin')
     {
         if ($this->numPages <= 1) {
             return '';
         }
 
-        $html = '<ul class="pagination">';
+        $html = '<div class="'. $sccClass .'">';
         if ($this->getPrevUrl()) {
-            $html .= '<li><a href="' . htmlspecialchars($this->getPrevUrl()) . '">&laquo; '. $this->previousText .'</a></li>';
+            $html .= '<span><a href="' . htmlspecialchars($this->getPrevUrl()) . '">'.$this->previousText .'</a></span>';
         }
 
         foreach ($this->getPages() as $page) {
             if ($page['url']) {
-                $html .= '<li' . ($page['isCurrent'] ? ' class="active"' : '') . '><a href="' . htmlspecialchars($page['url']) . '">' . htmlspecialchars($page['num']) . '</a></li>';
+                $html .= '<span' . ($page['isCurrent'] ? ' class="active"' : '') . '><a href="' . htmlspecialchars($page['url']) . '">' . htmlspecialchars($page['num']) .
+								'</a></span>';
             } else {
-                $html .= '<li class="disabled"><span>' . htmlspecialchars($page['num']) . '</span></li>';
+                $html .= '<span class="disabled"><span>' . htmlspecialchars($page['num']) . '</span></span>';
             }
         }
 
         if ($this->getNextUrl()) {
-            $html .= '<li><a href="' . htmlspecialchars($this->getNextUrl()) . '">'. $this->nextText .' &raquo;</a></li>';
+            $html .= '<span><a href="' . htmlspecialchars($this->getNextUrl()) . '">'. $this->nextText .'</a></span>';
         }
-        $html .= '</ul>';
+        $html .= '</div>';
 
         return $html;
     }

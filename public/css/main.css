@@ -96,7 +96,7 @@
 	background-color: rgb(221, 245, 245);
 }
 
-.menu-pagin .current {
+.menu-pagin .active {
 	background-color: rgb(221, 245, 245);
 	font-weight: bold;
 }

@@ -40,8 +40,9 @@ class DocumentTypesModel extends MainModel {
 				'pattern' => '^[ \'№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]{1,255}$'
 			],
 			'dtDescription' => [
-				'type' => 'varchar',
-				'pattern' => '[\'№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]'
+				'type' => 'text',
+				'length' => 1000,
+				'pattern' => '[ \',.;:!@#$%&()\[\]{}=№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]{1,1000}'
 			],
 			'bt_addDt' => [
 				'type' => 'varchar',
@@ -83,9 +84,12 @@ class DocumentTypesModel extends MainModel {
 
 		$d['dt'] = $SQLDt->select($itemsPerPage, $pageNum);
 
-		$Pagin = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, $pageNum);
+		$url = url('/df/document-types/list?pg=(:num)');
 
-		$d['pagin'] = $Pagin->getPages();
+		$Pagin = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin->setMaxPagesToShow(5);
+
+		$d['Pagin'] = $Pagin;
 
 		return $d;
 	}

@@ -131,8 +131,8 @@ class Post {
 	 * Перевіряє чи є $v текстом, а також чи відповідиє довжина тексту величині $l.
 	 * @return bool
 	 */
-	private function checkText (string $v, int|null $l=null) {
-		$f = $l ? (strlen($v) <= $l) : true;
+	private function checkText (string $v, array $typeData) {
+		$f = isset($typeData['length']) ? (strlen($v) <= $typeData['length']) : true;
 
 		return ($f && is_string($v));
 	}
@@ -143,7 +143,7 @@ class Post {
 	private function checkVarchar (string $name, array $typeData) {
 		if (preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
 
-			return $this->checkText($this->post[$name], 255);
+			return $this->checkText($this->post[$name], $typeData);
 		}
 
 		return false;

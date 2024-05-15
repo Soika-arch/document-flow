@@ -95,9 +95,11 @@ class UsersModel extends MainModel {
 
 		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);
 
-		$Pagin = new Paginator($SQLUsers->getRowsCount(), $itemsPerPage, $pageNum);
+		$url = url('/ap/users/list?pg=(:num)');
 
-		$d['pagin'] = $Pagin->getPages();
+		$Pagin = new Paginator($SQLUsers->getRowsCount(), $itemsPerPage, $pageNum, $url);
+
+		$d['Pagin'] = $Pagin;
 
 		return $d;
 	}

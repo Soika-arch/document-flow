@@ -17,17 +17,8 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 if (isset($d['DTData']) && $d['DTData']) {
 	e('<div class="df-dt_list">');
 
-		if (isset($d['DTData']['pagin']) && $d['DTData']['pagin']) {
-			e('<div class="menu-pagin">');
-
-				foreach ($d['DTData']['pagin'] as $pagin) {
-					$sccClass = $pagin['isCurrent'] ? ' class="current"' : '';
-
-					e('<span'. $sccClass .'><a href="'. url('', ['pg' => $pagin['num']]) .'">'.
-						$pagin['num'] .'</a></span>');
-				}
-
-			e('</div>');
+		if (isset($d['DTData']['Pagin']) && ($d['DTData']['Pagin']->getNumPages() > 1)) {
+			e($d['DTData']['Pagin']->toHtml());
 		}
 
 		foreach ($d['DTData']['dt'] as $usRow) {

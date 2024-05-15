@@ -17,17 +17,8 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 if (isset($d['usersData']) && $d['usersData']) {
 	e('<div class="admin-users_list">');
 
-		if (isset($d['usersData']['pagin']) && $d['usersData']['pagin']) {
-			e('<div class="menu-pagin">');
-
-				foreach ($d['usersData']['pagin'] as $pagin) {
-					$sccClass = $pagin['isCurrent'] ? ' class="current"' : '';
-
-					e('<span'. $sccClass .'><a href="'. url('', ['pg' => $pagin['num']]) .'">'.
-						$pagin['num'] .'</a></span>');
-				}
-
-			e('</div>');
+		if (isset($d['usersData']['Pagin']) && ($d['usersData']['Pagin']->getNumPages() > 1)) {
+			e($d['usersData']['Pagin']->toHtml());
 		}
 
 		foreach ($d['usersData']['users'] as $usRow) {
