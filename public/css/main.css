@@ -1,4 +1,103 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*
+Стандартна форма.
+https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
+*/
+
+/* Клас fm треба призначати блоку div який містить цільову форму. */
+.fm {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1em;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.fm div {
+  margin-bottom: 1em;
+}
+
+.fm label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.fm input[type="text"],
+.fm select {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.fm input[type="date"] {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.fm textarea {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+  resize: vertical; /* Дозволяє користувачеві змінювати висоту. */
+}
+
+.fm button[type="submit"] {
+  width: 100%;
+  padding: 0.75em;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fm button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.fm button[type="submit"]:active {
+  background-color: #004494;
+}
+
+@media (max-width: 600px) {
+  .fm {
+    padding: 0.5em;
+  }
+
+  .fm input[type="text"],
+  .fm select {
+    font-size: 0.9em;
+  }
+
+	.fm textarea {
+    font-size: 0.9em;
+  }
+
+	.fm input[type="date"] {
+    font-size: 0.9em;
+  }
+
+	.fm button[type="submit"] {
+    font-size: 0.9em;
+  }
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Форма авторизації користувача */
 
 .form-user_auth {
@@ -36,31 +135,104 @@
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Блок головного меню сайта. */
+/*
+Блок головного меню сайта.
+https://chatgpt.com/c/a70b7689-e251-41a6-8ff9-e5fa03dff4c0
+*/
 
+
+/* Общие стили для главного меню */
 .main-menu {
-	margin: 0px 0px 20px 20px;
+	display: flex; /* Выравнивание в ряд */
+	flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку при необходимости */
+	justify-content: center; /* Центрирование элементов */
+	padding: 0;
+	margin: 0;
+	list-style: none; /* Убирает маркеры списка, если применено к <ul> */
+	background-color: #e2e2e2; /* Светло-серый фон */
 }
 
 .main-menu div {
-	display: inline-block;
-	padding: 5px 5px 5px 5px;
-	height: 26px;
-	text-align: center;
-	background-color: rgb(236, 249, 247);
+	margin: 0; /* Убирает отступы между элементами */
 }
 
-.main-menu div:hover {
-	background-color: rgb(220, 247, 243);
+.main-menu a {
+	display: block; /* Позволяет ссылкам занимать всю ширину родителя */
+	padding: 10px 20px; /* Внутренний отступ */
+	text-decoration: none; /* Убирает подчеркивание текста */
+	color: #007BFF; /* Светло-синий цвет текста */
+	transition: background-color 0.3s ease, color 0.3s ease; /* Плавный переход для фона и цвета текста */
 }
 
-.main-menu div a {
-	display: inline-block;
-	width: 100%;
-	height: 22px;
-	font-size: 22px;
-	text-decoration: none;
+.main-menu a:hover {
+	background-color: #e0e0e0; /* Светло-серый цвет фона при наведении */
+	color: #0056b3; /* Темно-синий цвет текста при наведении */
 }
+
+/* Адаптивные стили */
+@media (max-width: 600px) {
+	.main-menu {
+		flex-direction: column; /* Вертикальное выравнивание элементов */
+		align-items: center; /* Центрирование элементов по горизонтали */
+	}
+
+	.main-menu a {
+		width: 100%; /* Ссылки занимают всю ширину */
+		text-align: center; /* Текст выравнивается по центру */
+	}
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*
+Вторинне головне меню.
+https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
+*/
+
+/* Основные стили для меню */
+.secondary-menu {
+  display: flex;
+  justify-content: center; /* Центрируем меню по горизонтали */
+  background-color: #f0f0f0; /* Светло-серый фон */
+  padding: 10px 20px; /* Отступы вокруг меню */
+  border-radius: 5px; /* Закругленные углы */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень для придания глубины */
+}
+
+/* Стили для элементов меню */
+.secondary-menu div {
+  margin: 0 10px; /* Отступы между элементами меню */
+}
+
+/* Стили для ссылок */
+.secondary-menu a {
+  text-decoration: none; /* Убираем подчеркивание */
+  color: #333; /* Темный цвет текста */
+  font-size: 16px; /* Размер шрифта */
+  font-weight: 500; /* Полужирный шрифт */
+  transition: color 0.3s ease; /* Плавный переход цвета при наведении */
+}
+
+/* Цвет при наведении */
+.secondary-menu a:hover {
+  color: #007BFF; /* Синий цвет при наведении */
+}
+
+/* Адаптивный дизайн для мобильных устройств */
+@media (max-width: 600px) {
+  .secondary-menu {
+    flex-direction: column; /* Вертикальное расположение на мобильных */
+    align-items: center; /* Центрируем элементы по вертикали */
+  }
+
+  .secondary-menu div {
+    margin: 5px 0; /* Отступы между элементами в вертикальном расположении */
+  }
+
+  .secondary-menu a {
+    font-size: 18px; /* Увеличиваем размер шрифта для лучшей читаемости на мобильных */
+  }
+}
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Блок вивода помилок користувача. */

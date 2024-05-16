@@ -16,7 +16,7 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 if (! $Us->_id || ($Us->_id === 0)) {
 	// Вивід форми авторизації користувача.
 
-	e('<div class="form-user_auth">');
+	e('<div class="fm">');
 		e('<form name="fm_login" action="'. url('/user/login') .'" method="post">');
 
 			e('<div>');

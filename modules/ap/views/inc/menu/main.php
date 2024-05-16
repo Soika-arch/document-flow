@@ -6,7 +6,7 @@
 
 $url = url('/'. URIAdmin);
 
-e('<div class="admin-main-menu">');
+e('<div class="secondary-menu">');
 
 	e('<div>');
 		e('<a href="'. $url .'/users">Користувачі</a>');

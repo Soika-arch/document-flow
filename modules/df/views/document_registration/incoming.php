@@ -16,7 +16,7 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 $url = url('/df');
 
-e('<div class="df-fm-reg_incoming_document">');
+e('<div class="fm">');
 	e('<form name="fm_addIncomingDocument" action="'. url('') .'-register" method="post">');
 
 		e('<div class="label_block">');

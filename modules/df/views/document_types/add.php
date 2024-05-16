@@ -14,7 +14,7 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-e('<div class="form-add_dt">');
+e('<div class="fm">');
 	e('<form name="fm_dtAdd" action="'. url() .'" method="post">');
 
 		e('<div>');
