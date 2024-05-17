@@ -27,6 +27,26 @@ class MainModel {
 	}
 
 	/**
+	 * Отримання записів БД по значенню вказаного стовпця.
+	 * @param string $from назва таблиці запиту.
+	 * @param string $colName назва стовпця за яким буде здійснено пошук запису.
+	 * @param string $colValue значення стовпця $colName за яким буде здійснено пошук запису.
+	 * @param array $columns запитувані стовпці таблиці.
+	 * @param string $operator оператор за яким буде виконуватись порівняння $colName з $colValue.
+	 * @param bool $exec якщо false - запит здійснено не буде, а буде повернено об'єкт SelectQuery.
+	 * @return array|\libs\query_builder\SelectQuery
+	 */
+	public function selectRowsByCol (string $from, string $colName='', mixed $colValue='', array $columns=['*'], string $operator='=', bool $exec=true) {
+		$SQL = db_getSelect();
+
+		$SQL->columns($columns)->from($from);
+
+		if ($colName) $SQL->columns($columns)->from($from)->where($colName, $operator, $colValue);
+
+		return $exec ? db_select($SQL) : $SQL;
+	}
+
+	/**
 	 * Отримання запису БД по значенню вказаного стовпця.
 	 * @param string $from назва таблиці запиту.
 	 * @param string $colName назва стовпця за яким буде здійснено пошук запису.
@@ -36,10 +56,7 @@ class MainModel {
 	 * @param bool $exec якщо false - запит здійснено не буде, а буде повернено об'єкт SelectQuery.
 	 * @return array|\libs\query_builder\SelectQuery
 	 */
-	public function selectRowByCol (string $from, string $colName, mixed $colValue, array $columns=[], string $operator='=', bool $exec=true) {
-		// Якщо метод не отримав параметр $columns - будуть запитані усі стовпці.
-		$columns = $columns ? $columns : ['*'];
-
+	public function selectRowByCol (string $from, string $colName, mixed $colValue, array $columns=['*'], string $operator='=', bool $exec=true) {
 		$SQL = db_getSelect();
 
 		$SQL->columns($columns)->from($from)->where($colName, $operator, $colValue);

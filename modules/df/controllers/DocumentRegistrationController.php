@@ -74,6 +74,8 @@ class DocumentRegistrationController extends MC {
 
 		$d['title'] = 'ЕД - Реєстрація вхідного документа';
 
+		$d['users'] = $this->Model->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+
 		$pageNum = isset($Post->post['pg']) ? $Post->post['pg'] : 1;
 
 		$d['incomingData'] = $this->Model->incomingPage($pageNum);
