@@ -51,8 +51,10 @@ else {
 
 // Визначення основних директорій проєкта.
 
+/** @var string Каталог конфігів */
+define('DirConfig', dirname(__FILE__));
 /** @var string Корінь сайта */
-define('DirRoot', dirname(dirname(__FILE__)));
+define('DirRoot', dirname(DirConfig));
 /** @var string Каталог функцій. */
 define('DirFunc', DirRoot .'/functions');
 /** @var string Каталог для cron завдань. */
@@ -137,3 +139,4 @@ require_once DirFunc .'/rg.php';
 require_once DirFunc .'/rt.php';
 require_once DirFunc .'/hd.php';
 require_once DirFunc .'/sess.php';
+require_once DirFunc .'/tm.php';

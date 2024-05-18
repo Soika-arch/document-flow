@@ -22,7 +22,7 @@ class DocumentRegistrationController extends MC {
 	 */
 	private function get_allowedStatuses () {
 		if (! isset($this->allowedStatuses)) {
-			$this->allowedStatuses = ['Viewer', 'User', 'Admin', 'SuperAdmin'];
+			$this->allowedStatuses = ['User', 'Admin', 'SuperAdmin'];
 		}
 
 		return $this->allowedStatuses;
@@ -72,22 +72,112 @@ class DocumentRegistrationController extends MC {
 			]
 		]);
 
-		$d['title'] = 'ЕД - Реєстрація вхідного документа';
-
-		$d['users'] = $this->Model->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
-
 		$pageNum = isset($Post->post['pg']) ? $Post->post['pg'] : 1;
 
-		$d['incomingData'] = $this->Model->incomingPage($pageNum);
+		$d = $this->Model->incomingPage($pageNum);
 
 		require $this->getViewFile('document_registration/incoming');
 	}
 
 	/**
-	 * Реєстрація вхідного документа.
-	 * @return
+	 * Додавання вхідного документа до БД.
 	 */
-	protected function incomingRegisterPage () {
-		dd(__METHOD__, __FILE__, __LINE__,1);
+	public function incomingAddPage () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Post = new Post('fm_addIncomingDocument', [
+			'dIncomingDate' => [
+				'type' => 'date',
+				'isRequired' => false
+			],
+			'dType' => [
+				'type' => 'int',
+				'isRequired' => true
+			],
+			'dCarrierType' => [
+				'type' => 'int',
+				'isRequired' => true
+			],
+			'dLocation' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dTitle' => [
+				'type' => 'int',
+				'isRequired' => true
+			],
+			'dDescription' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dStatus' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dSender' => [
+				'type' => 'int',
+				'isRequired' => true
+			],
+			'dRecipientUser' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dOutgoingNumber' => [
+				'type' => 'varchar',
+				'pattern' => '^OUT_\d{4}$',
+				'isRequired' => false
+			],
+			'dResponsibleUser' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dAssignedUser' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dAssignedDepartament' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dResolution' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dControlType' => [
+				'type' => 'int',
+				'isRequired' => false
+			],
+			'dExecutionDeadline' => [
+				'type' => 'date',
+				'isRequired' => false
+			],
+			'dFile' => [
+				'type' => 'text',
+				'isRequired' => false
+			],
+			'bt_add' => [
+				'type' => 'varchar',
+				'pattern' => '^$',
+				'isRequired' => true
+			],
+		]);
+
+		if ($Post->errors) {
+			sess_addErrMessage('Отримано некоректні дані форми');
+			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
+		}
+
+		$addResult = $this->Model->addIncomingDocument($Post);
+
+		if ($addResult['lastInsertId']) {
+			sess_addSysMessage('Документ додано до реєстра');
+		}
+		else {
+			sess_addErrMessage('Помилка! Документ не додано до реєстра');
+		}
+
+		hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 	}
 }

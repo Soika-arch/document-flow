@@ -22,7 +22,7 @@ class Router {
 	private string $controllerClass;
 	/** @var string ім'я метода поточного контролера (сторінки). */
 	private string $pageMethod;
-	/** @var string поточний URI без URI $this->moduleURI. */
+	/** @var string поточний URI без URI URIModule. */
 	private string $URIWithoutModule;
 	/** @var string контроллер за замовчуванням для поточного модуля. */
 	private string $defaultControllerName;

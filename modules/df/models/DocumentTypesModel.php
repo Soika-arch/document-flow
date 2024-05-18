@@ -34,6 +34,8 @@ class DocumentTypesModel extends MainModel {
 	 * @return bool
 	 */
 	public function addDocumentType () {
+		$regexp = require DirConfig .'';
+		dd($regexp['freeTextClass'], __FILE__, __LINE__,1);
 		$Post = new Post('fm_userAdd', [
 			'dtName' => [
 				'type' => 'varchar',

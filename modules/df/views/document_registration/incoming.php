@@ -17,19 +17,20 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 $url = url('/df');
 
 e('<div class="fm">');
-	e('<form name="fm_addIncomingDocument" action="'. url('') .'-register" method="post">');
+	e('<form enctype="multipart/form-data" name="fm_addIncomingDocument" action="'.
+		url('') .'-add" method="post">');
 
 		e('<div class="label_block">');
 			e('<label for="dIncomingDate">Дата вхідного</label>');
 			e('<input type="date" name="dIncomingDate" value="'. date('Y-m-d') .'">');
 		e('</div>');
 
-		if (isset($d['incomingData']['documentTypes']) && $d['incomingData']['documentTypes']) {
+		if (isset($d['documentTypes']) && $d['documentTypes']) {
 			e('<div class="label_block">');
 				e('<label for="dType">Тип документа</label>');
 				e('<select name="dType">');
 
-					foreach ($d['incomingData']['documentTypes'] as $dtRow) {
+					foreach ($d['documentTypes'] as $dtRow) {
 						e('<option value="'. $dtRow['dt_id'] .'">'.  $dtRow['dt_name'] .'</option>');
 					}
 
@@ -37,12 +38,12 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['incomingData']['carrierTypes']) && $d['incomingData']['carrierTypes']) {
+		if (isset($d['carrierTypes']) && $d['carrierTypes']) {
 			e('<div class="label_block">');
 				e('<label for="dCarrierType">Тип носія документа</label>');
 				e('<select name="dCarrierType">');
 
-					foreach ($d['incomingData']['carrierTypes'] as $mtRow) {
+					foreach ($d['carrierTypes'] as $mtRow) {
 						e('<option value="'. $mtRow['cts_id'] .'">'.  $mtRow['cts_name'] .'</option>');
 					}
 
@@ -50,27 +51,95 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		e('<div class="label_block">');
-			e('<label for="dTitle">Назва чи заголовок документа</label>');
-			e('<div>');
-				e('<textarea name="dTitle"></textarea>');
-			e('</div>');
-		e('</div>');
+		if (isset($d['departaments']) && $d['departaments']) {
+			e('<div class="label_block">');
+				e('<label for="dLocation">Фізичне місцезнаходження оригінала</label>');
+				e('<select name="dLocation">');
 
-		e('<div class="label_block">');
-			e('<label for="dDescription">Опис або короткий зміст документа</label>');
-			e('<div>');
-				e('<textarea name="dDescription"></textarea>');
-			e('</div>');
-		e('</div>');
+					e('<option value=""></option>');
 
-		if (isset($d['incomingData']['documentStatuses']) && $d['incomingData']['documentStatuses']) {
+					foreach ($d['departaments'] as $mtRow) {
+						e('<option value="'. $mtRow['dp_id'] .'">'.  $mtRow['dp_name'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
+
+		if (isset($d['titles']) && $d['titles']) {
+			e('<div class="label_block">');
+				e('<label for="dTitle">Назва чи заголовок документа</label>');
+				e('<select name="dTitle">');
+
+					e('<option value=""></option>');
+
+					foreach ($d['titles'] as $mtRow) {
+						e('<option value="'. $mtRow['dts_id'] .'">'.  $mtRow['dts_title'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
+
+		if (isset($d['descriptions']) && $d['descriptions']) {
+			e('<div class="label_block">');
+				e('<label for="dDescription">Опис або короткий зміст документа</label>');
+				e('<select name="dDescription">');
+
+					e('<option value=""></option>');
+
+					foreach ($d['descriptions'] as $mtRow) {
+						e('<option value="'. $mtRow['dds_id'] .'">'.  $mtRow['dds_description'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
+
+		if (isset($d['documentStatuses']) && $d['documentStatuses']) {
 			e('<div class="label_block">');
 				e('<label for="dStatus">Статус документа</label>');
 				e('<select name="dStatus">');
 
-					foreach ($d['incomingData']['documentStatuses'] as $mtRow) {
+					foreach ($d['documentStatuses'] as $mtRow) {
 						e('<option value="'. $mtRow['dst_id'] .'">'.  $mtRow['dst_name'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
+
+		e('<div class="label_block">');
+			e('<label for="dOutgoingNumber">Номер відповідного вихідного документа</label>');
+			e('<div>');
+				e('<input type="text" name="dOutgoingNumber">');
+			e('</div>');
+		e('</div>');
+
+		if (isset($d['senders']) && $d['senders']) {
+			e('<div class="label_block">');
+				e('<label for="dSender">Відправник документа</label>');
+				e('<select name="dSender">');
+
+					e('<option value=""></option>');
+
+					foreach ($d['senders'] as $mtRow) {
+						e('<option value="'. $mtRow['dss_id'] .'">'.  $mtRow['dss_name'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
+
+		if (isset($d['users']) && $d['users']) {
+			e('<div class="label_block">');
+				e('<label for="dRecipientUser">Отримувач документа</label>');
+				e('<select name="dRecipientUser">');
+
+					e('<option value=""></option>');
+
+					foreach ($d['users'] as $mtRow) {
+						e('<option value="'. $mtRow['us_id'] .'">'.  $mtRow['us_login'] .'</option>');
 					}
 
 				e('</select>');
@@ -107,15 +176,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['incomingData']['assignedDepartaments']) &&
-				$d['incomingData']['assignedDepartaments']) {
+		if (isset($d['departaments']) && $d['departaments']) {
 			e('<div class="label_block">');
-				e('<label for="dAssignedDepartaments">Відділ, якому призначено на виконання</label>');
-				e('<select name="dAssignedDepartaments">');
+				e('<label for="dAssignedDepartament">Відділ, якому призначено на виконання</label>');
+				e('<select name="dAssignedDepartament">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['incomingData']['assignedDepartaments'] as $mtRow) {
+					foreach ($d['departaments'] as $mtRow) {
 						e('<option value="'. $mtRow['dp_id'] .'">'.  $mtRow['dp_name'] .'</option>');
 					}
 
@@ -123,14 +191,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['incomingData']['resolutions']) && $d['incomingData']['resolutions']) {
+		if (isset($d['resolutions']) && $d['resolutions']) {
 			e('<div class="label_block">');
 				e('<label for="dResolution">Резолюція</label>');
 				e('<select name="dResolution">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['incomingData']['resolutions'] as $mtRow) {
+					foreach ($d['resolutions'] as $mtRow) {
 						e('<option value="'. $mtRow['drs_id'] .'">'.  $mtRow['drs_content'] .'</option>');
 					}
 
@@ -138,15 +206,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['incomingData']['documentControlTypes']) &&
-				$d['incomingData']['documentControlTypes']) {
+		if (isset($d['controlTypes']) && $d['controlTypes']) {
 			e('<div class="label_block">');
 				e('<label for="dControlType">Контроль виконання</label>');
 				e('<select name="dControlType">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['incomingData']['documentControlTypes'] as $mtRow) {
+					foreach ($d['controlTypes'] as $mtRow) {
 						e('<option value="'. $mtRow['dct_id'] .'">'.  $mtRow['dct_name'] .'</option>');
 					}
 
@@ -157,6 +224,11 @@ e('<div class="fm">');
 		e('<div class="label_block">');
 			e('<label for="dExecutionDeadline">Дедлайн виконання</label>');
 			e('<input type="date" name="dExecutionDeadline" value="">');
+		e('</div>');
+
+		e('<div class="label_block">');
+			e('<label for="dFile">Документ</label>');
+			e('<input type="file" name="dFile" value="">');
 		e('</div>');
 
 		e('<div class="bt_add">');

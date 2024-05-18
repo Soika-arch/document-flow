@@ -186,3 +186,49 @@ function getPreviousClass (object $Obj, string $endClass): string {
 
 	return $previous;
 }
+
+/**
+ * Генерує випадковий рядок заданої довжини з вказаного набору символів.
+ * @param int $strLength Довжина випадкового рядка. За замовчуванням 5.
+ * @param string $chars Набір символів, з яких генерується рядок. За замовчуванням
+ * '0123456789abcdefghijklmnopqrstuvwxyz'.
+ * @return string Випадковий рядок заданої довжини з вказаного набору символів.
+ * @throws Exception Якщо генерація випадкового числа не вдалася.
+ */
+function randStr ($strLength=5, $chars='0123456789abcdefghijklmnopqrstuvwxyz') {
+	$charsLength = strlen($chars);
+	$randStr = '';
+
+	for($i = 0; $i < $strLength; $i++) $randStr .= $chars[random_int(0, $charsLength - 1)];
+
+	return $randStr;
+}
+
+/**
+ * Отримує значення з масиву за ключем з можливістю вказання значення за замовчуванням та обробки
+ * порожніх значень.
+ * @param array $arr Масив, з якого потрібно отримати значення.
+ * @param string $key Ключ, значення якого потрібно отримати.
+ * @param mixed $defaultValue Значення, яке повертається, якщо ключ не знайдено у масиві. За
+ * замовчуванням null.
+ * @param bool $nullForEmpty Чи повертати null для порожніх значень (null, порожній рядок, false). За
+ * замовчуванням true.
+ * @return mixed Значення з масиву або значення за замовчуванням, можливо null, якщо $nullForEmpty
+ * дорівнює true і значення є порожнім.
+ */
+function getArrayValue (array $arr, string $key, $defaultValue=null, bool $nullForEmpty=true) {
+	// Отримуємо значення з масиву за ключем або використовуємо значення за замовчуванням, якщо ключ
+	// не знайдено.
+	$v = $arr[$key] ?? $defaultValue;
+
+	// Перевіряємо, чи є значення порожнім (null, порожній рядок або false).
+	if ($v === null || $v === '' || $v === false) {
+		// Якщо параметр $nullForEmpty встановлено в true, повертаємо null для порожніх значень.
+    // Інакше повертаємо саме значення.
+
+		return $nullForEmpty ? null : $v;
+	}
+
+	// Якщо значення не є порожнім, повертаємо його.
+	return $v;
+}

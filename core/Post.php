@@ -17,7 +17,7 @@ class Post {
 
 	// Дозволені типи даних
 	private array $allowedTypes = [
-		'int', 'float', 'varchar', 'text', 'email'
+		'int', 'float', 'varchar', 'text', 'email', 'dateTime', 'date'
 	];
 
 	private array $errors = [];
@@ -72,8 +72,10 @@ class Post {
 
 				// Перевіряємо параметр за допомогою відповідного методу, якщо він існує.
 				if ($issetParam && (! $this->$checkMethod($name, $typeData))) {
-					$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
-						$checkMethod;
+					if (($this->post[$name] !== '') && $typeData['isRequired']) {
+						$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+							$checkMethod;
+					}
 				}
 			}
 			else {
@@ -110,13 +112,16 @@ class Post {
 	 */
 	private function checkInt (string $name, array $typeData) {
 		if (isset($typeData['pattern'])) {
-			if (! preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
+			if ($res = preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
 				$this->errors[] = 'Параметр: $_POST["'. $name .'"] - не відповідає шаблону [ '.
 					$typeData['pattern'] .' ]';
 			}
 		}
+		else {
+			$res = preg_match('/\d{0,11}/', $this->post[$name]);
+		}
 
-		return ctype_digit($this->post[$name]);
+		return $res;
 	}
 
 	/**
@@ -144,6 +149,30 @@ class Post {
 		if (preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
 
 			return $this->checkText($this->post[$name], $typeData);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function checkDateTime (string $name, array $typeData) {
+		if (preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
+
+			return $this->checkText($this->post[$name], $typeData);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function checkDate (string $name, array $typeData) {
+		if (preg_match('/\d{4}-\d\d-\d\d/', $this->post[$name])) {
+
+			return true;
 		}
 
 		return false;
