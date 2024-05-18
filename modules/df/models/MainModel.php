@@ -27,7 +27,7 @@ class MainModel extends MM {
 		$d = [];
 
 		$d['statuses'] = $this->getUserStatuses();
-
+		dd($d, __FILE__, __LINE__,1);
 		return $d;
 	}
 

@@ -32,7 +32,7 @@ class DocumentRegistrationController extends MC {
 		$Us = rg_Rg()->get('Us');
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$d['title'] = 'ЕД - Оберіть джерело документа';
+		$d['title'] = 'Оберіть джерело документа';
 
 		require $this->getViewFile('document_registration/type_selection');
 	}
@@ -48,7 +48,7 @@ class DocumentRegistrationController extends MC {
 			}
 		}
 
-		$d['title'] = 'ЕД - Додавання типу документа';
+		$d['title'] = 'Додавання типу документа';
 		$d = array_merge($d, $this->Model->add());
 
 		require $this->getViewFile('document_types/add');

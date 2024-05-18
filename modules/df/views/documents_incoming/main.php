@@ -1,6 +1,6 @@
 <?php
 
-// Вид головної типів документів.
+// Вид головної сторінки вхідних документів.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -14,16 +14,10 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-$url = url('/df');
-
 e('<div class="df-document-types-menu_1">');
 
 	e('<div>');
-		e('<a href="'. $url .'/documents-incoming">Вхідні документи</a>');
-	e('</div>');
-
-	e('<div>');
-		e('<a href="'. $url .'/document-types">Типи документів</a>');
+		e('<a href="'. $url .'/documents-incoming/list">Список вхідних документів</a>');
 	e('</div>');
 
 e('</div>');

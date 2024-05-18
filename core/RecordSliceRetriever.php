@@ -145,7 +145,7 @@ class RecordSliceRetriever {
 	 * @param int $sliceSize максимальна кількість елементів в одному зрізі.
 	 * @return array
 	 */
-	public function select (int $sliceSize, int $sliceNum=1) {
+	public function select (int $sliceSize, int $sliceNum=1, $mode=\PDO::FETCH_ASSOC) {
 		$this->sliceSize = $sliceSize;
 		$this->sliceNum = $sliceNum;
 		$offset = ($this->sliceSize * $sliceNum) - $this->sliceSize;
@@ -157,6 +157,14 @@ class RecordSliceRetriever {
 			->limit($this->sliceSize)
 			->offset($offset);
 
-		return db_select($this->SQL);
+		return db_select($this->SQL, $mode);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function selectCol (int $sliceSize, int $sliceNum=1, $mode=\PDO::FETCH_COLUMN) {
+
+		return $this->select($sliceSize, $sliceNum, $mode);
 	}
 }

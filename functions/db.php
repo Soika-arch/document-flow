@@ -57,6 +57,15 @@ function db_select (libs\query_builder\SelectQuery $SQL, $mode=\PDO::FETCH_ASSOC
 }
 
 /**
+ * Для отримання стовпця.
+ * @return array
+ */
+function db_selectCol (libs\query_builder\SelectQuery $SQL, $mode=\PDO::FETCH_COLUMN) {
+
+	return db_select($SQL, $mode);
+}
+
+/**
  * Для отримання рядка.
  * @return array
  */

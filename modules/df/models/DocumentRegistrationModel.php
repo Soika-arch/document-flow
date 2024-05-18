@@ -2,12 +2,9 @@
 
 namespace modules\df\models;
 
-use \core\db_record\document_types;
-use \modules\df\models\MainModel;
+use \core\User;
 use \core\Post;
-use \core\RecordSliceRetriever;
-use core\User;
-use \libs\Paginator;
+use \modules\df\models\MainModel;
 
 /**
  * Модель типів документів.
@@ -22,7 +19,7 @@ class DocumentRegistrationModel extends MainModel {
 	}
 
 	public function incomingPage () {
-		$d['title'] = 'ЕД - Реєстрація вхідного документа';
+		$d['title'] = 'Реєстрація вхідного документа';
 		$d['users'] = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['titles'] = $this->selectRowsByCol(DbPrefix .'document_titles');

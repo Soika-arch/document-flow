@@ -33,7 +33,7 @@ class DocumentTypesController extends MainController {
 		$Us = rg_Rg()->get('Us');
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$d['title'] = 'ЕД - Типи документів';
+		$d['title'] = 'Типи документів';
 
 		require $this->getViewFile('document_types/main');
 	}
@@ -49,7 +49,7 @@ class DocumentTypesController extends MainController {
 			}
 		}
 
-		$d['title'] = 'ЕД - Додавання типу документа';
+		$d['title'] = 'Додавання типу документа';
 		$d = array_merge($d, $this->Model->add());
 
 		require $this->getViewFile('document_types/add');
@@ -87,7 +87,7 @@ class DocumentTypesController extends MainController {
 			}
 		}
 
-		$d['title'] = 'ЕД - Типи документів';
+		$d['title'] = 'Типи документів';
 
 		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
 
