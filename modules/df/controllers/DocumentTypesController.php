@@ -31,6 +31,7 @@ class DocumentTypesController extends MainController {
 
 	public function mainPage () {
 		$Us = rg_Rg()->get('Us');
+
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
 		$d['title'] = 'Типи документів';
@@ -41,7 +42,7 @@ class DocumentTypesController extends MainController {
 	public function addPage () {
 		$Us = rg_Rg()->get('Us');
 
-		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+		if (! $this->checkPageAccess($Us->Status->_name, ['Admin', 'SuperAdmin'])) return;
 
 		if (isset($_POST['bt_addDt'])) {
 			if ($this->Model->addDocumentType()) {

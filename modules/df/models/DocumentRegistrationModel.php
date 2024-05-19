@@ -38,14 +38,14 @@ class DocumentRegistrationModel extends MainModel {
 	 * @return string
 	 */
 	public function generateIncomingNumber () {
-		$rStr = 'inc_'. randStr(4, '0123456789');
+		$rStr = 'inc_'. randStr(6);
 
 		$SQL = $this->selectCellByCol(
 			DbPrefix .'incoming_documents_registry', 'idr_number', $rStr, 'idr_id', '=', false
 		);
 
 		while (db_selectCell($SQL)) {
-			$rStr = 'INC_'. randStr(4, '0123456789');
+			$rStr = 'INC_'. randStr(6);
 
 			$SQL = $this->selectCellByCol(
 				DbPrefix .'incoming_documents_registry', 'idr_number', $rStr, 'idr_id', '=', false
@@ -112,7 +112,7 @@ class DocumentRegistrationModel extends MainModel {
 					'idr_id_assigned_user' => getArrayValue($Post->post, 'dAssignedUser', null),
 					'idr_id_assigned_departament' => getArrayValue($Post->post, 'dAssignedDepartament', null),
 					'idr_id_resolution' => getArrayValue($Post->post, 'dResolution', null),
-					'idr_resolution_date' => getArrayValue($Post->post, 'dResolution', null),
+					'idr_resolution_date' => null,
 					'idr_date_of_receipt_by_executor' => null,
 					'idr_id_execution_control' => getArrayValue($Post->post, 'dControlType', null),
 					'idr_control_date' => getArrayValue($Post->post, 'dExecutionDeadline', null),

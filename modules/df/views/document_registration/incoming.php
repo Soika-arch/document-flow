@@ -222,7 +222,7 @@ e('<div class="fm">');
 		}
 
 		e('<div class="label_block">');
-			e('<label for="dExecutionDeadline">Дедлайн виконання</label>');
+			e('<label for="dExecutionDeadline">Дата контроля</label>');
 			e('<input type="date" name="dExecutionDeadline" value="">');
 		e('</div>');
 

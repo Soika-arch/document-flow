@@ -76,8 +76,10 @@ class Get {
 
 				// Перевіряємо параметр за допомогою відповідного методу, якщо він існує.
 				if ($issetParam && (! $this->$checkMethod($name, $typeData))) {
-					$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
-						$checkMethod;
+					if (($this->get[$name] !== '') && $typeData['isRequired']) {
+						$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+							$checkMethod;
+					}
 				}
 			}
 			else {
@@ -114,13 +116,16 @@ class Get {
 	 */
 	private function checkInt (string $name, array $typeData) {
 		if (isset($typeData['pattern'])) {
-			if (! preg_match('/'. $typeData['pattern'] .'/', $this->get[$name])) {
+			if (! ($res = preg_match('/'. $typeData['pattern'] .'/', intval($this->get[$name])))) {
 				$this->errors[] = 'Параметр: $_GET["'. $name .'"] - не відповідає шаблону [ '.
 					$typeData['pattern'] .' ]';
 			}
 		}
+		else {
+			$res = preg_match('/\d{0,11}/', $this->get[$name]);
+		}
 
-		return ctype_digit($this->get[$name]);
+		return $res;
 	}
 
 	/**
@@ -135,8 +140,8 @@ class Get {
 	 * Перевіряє чи є $v текстом, а також чи відповідиє довжина тексту величині $l.
 	 * @return bool
 	 */
-	private function checkText (string $v, int|null $l=null) {
-		$f = $l ? (strlen($v) <= $l) : true;
+	private function checkText (string $v, array $typeData) {
+		$f = isset($typeData['length']) ? (strlen($v) <= $typeData['length']) : true;
 
 		return ($f && is_string($v));
 	}
@@ -147,7 +152,31 @@ class Get {
 	private function checkVarchar (string $name, array $typeData) {
 		if (preg_match('/'. $typeData['pattern'] .'/', $this->get[$name])) {
 
-			return $this->checkText($this->get[$name], 255);
+			return $this->checkText($this->get[$name], $typeData);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function checkDateTime (string $name, array $typeData) {
+		if (preg_match('/'. $typeData['pattern'] .'/', $this->post[$name])) {
+
+			return $this->checkText($this->post[$name], $typeData);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function checkDate (string $name, array $typeData) {
+		if (preg_match('/\d{4}-\d\d-\d\d/', $this->get[$name])) {
+
+			return true;
 		}
 
 		return false;

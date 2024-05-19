@@ -21,12 +21,21 @@ if (isset($d['documents']) && $d['documents']) {
 
 	e('<div>');
 
+		$num = $d['Pagin']->getCurrentPageFirstItem();
+
 		foreach ($d['documents'] as $docRow) {
 			$Doc = new incoming_documents_registry(null, $docRow);
-			$num = $d['Pagin']->getCurrentPageFirstItem();
+
+			$docCardURL = url('/df/documents-incoming/card',
+				['n' => str_replace('inc_', '', $Doc->_number)]);
+
+			$docTitle = '<a href="'. $docCardURL .'" target="_blank">'. $Doc->DocumentTitle->_title .'</a>';
 
 			e('<div>');
-				e('<span class="num">'. $num .'. </span>'. $Doc->DocumentTitle->_title);
+				e('<span class="num">'. $num++ .'. </span>');
+				e('<span class="doc-title">'. $docTitle .'</span>');
+				e('<span class="doc-date">'. date('d.m.Y', strtotime($Doc->_document_date)) .'</span>');
+				e('<span class="doc-date">'. strtoupper($Doc->_number) .'</span>');
 			e('</div>');
 		}
 
