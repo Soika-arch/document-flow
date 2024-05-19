@@ -21,24 +21,28 @@ if (isset($d['usersData']) && $d['usersData']) {
 			e($d['usersData']['Pagin']->toHtml());
 		}
 
-		foreach ($d['usersData']['users'] as $usRow) {
-			e('<div class="user-data">');
+		e('<div class="users">');
 
-				$profileURL = url('');
-				$delURL = url('', ['del_user' => $usRow['us_id']]);
-				$delIMG = url('/img/delete.png');
+			foreach ($d['usersData']['users'] as $usRow) {
+				e('<div class="user-data">');
 
-				e('<div class="user-login">');
-					e('<a href="'. $profileURL .'">'. $usRow['us_login'] .'</a>');
+					$profileURL = url('');
+					$delURL = url('', ['del_user' => $usRow['us_id']]);
+					$delIMG = url('/img/delete.png');
+
+					e('<div class="user-login">');
+						e('<a href="'. $profileURL .'">'. $usRow['us_login'] .'</a>');
+					e('</div>');
+
+					e('<div class="user-control-buttons">');
+						e('<a href="'. $delURL .'"><img class="img-button" src="'. $delIMG .
+							'" title="Видалити користувача"></a>');
+					e('</div>');
+
 				e('</div>');
+			}
 
-				e('<div class="user-control-buttons">');
-					e('<a href="'. $delURL .'"><img class="img-button" src="'. $delIMG .
-						'" title="Видалити користувача"></a>');
-				e('</div>');
-
-			e('</div>');
-		}
+		e('</div>');
 
 	e('</div>');
 }

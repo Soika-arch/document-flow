@@ -30,6 +30,7 @@ class DocumentRegistrationModel extends MainModel {
 		$d['resolutions'] = $this->selectRowsByCol(DbPrefix .'document_resolutions');
 		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
 		$d['senders'] = $this->selectRowsByCol(DbPrefix .'document_senders');
+		$d['terms'] = $this->selectRowsByCol(DbPrefix .'terms_of_execution');
 
 		return $d;
 	}
@@ -91,6 +92,13 @@ class DocumentRegistrationModel extends MainModel {
 
 		$dtNow = tm_convertToDatetime();
 
+		if (isset($Post->post['dControlType']) && $Post->post['dControlType']) {
+			$termOfExecution = $Post->post['dControlTerm'];
+		}
+		else {
+			$termOfExecution = null;
+		}
+
 		$SQL
 			->into(DbPrefix .'incoming_documents_registry')
 			->set(
@@ -115,6 +123,7 @@ class DocumentRegistrationModel extends MainModel {
 					'idr_resolution_date' => null,
 					'idr_date_of_receipt_by_executor' => null,
 					'idr_id_execution_control' => getArrayValue($Post->post, 'dControlType', null),
+					'idr_id_term_of_execution' => $termOfExecution,
 					'idr_control_date' => getArrayValue($Post->post, 'dExecutionDeadline', null),
 					'idr_execution_date' => null,
 					'idr_add_date' => $dtNow,

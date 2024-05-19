@@ -17,7 +17,7 @@ if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 if (isset($d['documents']) && $d['documents']) {
-	if (isset($d['Pagin']) && ($d['Pagin']->getNumPages() > 1)) e($d['Pagin']->toHtml());
+	if ($d['Pagin']->getNumPages() > 1) e($d['Pagin']->toHtml());
 
 	e('<div>');
 

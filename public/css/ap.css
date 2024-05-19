@@ -91,6 +91,10 @@
 	padding: 10px 10px 0px 20px;
 }
 
+.admin-users_list .users {
+	padding-top: 20px;
+}
+
 .admin-users_list .user-data {
 	padding: 0px 0px 10px 0px;
 }

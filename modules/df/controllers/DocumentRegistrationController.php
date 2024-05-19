@@ -149,8 +149,8 @@ class DocumentRegistrationController extends MC {
 				'type' => 'int',
 				'isRequired' => false
 			],
-			'dExecutionDeadline' => [
-				'type' => 'date',
+			'dControlTerm' => [
+				'type' => 'int',
 				'isRequired' => false
 			],
 			'dFile' => [

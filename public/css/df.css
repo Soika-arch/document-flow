@@ -194,3 +194,42 @@
 	width: 300px;
 	cursor: pointer;
 }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Форма реєстрації вхідного документа на сторінкі 'df/document-registration/incoming'. */
+
+.fm_ad-incoming-document {
+
+}
+
+.fm_ad-incoming-document #dControlTerm {
+	display: none;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Журнал документів на сторінкі 'df'. */
+
+.menu-journal-1 {
+	display: inline-block;
+	width: 100%;
+	border-top: 1px solid black;
+	background-color: #f0f0f0;
+	text-align: center;
+}
+
+.menu-journal-1 .elem {
+	display: inline-block;
+	width: 33%;
+	text-align: center;
+}
+
+.menu-journal-1 .elem a {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+}
+
+.menu-journal-1 .elem:hover {
+	background-color: #cdc9c9;
+}

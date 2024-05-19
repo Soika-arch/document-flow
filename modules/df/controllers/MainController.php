@@ -3,6 +3,7 @@
 namespace modules\df\controllers;
 
 use \core\controllers\MainController as MC;
+use \core\Get;
 use \modules\df\models\MainModel;
 
 /**
@@ -29,9 +30,26 @@ class MainController extends MC {
 
 	public function mainPage () {
 		$Us = rg_Rg()->get('Us');
+
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$d['title'] = 'ЕД';
+		$Get = new Get([
+			'mode' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(inc)|(out)|(int)$'
+			],
+			'pg' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			],
+		]);
+
+		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
+		$mode = isset($_GET['mode']) ? $Get->get['mode'] : 'inc';
+
+		$d = $this->Model->mainPage($pageNum, $mode);
 
 		require $this->getViewFile('main');
 	}

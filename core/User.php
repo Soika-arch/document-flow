@@ -2,10 +2,10 @@
 
 namespace core;
 
-use core\db_record\users;
-use core\db_record\users_rel_statuses;
-use core\db_record\user_statuses;
-use core\db_record\visitor_routes;
+use \core\db_record\users;
+use \core\db_record\users_rel_statuses;
+use \core\db_record\user_statuses;
+use \core\db_record\visitor_routes;
 
 class User extends users {
 

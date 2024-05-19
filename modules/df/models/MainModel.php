@@ -3,9 +3,7 @@
 namespace modules\df\models;
 
 use \core\models\MainModel as MM;
-use \core\Post;
 use \core\RecordSliceRetriever;
-use \core\User;
 use \libs\Paginator;
 
 /**
@@ -23,62 +21,32 @@ class MainModel extends MM {
 	/**
 	 *
 	 */
-	public function add () {
-		$d = [];
+	public function mainPage (int $pageNum=1, string $mode='inc') {
+		$d['title'] = 'ЕД';
 
-		$d['statuses'] = $this->getUserStatuses();
-		dd($d, __FILE__, __LINE__,1);
+		$tables = [
+			'inc' => 'incoming_documents_registry',
+			'out' => 'outgoing_documents_registry',
+			'int' => 'internal_documents_registry'
+		];
+
+		$d['px'] = db_Db()->getColPxByTableName(DbPrefix . $tables[$mode]);
+
+		$SQLDocs = (new RecordSliceRetriever())
+			->from(DbPrefix .$tables[$mode])
+			->columns([DbPrefix .$tables[$mode] .'.*'])
+			->orderBy($d['px'] .'add_date');
+
+		$itemsPerPage = 5;
+
+		$d['tableName'] = $tables[$mode];
+		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+
+		$url = url('/df?mode='. $mode .'&pg=(:num)');
+
+		$d['Pagin'] = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+
 		return $d;
-	}
-
-	/**
-	 * Обробка спроби додавання нового користувача в БД.
-	 * @return bool
-	 */
-	public function addUser () {
-		$Post = new Post('fm_userAdd', [
-			'login' => [
-				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
-			],
-			'password' => [
-				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9!@#$%^&*()_+=_-]{5,32}$'
-			],
-			'email' => [
-				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-			],
-			'status' => [
-				'type' => 'int'
-			],
-			'bt_addUser' => [
-				'type' => 'varchar',
-				'pattern' => '^$'
-			]
-		]);
-
-		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
-
-		$login = $Post->sanitizeValue('login');
-
-		$UserNew = (new User(null))->set([
-			'us_login' => $login,
-			'us_password_hash' => password_hash($Post->post['password'], PASSWORD_DEFAULT),
-			'us_email' => $Post->post['email'],
-			'us_add_date' => date('Y-m-d H:i:s')
-		]);
-
-		if ($UserNew->_id) {
-			sess_addSysMessage('Створено нового користувача <b>'. $login .'</b>.');
-
-			if ($UserNew->setStatus($Post->sanitizeValue('status'))) {
-				sess_addSysMessage('Користувачу <b>'. $login .'</b> призначено статус <b>'.
-					$UserNew->Status->_name .'</b>.');
-			}
-		}
-
-		return true;
 	}
 
 	/**
@@ -91,13 +59,11 @@ class MainModel extends MM {
 			->columns(['dt_id', 'dt_name'])
 			->orderBy('dt_id');
 
-		$itemsPerPage = 2;
+		$itemsPerPage = 5;
 
 		$d['dt'] = $SQLDt->select($itemsPerPage, $pageNum);
 
-		$Pagin = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, 1);
-
-		$d['pagin'] = $Pagin->getPages();
+		$d['Pagin'] = new Paginator($SQLDt->getRowsCount(), $itemsPerPage, $pageNum);
 
 		return $d;
 	}

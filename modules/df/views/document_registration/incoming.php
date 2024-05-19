@@ -17,8 +17,8 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 $url = url('/df');
 
 e('<div class="fm">');
-	e('<form enctype="multipart/form-data" name="fm_addIncomingDocument" action="'.
-		url('') .'-add" method="post">');
+	e('<form class="fm_ad-incoming-document" enctype="multipart/form-data"'.
+		' name="fm_addIncomingDocument" action="'. url('') .'-add" method="post">');
 
 		e('<div class="label_block">');
 			e('<label for="dIncomingDate">Дата вхідного</label>');
@@ -209,9 +209,9 @@ e('<div class="fm">');
 		if (isset($d['controlTypes']) && $d['controlTypes']) {
 			e('<div class="label_block">');
 				e('<label for="dControlType">Контроль виконання</label>');
-				e('<select name="dControlType">');
+				e('<select id="dControlType" name="dControlType">');
 
-					e('<option value=""></option>');
+					e('<option value="">Без контролю</option>');
 
 					foreach ($d['controlTypes'] as $mtRow) {
 						e('<option value="'. $mtRow['dct_id'] .'">'.  $mtRow['dct_name'] .'</option>');
@@ -221,10 +221,18 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		e('<div class="label_block">');
-			e('<label for="dExecutionDeadline">Дата контроля</label>');
-			e('<input type="date" name="dExecutionDeadline" value="">');
-		e('</div>');
+		if (isset($d['terms']) && $d['terms']) {
+			e('<div id="dControlTerm" class="label_block hide_by-d_control_type">');
+				e('<label for="dControlTerm">Терміни виконання</label>');
+				e('<select name="dControlTerm">');
+
+					foreach ($d['terms'] as $mtRow) {
+						e('<option value="'. $mtRow['toe_id'] .'">'.  $mtRow['toe_name'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
 
 		e('<div class="label_block">');
 			e('<label for="dFile">Документ</label>');
@@ -237,5 +245,7 @@ e('<div class="fm">');
 
 	e('</form>');
 e('</div>');
+
+e('<script src="/js/main.js"></script>');
 
 require $this->getViewFile('/inc/footer');
