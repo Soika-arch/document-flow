@@ -2,8 +2,8 @@
 
 namespace modules\df\models;
 
-use core\db_record\incoming_documents_registry;
-use core\Get;
+use \score\db_record\incoming_documents_registry;
+use \core\Get;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
 use \modules\df\models\MainModel;

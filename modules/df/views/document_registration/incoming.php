@@ -22,13 +22,13 @@ e('<div class="fm">');
 
 		e('<div class="label_block">');
 			e('<label for="dIncomingDate">Дата вхідного</label>');
-			e('<input type="date" name="dIncomingDate" value="'. date('Y-m-d') .'">');
+			e('<input type="date" name="dIncomingDate" value="'. date('Y-m-d') .'" required>');
 		e('</div>');
 
 		if (isset($d['documentTypes']) && $d['documentTypes']) {
 			e('<div class="label_block">');
 				e('<label for="dType">Тип документа</label>');
-				e('<select name="dType">');
+				e('<select name="dType" required>');
 
 					foreach ($d['documentTypes'] as $dtRow) {
 						e('<option value="'. $dtRow['dt_id'] .'">'.  $dtRow['dt_name'] .'</option>');
@@ -41,7 +41,7 @@ e('<div class="fm">');
 		if (isset($d['carrierTypes']) && $d['carrierTypes']) {
 			e('<div class="label_block">');
 				e('<label for="dCarrierType">Тип носія документа</label>');
-				e('<select name="dCarrierType">');
+				e('<select name="dCarrierType" required>');
 
 					foreach ($d['carrierTypes'] as $mtRow) {
 						e('<option value="'. $mtRow['cts_id'] .'">'.  $mtRow['cts_name'] .'</option>');
@@ -69,7 +69,7 @@ e('<div class="fm">');
 		if (isset($d['titles']) && $d['titles']) {
 			e('<div class="label_block">');
 				e('<label for="dTitle">Назва чи заголовок документа</label>');
-				e('<select name="dTitle">');
+				e('<select name="dTitle" required>');
 
 					e('<option value=""></option>');
 
@@ -99,7 +99,7 @@ e('<div class="fm">');
 		if (isset($d['documentStatuses']) && $d['documentStatuses']) {
 			e('<div class="label_block">');
 				e('<label for="dStatus">Статус документа</label>');
-				e('<select name="dStatus">');
+				e('<select name="dStatus" required>');
 
 					foreach ($d['documentStatuses'] as $mtRow) {
 						e('<option value="'. $mtRow['dst_id'] .'">'.  $mtRow['dst_name'] .'</option>');
@@ -236,7 +236,7 @@ e('<div class="fm">');
 
 		e('<div class="label_block">');
 			e('<label for="dFile">Документ</label>');
-			e('<input type="file" name="dFile" value="">');
+			e('<input type="file" name="dFile" value="" required>');
 		e('</div>');
 
 		e('<div class="bt_add">');

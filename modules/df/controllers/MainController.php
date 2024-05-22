@@ -49,7 +49,7 @@ class MainController extends MC {
 		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
 		$mode = isset($_GET['mode']) ? $Get->get['mode'] : 'inc';
 
-		$d = $this->Model->mainPage($pageNum, $mode);
+		$d = $this->Model->mainPage('pageNum:'. $pageNum, 'mode:'. $mode);
 
 		require $this->getViewFile('main');
 	}

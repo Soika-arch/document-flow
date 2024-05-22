@@ -2,8 +2,8 @@
 
 namespace core\controllers;
 
-use core\exceptions\MainException;
-use core\Router;
+use \core\exceptions\MainException;
+use \core\Router;
 
 /**
  * Базовий контролер.

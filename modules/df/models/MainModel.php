@@ -21,7 +21,10 @@ class MainModel extends MM {
 	/**
 	 *
 	 */
-	public function mainPage (int $pageNum=1, string $mode='inc') {
+	public function mainPage () {
+		$args = funcGetArgs(func_get_args());
+		$pageNum = isset($args['pageNum']) ? $args['pageNum'] : 1;
+		$mode = isset($args['mode']) ? $args['mode'] : 'inc';
 		$d['title'] = 'ЕД';
 
 		$tables = [
