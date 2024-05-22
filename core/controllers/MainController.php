@@ -47,6 +47,15 @@ class MainController {
 	}
 
 	/**
+	 * Сторінка 'confirmation'.
+	 */
+	public function confirmationPage () {
+		$d = $this->Model->confirmationPage();
+
+		require $this->getViewFile('/confirmation');
+	}
+
+	/**
 	 *
 	 */
 	public function notFoundPage () {

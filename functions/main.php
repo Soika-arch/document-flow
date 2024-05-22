@@ -139,7 +139,48 @@ function url (null|string $s=null, array $p=[]): string {
 	}
 
 	// Якщо отримані GET-параметри - вони будуть додані до створеного URL.
-	return $p ? $url . '?'. http_build_query($p) : $url;
+	return $p ? setURLParams($url, $p) : $url;
+}
+
+/**
+ * @return string
+ */
+function setURLParams (string $url, array $params) {
+	if (! strpos($url, '?')) $url .= '?';
+
+	foreach ($params as $n => $v) {
+		if (strpos($n, '-') === 0) {
+			$n = ltrim($n, '-');
+
+			$url = trim(preg_replace('/([&?]?)'. $n .'=[^&]*(&|$)/', '$1', $url), '&');
+		}
+		else {
+			$url .= '&'. $n .'='. $v;
+		}
+	}
+
+	return str_replace('?&', '?', $url);
+}
+
+/**
+ * @return string
+ */
+function addURLParam (string $url, string $n, string $v) {
+	if (! strpos($url, '?')) $url .= '?';
+
+	if (strpos($url, $n) !== false) {
+		$url = trim(preg_replace('/([&?]?)'. $n .'=[^&]*(&|$)/', '$1', $url), '&');
+	}
+
+	return $url .'&'. $n .'='. $v;
+}
+
+/**
+ * @return string
+ */
+function delURLParam (string $url, string $pName) {
+
+	return trim(preg_replace('/([&?]?)'. $pName .'=[^&]*(&|$)/', '$1', $url), '&?');
 }
 
 /**

@@ -42,3 +42,10 @@ function sess_isErrMessages () {
 function sess_deleteSysMessage (int $key) {
 	if (isset($_SESSION['sysMessages'][$key])) unset($_SESSION['sysMessages'][$key]);
 }
+
+/**
+ * Додавання даних підтвердження операції користувача в масив $_SESSION['confirmation'].
+ */
+function sess_addConfirmData (array $data) {
+	$_SESSION['confirmation'] = $data;
+}

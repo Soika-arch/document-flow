@@ -70,6 +70,11 @@ class UsersController extends MainController {
 				'type' => 'int',
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
+			],
+			'confirm' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(y|n)$'
 			]
 		]);
 
@@ -78,13 +83,26 @@ class UsersController extends MainController {
 		// Видалення користувача.
 		if (isset($_GET['del_user'])) {
 			$UsDeleted = new User($_GET['del_user']);
-			$login = $UsDeleted->_login;
-			$resDel = $UsDeleted->delete();
 
-			if ($resDel['rowCount']) {
-				sess_addSysMessage('Користувача <b>'. $login .'</b> видалено.');
-				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
+			if (isset($Get->get['confirm']) && ($Get->get['confirm'] === 'y')) {
+				$login = $UsDeleted->_login;
+				$resDel = $UsDeleted->delete();
+
+				if ($resDel['rowCount']) {
+					sess_addSysMessage('Користувача <b>'. $login .'</b> видалено.');
+					hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
+				}
 			}
+
+			unset($get['del_user']);
+
+			sess_addConfirmData([
+				'question' => 'Видалити користувача [ <b>'. $UsDeleted->_login .'</b> ] ?',
+				'sourceURL' => URL,
+				'paramsForDeletion' => ['del_user']
+			]);
+
+			hd_sendHeader('Location: '. url('/confirmation'), __FILE__, __LINE__);
 		}
 
 		$d['title'] = 'Адмін-панель - Користувачі';

@@ -20,6 +20,16 @@ class MainModel {
 	 * Повертає дані для сторінки ''.
 	 * @return array
 	 */
+	public function confirmationPage () {
+		$d['title'] = 'Підтвердження операції';
+
+		return $d;
+	}
+
+	/**
+	 * Повертає дані для сторінки ''.
+	 * @return array
+	 */
 	public function mainPage () {
 		$d['title'] = 'Авторизація користувача';
 

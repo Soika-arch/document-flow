@@ -291,3 +291,47 @@ https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
 .footer-debug-info {
 	margin: 30px 0px 0px 0px;
 }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок підтвердження операції користувача на сторінкі 'confirmation'. */
+
+.user-confirmation {
+	padding: 10px 0px 0px 60px;
+}
+
+.user-confirmation h3 {
+	padding: 0px 0px 0px 30px;
+	font-size: 24px;
+	color: rgb(170, 50, 17);
+}
+
+.user-confirmation .buttons {
+	padding: 20px 0px 0px 100px;
+}
+
+.user-confirmation .buttons div {
+
+}
+
+.user-confirmation .buttons a {
+	border: 1px silver solid;
+	display: inline-block;
+	padding: 8px 0px;
+	margin-bottom: 30px;
+	width: 200px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 24px;
+}
+
+.user-confirmation .buttons a:hover {
+	font-weight: bold;
+}
+
+.user-confirmation .buttons .cancel {
+	color: green;
+}
+
+.user-confirmation .buttons .confirm {
+	color: rgb(234, 23, 44);
+}
