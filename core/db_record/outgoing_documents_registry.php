@@ -3,9 +3,9 @@
 namespace core\db_record;
 
 /**
- * Модель для роботи з записом таблиці incoming_documents_registry.
+ * Модель для роботи з записом таблиці outgoing_documents_registry.
  */
-class incoming_documents_registry extends DbRecord {
+class outgoing_documents_registry extends DbRecord {
 
 	protected document_titles $DocumentTitle;
 	protected users $RegistrarUser;
@@ -25,7 +25,7 @@ class incoming_documents_registry extends DbRecord {
 			$this->foreignKeys = [
 				DbPrefix .'users' => [
 					'key_column' => 'id',
-					'relation_column' => 'idr_id_user',
+					'relation_column' => 'odr_id_user',
 					'onDelete' => false
 				]
 			];

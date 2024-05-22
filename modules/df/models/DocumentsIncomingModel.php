@@ -2,7 +2,7 @@
 
 namespace modules\df\models;
 
-use \score\db_record\incoming_documents_registry;
+use \core\db_record\incoming_documents_registry;
 use \core\Get;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
