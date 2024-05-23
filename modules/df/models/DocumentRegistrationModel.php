@@ -44,6 +44,23 @@ class DocumentRegistrationModel extends MainModel {
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
 		$d['documentStatuses'] = $this->selectRowsByCol(DbPrefix .'document_statuses');
+		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
+		$d['recipients'] = $this->selectRowsByCol(DbPrefix .'document_senders');
+		$d['terms'] = $this->selectRowsByCol(DbPrefix .'terms_of_execution');
+
+		return $d;
+	}
+
+	public function internalPage () {
+		$d['title'] = 'Реєстрація внутрішнього документа';
+		$d['users'] = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
+		$d['titles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
+		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
+		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
+		$d['documentStatuses'] = $this->selectRowsByCol(DbPrefix .'document_statuses');
+		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
 		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
 		$d['recipients'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 		$d['terms'] = $this->selectRowsByCol(DbPrefix .'terms_of_execution');
@@ -96,7 +113,29 @@ class DocumentRegistrationModel extends MainModel {
 	}
 
 	/**
-	 * @return
+	 * @return string
+	 */
+	public function generateInternalNumber () {
+		$pref = 'int_';
+		$rStr = $pref . randStr(6);
+
+		$SQL = $this->selectCellByCol(
+			DbPrefix .'internal_documents_registry', 'inr_number', $rStr, 'inr_id', '=', false
+		);
+
+		while (db_selectCell($SQL)) {
+			$rStr = $pref . randStr(6);
+
+			$SQL = $this->selectCellByCol(
+				DbPrefix .'internal_documents_registry', 'inr_number', $rStr, 'inr_id', '=', false
+			);
+		}
+
+		return $rStr;
+	}
+
+	/**
+	 *
 	 */
 	public function addIncomingDocument (Post $Post) {
 		/** @var User */
@@ -233,6 +272,68 @@ class DocumentRegistrationModel extends MainModel {
 					'odr_execution_date' => null,
 					'odr_add_date' => $dtNow,
 					'odr_change_date' => $dtNow
+				]
+		);
+
+		return db_insertRow($SQL);
+	}
+
+	/**
+	 *
+	 */
+	public function addInternalDocument (Post $Post) {
+		/** @var User */
+		$Us = rg_Rg()->get('Us');
+
+		$newDocNum = $this->generateInternalNumber();
+		$pathInfo = pathinfo($_FILES['dFile']['name']);
+		$storage = DirModules .'/'. URIModule .'/storage';
+		$newDocName = $newDocNum .'.'. $pathInfo['extension'];
+
+		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storage .'/'. $newDocName)) {
+			sess_addErrMessage('Помилка завантаження файла');
+			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
+		}
+
+		$SQL = db_getInsert();
+
+		$dtNow = tm_convertToDatetime();
+
+		if (isset($Post->post['dControlType']) && $Post->post['dControlType']) {
+			$termOfExecution = $Post->post['dControlTerm'];
+		}
+		else {
+			$termOfExecution = null;
+		}
+
+		$SQL
+			->into(DbPrefix .'internal_documents_registry')
+			->set(
+				[
+					'inr_id_user' => $Us->_id,
+					'inr_id_carrier_type' => $Post->post['dCarrierType'],
+					'inr_id_document_location' => getArrayValue($Post->post, 'dLocation', null),
+					'inr_number' => $newDocNum,
+					'inr_additional_number' => getArrayValue($Post->post, 'dAdditionalNumber', null),
+					'inr_id_title' => $Post->post['dTitle'],
+					'inr_id_description' => getArrayValue($Post->post, 'dDescription', null),
+					'inr_document_date' => getArrayValue($Post->post, 'dInternalDate', null),
+					'inr_id_initiator' => $Post->post['dUserInitiator'],
+					'inr_id_recipient' => getArrayValue($Post->post, 'dRecipientUser', null),
+					'inr_id_status' => getArrayValue($Post->post, 'dStatus', null),
+					'inr_id_responsible_user' => getArrayValue($Post->post, 'dResponsibleUser', null),
+					'inr_id_assigned_departament' => getArrayValue($Post->post, 'dAssignedDepartament', null),
+					'inr_id_assigned_user' => getArrayValue($Post->post, 'dAssignedUser', null),
+					'inr_date_of_receipt_by_executor' => null,
+					'inr_id_execution_control' => getArrayValue($Post->post, 'dControlType', null),
+					'inr_id_term_of_execution' => $termOfExecution,
+					'inr_control_date' => getArrayValue($Post->post, 'dExecutionDeadline', null),
+					'inr_execution_date' => null,
+					'inr_distribution_scope' => getArrayValue($Post->post, 'distributionScope', null),
+					'inr_file_extension' => $pathInfo['extension'],
+					'inr_id_document_type' => $Post->post['dType'],
+					'inr_add_date' => $dtNow,
+					'inr_change_date' => $dtNow
 				]
 		);
 
