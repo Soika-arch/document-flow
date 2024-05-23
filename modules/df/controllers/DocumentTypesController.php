@@ -5,6 +5,7 @@ namespace modules\df\controllers;
 use \core\Get;
 use \core\controllers\MainController;
 use \core\db_record\document_types;
+use core\Post;
 use \modules\df\models\DocumentTypesModel;
 
 /**
@@ -45,7 +46,23 @@ class DocumentTypesController extends MainController {
 		if (! $this->checkPageAccess($Us->Status->_name, ['Admin', 'SuperAdmin'])) return;
 
 		if (isset($_POST['bt_addDt'])) {
-			if ($this->Model->addDocumentType()) {
+			$Post = new Post('fm_userAdd', [
+				'dtName' => [
+					'type' => 'varchar',
+					'pattern' => '^[ \'№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]{1,255}$'
+				],
+				'dtDescription' => [
+					'type' => 'text',
+					'length' => 1000,
+					'pattern' => '[ \',.;:!@#$%&()\[\]{}=№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]{1,1000}'
+				],
+				'bt_addDt' => [
+					'type' => 'varchar',
+					'pattern' => '^$'
+				]
+			]);
+
+			if ($this->Model->addDocumentType($Post)) {
 				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 			}
 		}

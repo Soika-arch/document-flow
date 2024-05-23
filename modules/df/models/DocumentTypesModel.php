@@ -33,24 +33,9 @@ class DocumentTypesModel extends MainModel {
 	 * Обробка спроби додавання нового користувача в БД.
 	 * @return bool
 	 */
-	public function addDocumentType () {
+	public function addDocumentType (Post $Post) {
 		$regexp = require DirConfig .'';
 		dd($regexp['freeTextClass'], __FILE__, __LINE__,1);
-		$Post = new Post('fm_userAdd', [
-			'dtName' => [
-				'type' => 'varchar',
-				'pattern' => '^[ \'№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]{1,255}$'
-			],
-			'dtDescription' => [
-				'type' => 'text',
-				'length' => 1000,
-				'pattern' => '[ \',.;:!@#$%&()\[\]{}=№a-zA-Zа-яА-ЯїЇіІєЄґҐеЕсСШшьЬтТрРуУщЩюЮхХ\d-]{1,1000}'
-			],
-			'bt_addDt' => [
-				'type' => 'varchar',
-				'pattern' => '^$'
-			]
-		]);
 
 		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
 

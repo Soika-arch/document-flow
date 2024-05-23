@@ -28,9 +28,6 @@ class DocumentsInternalController extends MC {
 		return $this->allowedStatuses;
 	}
 
-	/**
-	 *
-	 */
 	public function mainPage () {
 		$Us = rg_Rg()->get('Us');
 
@@ -41,9 +38,6 @@ class DocumentsInternalController extends MC {
 		require $this->getViewFile('documents_internal/main');
 	}
 
-	/**
-	 *
-	 */
 	public function listPage () {
 		$Us = rg_Rg()->get('Us');
 
@@ -71,9 +65,6 @@ class DocumentsInternalController extends MC {
 		require $this->getViewFile('documents_internal/list');
 	}
 
-	/**
-	 *
-	 */
 	public function cardPage () {
 		$Us = rg_Rg()->get('Us');
 

@@ -11,6 +11,9 @@ use \libs\Paginator;
  */
 class MainModel extends MM {
 
+	/** @var string повний шлях до каталога зберігання завантажених документів. */
+	protected string $storagePath;
+
 	/**
 	 *
 	 */
@@ -19,34 +22,33 @@ class MainModel extends MM {
 	}
 
 	/**
+	 * Ініціалізує та повертає властивість $this->storagePath.
+	 * @return string
+	 */
+	protected function get_storagePath () {
+		if (! isset($this->storagePath)) $this->storagePath = DirModules .'/'. URIModule .'/storage';
+
+		return $this->storagePath;
+	}
+
+	/**
 	 *
 	 */
 	public function mainPage () {
 		$args = funcGetArgs(func_get_args());
 		$pageNum = isset($args['pageNum']) ? $args['pageNum'] : 1;
-		$mode = isset($args['mode']) ? $args['mode'] : 'inc';
 		$d['title'] = 'ЕД';
 
-		$tables = [
-			'inc' => ['tName' => 'incoming_documents_registry', 'controllerURI' => 'documents-incoming'],
-			'out' => ['tName' => 'outgoing_documents_registry', 'controllerURI' => 'documents-outgoing'],
-			'int' => ['tName' => 'internal_documents_registry', 'controllerURI' => 'documents-internal']
-		];
-
-		$d['controllerURI'] = $tables[$mode]['controllerURI'];
-		$d['px'] = db_Db()->getColPxByTableName(DbPrefix . $tables[$mode]['tName']);
-
 		$SQLDocs = (new RecordSliceRetriever())
-			->from(DbPrefix . $tables[$mode]['tName'])
-			->columns([DbPrefix . $tables[$mode]['tName'] .'.*'])
-			->orderBy($d['px'] .'add_date');
+			->from(DbPrefix . 'incoming_documents_registry')
+			->columns([DbPrefix .'incoming_documents_registry.*'])
+			->orderBy('idr_add_date');
 
 		$itemsPerPage = 5;
 
-		$d['tableName'] = $tables[$mode]['tName'];
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 
-		$url = url('/df?mode='. $mode .'&pg=(:num)');
+		$url = url('/df/documents-incoming?pg=(:num)');
 
 		$d['Pagin'] = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 

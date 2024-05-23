@@ -30,6 +30,7 @@ class DocumentRegistrationController extends MC {
 
 	public function sourceSelectionPage () {
 		$Us = rg_Rg()->get('Us');
+
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
 		$d['title'] = 'Оберіть джерело документа';
@@ -219,9 +220,9 @@ class DocumentRegistrationController extends MC {
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
 
-		$addResult = $this->Model->addIncomingDocument($Post);
+		$DocNew = $this->Model->addIncomingDocument($Post);
 
-		if ($addResult['lastInsertId']) {
+		if ($DocNew) {
 			sess_addSysMessage('Документ додано до реєстра');
 		}
 		else {
@@ -317,9 +318,9 @@ class DocumentRegistrationController extends MC {
 			hd_sendHeader('Location: '. url('/df/document-registration/outgoing'), __FILE__, __LINE__);
 		}
 
-		$addResult = $this->Model->addOutgoingDocument($Post);
+		$DocNew = $this->Model->addOutgoingDocument($Post);
 
-		if ($addResult['lastInsertId']) {
+		if ($DocNew) {
 			sess_addSysMessage('Документ додано до реєстра');
 		}
 		else {
@@ -420,14 +421,13 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
-			dd($Post->errors, __FILE__, __LINE__,1);
 			sess_addErrMessage('Отримано некоректні дані форми');
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
 
-		$addResult = $this->Model->addInternalDocument($Post);
+		$DocNew = $this->Model->addInternalDocument($Post);
 
-		if ($addResult['lastInsertId']) {
+		if ($DocNew) {
 			sess_addSysMessage('Документ додано до реєстра');
 		}
 		else {

@@ -38,7 +38,7 @@ class DocumentsOutgoingController extends MC {
 
 		$d = $this->Model->mainPage();
 
-		require $this->getViewFile('documents_incoming/main');
+		require $this->getViewFile('documents_outgoing/main');
 	}
 
 	/**
@@ -68,7 +68,7 @@ class DocumentsOutgoingController extends MC {
 
 		$d = $this->Model->listPage($pageNum);
 
-		require $this->getViewFile('documents_incoming/list');
+		require $this->getViewFile('documents_outgoing/list');
 	}
 
 	/**
@@ -89,6 +89,6 @@ class DocumentsOutgoingController extends MC {
 
 		$d = $this->Model->cardPage($Get);
 
-		require $this->getViewFile('documents_incoming/card');
+		require $this->getViewFile('documents_outgoing/card');
 	}
 }

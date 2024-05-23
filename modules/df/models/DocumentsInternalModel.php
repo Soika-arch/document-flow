@@ -38,9 +38,9 @@ class DocumentsInternalModel extends MainModel {
 		$SQLId = (new RecordSliceRetriever())
 			->from(DbPrefix .'internal_documents_registry')
 			->columns([DbPrefix .'internal_documents_registry.*'])
-			->orderBy('idr_id');
+			->orderBy('inr_id');
 
-		$itemsPerPage = 4;
+		$itemsPerPage = 5;
 
 		$d['documents'] = $SQLId->select($itemsPerPage, $pageNum);
 

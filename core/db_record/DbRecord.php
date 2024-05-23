@@ -2,9 +2,9 @@
 
 namespace core\db_record;
 
-use core\exceptions\ClassException;
-use core\exceptions\DbException;
-use core\exceptions\DbRecordException;
+use \core\exceptions\ClassException;
+use \core\exceptions\DbException;
+use \core\exceptions\DbRecordException;
 
 /**
  * Нащадки даного класу ініціалізуються рядком конкретної таблиці БД, та надають інтерфейс управління

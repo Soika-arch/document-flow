@@ -40,7 +40,7 @@ class DocumentsOutgoingModel extends MainModel {
 			->columns([DbPrefix .'outgoing_documents_registry.*'])
 			->orderBy('odr_id');
 
-		$itemsPerPage = 4;
+		$itemsPerPage = 5;
 
 		$d['documents'] = $SQLId->select($itemsPerPage, $pageNum);
 

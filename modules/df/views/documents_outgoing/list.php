@@ -4,7 +4,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-use \core\db_record\incoming_documents_registry;
+use \core\db_record\outgoing_documents_registry;
 
 $Us = rg_Rg()->get('Us');
 
@@ -26,10 +26,10 @@ if (isset($d['documents']) && $d['documents']) {
 		$num = $d['Pagin']->getCurrentPageFirstItem();
 
 		foreach ($d['documents'] as $docRow) {
-			$Doc = new incoming_documents_registry(null, $docRow);
+			$Doc = new outgoing_documents_registry(null, $docRow);
 
-			$docCardURL = url('/df/documents-incoming/card',
-				['n' => str_replace('inc_', '', $Doc->_number)]);
+			$docCardURL = url('/df/documents-outgoing/card',
+				['n' => str_replace('out_', '', $Doc->_number)]);
 
 			$docTitle = '<a href="'. $docCardURL .'" target="_blank">'. $Doc->DocumentTitle->_title .'</a>';
 
