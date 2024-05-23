@@ -179,11 +179,11 @@ class DocumentRegistrationModel extends MainModel {
 	public function addOutgoingDocument (Post $Post) {
 		/** @var User */
 		$Us = rg_Rg()->get('Us');
-		$numIncDoc = getArrayValue($Post->post, 'dIncomingNumber', null);
+		$idIncDoc = getArrayValue($Post->post, 'dIncomingNumber', null);
 
-		if ($numIncDoc) {
+		if ($idIncDoc) {
 			$idIncDoc = $this->selectCellByCol(
-				DbPrefix .'incoming_documents_registry', 'idr_number', $numIncDoc, 'idr_id'
+				DbPrefix .'incoming_documents_registry', 'idr_number', $idIncDoc, 'idr_id'
 			);
 
 			if (! $idIncDoc) {

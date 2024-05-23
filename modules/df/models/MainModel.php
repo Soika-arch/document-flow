@@ -28,21 +28,22 @@ class MainModel extends MM {
 		$d['title'] = 'ЕД';
 
 		$tables = [
-			'inc' => 'incoming_documents_registry',
-			'out' => 'outgoing_documents_registry',
-			'int' => 'internal_documents_registry'
+			'inc' => ['tName' => 'incoming_documents_registry', 'controllerURI' => 'documents-incoming'],
+			'out' => ['tName' => 'outgoing_documents_registry', 'controllerURI' => 'documents-outgoing'],
+			'int' => ['tName' => 'internal_documents_registry', 'controllerURI' => 'documents-internal']
 		];
 
-		$d['px'] = db_Db()->getColPxByTableName(DbPrefix . $tables[$mode]);
+		$d['controllerURI'] = $tables[$mode]['controllerURI'];
+		$d['px'] = db_Db()->getColPxByTableName(DbPrefix . $tables[$mode]['tName']);
 
 		$SQLDocs = (new RecordSliceRetriever())
-			->from(DbPrefix .$tables[$mode])
-			->columns([DbPrefix .$tables[$mode] .'.*'])
+			->from(DbPrefix . $tables[$mode]['tName'])
+			->columns([DbPrefix . $tables[$mode]['tName'] .'.*'])
 			->orderBy($d['px'] .'add_date');
 
 		$itemsPerPage = 5;
 
-		$d['tableName'] = $tables[$mode];
+		$d['tableName'] = $tables[$mode]['tName'];
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 
 		$url = url('/df?mode='. $mode .'&pg=(:num)');

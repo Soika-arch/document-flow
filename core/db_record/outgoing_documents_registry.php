@@ -50,7 +50,7 @@ class outgoing_documents_registry extends DbRecord {
 	 */
 	protected function get_RegistrarUser () {
 		if (! isset($this->RegistrarUser)) {
-			$this->RegistrarUser = new users($this->dbRow['idr_id_user']);
+			$this->RegistrarUser = new users($this->dbRow['odr_id_user']);
 		}
 
 		return $this->RegistrarUser;

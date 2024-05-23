@@ -1,6 +1,6 @@
 <?php
 
-// Вид головної типів документів.
+// Журнал документів.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -39,8 +39,8 @@ e('<div>');
 						$className = '\core\db_record\\'. $d['tableName'];
 						$Doc = new $className($docRow[$d['px'] .'id'], $docRow);
 
-						$docCardURL = url('/df/documents-incoming/card',
-							['n' => str_replace('inc_', '', $Doc->_number)]);
+						$docCardURL = url('/df/'. $d['controllerURI'] .'/card',
+							['n' => substr($Doc->_number, 4)]);
 
 						$docTitle = '<a href="'. $docCardURL .'" target="_blank">'.
 							$Doc->DocumentTitle->_title .'</a>';
