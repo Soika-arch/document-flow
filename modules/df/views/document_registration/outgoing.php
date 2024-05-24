@@ -231,6 +231,6 @@ e('<div class="fm">');
 	e('</form>');
 e('</div>');
 
-e('<script src="/js/main.js"></script>');
+e('<script src="/js/df.js"></script>');
 
 require $this->getViewFile('/inc/footer');

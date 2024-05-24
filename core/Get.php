@@ -33,6 +33,7 @@ class Get {
 	public function __construct (array $types) {
 		$this->get_get();
 		$this->validateAndProcessGetParameters($types);
+		rg_Rg()->add('Get', $this);
 	}
 
 	/**

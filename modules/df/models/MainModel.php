@@ -39,16 +39,23 @@ class MainModel extends MM {
 		$pageNum = isset($args['pageNum']) ? $args['pageNum'] : 1;
 		$d['title'] = 'ЕД';
 
+		$get = rg_Rg()->get('Get')->get;
+
 		$SQLDocs = (new RecordSliceRetriever())
 			->from(DbPrefix . 'incoming_documents_registry')
 			->columns([DbPrefix .'incoming_documents_registry.*'])
 			->orderBy('idr_add_date');
 
+		if (isset($get['d_age'])) {
+			$SQLDocs->SQL->whereRaw($SQLDocs->SQL->raw('year(idr_document_date)') .' = "'.
+				$get['d_age'] .'"');
+		}
+		// dd($SQLDocs->SQL->prepare(), __FILE__, __LINE__,1);
 		$itemsPerPage = 5;
 
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 
-		$url = url('/df/documents-incoming?pg=(:num)');
+		$url = url('/df/documents-incoming/list?pg=(:num)');
 
 		$d['Pagin'] = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 

@@ -2,7 +2,7 @@
 
 namespace modules\ap\models;
 
-use core\Get;
+use \core\Get;
 use \modules\ap\models\MainModel;
 use \core\Post;
 use \core\RecordSliceRetriever;

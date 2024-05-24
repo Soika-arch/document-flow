@@ -2,7 +2,7 @@
 
 namespace core;
 
-use core\exceptions\RouterException;
+use \core\exceptions\RouterException;
 
 class Router {
 
@@ -178,11 +178,15 @@ class Router {
 	 */
 	protected function setPageData () {
 		if (! isset($this->pageMethod)) {
-			$pageURI = $this->get_URIWithoutModule();
-			// Видалення рядка GET-параметрів разом із знаком питання, якщо вони є.
-			$pageURI = str_replace('?'. URIParams, '', $pageURI);
+			$uri = $this->get_URIWithoutModule();
 
-			$pageURI = trim(str_replace($this->get_controllerURI(), '', $pageURI), '/');
+			// Якщо рядок $pageURI містить знак '?' - рядок від цього знаку і до кінця $pageURI
+			// відрізається.
+			if (($pos =strpos($uri, '?')) !== false) $uri = substr($uri, 0, $pos);
+
+			// Видалення рядка GET-параметрів разом із знаком питання, якщо вони є.
+			$uri = str_replace('?'. URIParams, '', $uri);
+			$pageURI = trim(str_replace($this->get_controllerURI(), '', $uri), '/');
 			$temp = lcfirst($this->convertToCamelCase($pageURI));
 
 			if ($temp) {
@@ -216,6 +220,11 @@ class Router {
 	 */
 	protected function setControllerData () {
 		$URIPath = $this->get_URIWithoutModule();
+
+		// Якщо рядок $URIPath містить знак '?' - рядок від цього знаку і до кінця $URIPath відрізається.
+		if (($pos =strpos($URIPath, '?')) !== false) {
+			$URIPath = substr($URIPath, 0, $pos);
+		}
 
 		if ($pos = strpos($URIPath, '/')) {
 			$controllerURI = substr($URIPath, 0, $pos);

@@ -29,6 +29,7 @@ class Post {
 		$this->formName = $formName;
 		$this->get_post();
 		$this->validateAndProcessPostData($types);
+		rg_Rg()->add('Post', $this);
 	}
 
 	/**

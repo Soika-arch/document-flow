@@ -44,7 +44,14 @@ class MainController extends MC {
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
 			],
+			'd_age' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{4}$'
+			],
 		]);
+
+		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
 
 		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
 
