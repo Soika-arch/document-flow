@@ -111,12 +111,12 @@ class DbRecord {
 			}
 			else {
 				// Поточний клас не має метода $method.
-				dd(__METHOD__, __FILE__, __LINE__,1);
+				dd([$method, $this], __FILE__, __LINE__,1);
 			}
 		}
 		else {
 			// Поточний клас не має властивості $this->$name.
-			dd(__METHOD__, __FILE__, __LINE__,1);
+			dd([$name, $this], __FILE__, __LINE__,1);
 		}
   }
 
@@ -322,7 +322,7 @@ class DbRecord {
 	 * Оновлення запису в БД поточного об'єкту.
 	 * За наявності поля change_date - оновлюється його значення на поточну дату.
 	 * @param array $updated нові значення стовпців.
-	 * @return array
+	 * @return $this
 	 */
 	public function update (array $updated) {
 		/** @var string ім'я поточної таблиці. */

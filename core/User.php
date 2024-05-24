@@ -28,7 +28,9 @@ class User extends users {
 	 * @return user_statuses
 	 */
 	protected function get_Status () {
-		if ($this->get_UserRelStatus()) return $this->get_UserRelStatus()->UserStatus;
+		if ($this->get_UserRelStatus()) $this->Status = $this->get_UserRelStatus()->UserStatus;
+
+		return $this->Status;
 	}
 
 	/**
@@ -84,22 +86,25 @@ class User extends users {
 	}
 
 	/**
-	 * Збереження статуса пацієнта, якщо пацієнт ще не має статуса.
+	 * Збереження статуса пацієнта по вказаному id статуса.
 	 * @return false|$this
 	 */
 	public function setStatus (int $idStatus) {
-		if (! $this->get_Status()) {
-			// Перевірка існування статуса
-			$SQL = db_getSelect();
+		// Перевірка існування статуса
+		$SQL = db_getSelect();
 
-			$SQL
-				->columns(['uss_id'])
-				->from(DbPrefix .'user_statuses')
-				->where('uss_id', '=', $idStatus);
+		$SQL
+			->columns(['uss_id'])
+			->from(DbPrefix .'user_statuses')
+			->where('uss_id', '=', $idStatus);
 
-			// Статуса з id $idStatus не знайдено.
-			if (! db_selectCell($SQL)) return false;
+		// Статуса з id $idStatus не знайдено.
+		if (! db_selectCell($SQL)) return false;
 
+		$this->get_Status();
+
+		if ($this->Status->_id !== $idStatus) {
+			$this->UserRelStatus->delete();
 			$this->UserRelStatus = new UserRelStatus(0);
 			$nowDt = date('Y-m-d H:i:s');
 
@@ -109,6 +114,8 @@ class User extends users {
 				'usr_add_date' => $nowDt,
 				'usr_change_date' => $nowDt
 			]);
+
+			unset($this->Status);
 		}
 
 		return $this;

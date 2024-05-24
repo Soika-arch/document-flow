@@ -2,6 +2,7 @@
 
 namespace modules\ap\models;
 
+use core\Get;
 use \modules\ap\models\MainModel;
 use \core\Post;
 use \core\RecordSliceRetriever;
@@ -21,11 +22,18 @@ class UsersModel extends MainModel {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function mainPage () {
+		$d['title'] = 'Адмін-панель - Користувачі';
+
+		return $d;
+	}
+
+	/**
 	 *
 	 */
 	public function add () {
-		$d = [];
-
 		$d['statuses'] = $this->getUserStatuses();
 
 		return $d;
@@ -82,16 +90,46 @@ class UsersModel extends MainModel {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function editPage (Get $Get) {
+		$d['title'] = 'Адмін-панель - зміна даних користувача';
+		$d['statuses'] = $this->getUserStatuses();
+		$d['User'] = new User($Get->get['id']);
+
+		return $d;
+	}
+
+	/**
+	 * @return User
+	 */
+	public function editUser (Get $Get, Post $Post) {
+		$UsEdit = new User($Get->get['id']);
+		$post = $Post->post;
+
+		$UsEdit->update([
+			'us_login' => getArrayValue($post, 'login'),
+			'us_email' => getArrayValue($post, 'email')
+		]);
+
+		$UsEdit->setStatus(getArrayValue($post, 'status', 4));
+
+		return $UsEdit;
+	}
+
+	/**
 	 * @param int $pageNum
 	 * @return array
 	 */
 	public function listPage (int $pageNum=1) {
+		$d['title'] = 'Адмін-панель - Користувачі';
+
 		$SQLUsers = (new RecordSliceRetriever())
 			->from('df_users')
-			->columns(['us_id', 'us_login'])
-			->orderBy('us_id');
+			->columns(['df_users.*'])
+			->orderBy('us_add_date');
 
-		$itemsPerPage = 2;
+		$itemsPerPage = 5;
 
 		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);
 
