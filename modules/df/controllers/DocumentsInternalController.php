@@ -45,15 +45,20 @@ class DocumentsInternalController extends MC {
 
 		$Get = new Get([
 			'pg' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
 			],
 			'del_doc' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
-			]
+			],
+			'clear' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^y$'
+			],
 		]);
 
 		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
@@ -61,6 +66,8 @@ class DocumentsInternalController extends MC {
 		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
 
 		$d = $this->Model->listPage($pageNum);
+
+		if (! $d) hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 
 		require $this->getViewFile('documents_internal/list');
 	}

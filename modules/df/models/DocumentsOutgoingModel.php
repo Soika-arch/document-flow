@@ -6,7 +6,7 @@ use \core\db_record\outgoing_documents_registry;
 use \core\Get;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
-use libs\query_builder\SelectQuery;
+use \libs\query_builder\SelectQuery;
 use \modules\df\models\MainModel;
 
 /**

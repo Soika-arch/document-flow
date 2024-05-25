@@ -41,9 +41,6 @@ class DocumentsOutgoingController extends MC {
 		require $this->getViewFile('documents_outgoing/main');
 	}
 
-	/**
-	 *
-	 */
 	public function listPage () {
 		$Us = rg_Rg()->get('Us');
 
@@ -68,8 +65,6 @@ class DocumentsOutgoingController extends MC {
 		]);
 
 		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
-
-		$get = $this->checkSearchParameters();
 
 		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
 
@@ -99,32 +94,5 @@ class DocumentsOutgoingController extends MC {
 		$d = $this->Model->cardPage($Get);
 
 		require $this->getViewFile('documents_outgoing/card');
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function checkSearchParameters () {
-		$Get = new Get([
-			'del_doc' => [
-				'type' => 'int',
-				'isRequired' => false,
-				'pattern' => '^\d{1,4}$'
-			],
-			'pg' => [
-				'type' => 'int',
-				'isRequired' => false,
-				'pattern' => '^\d{1,4}$'
-			],
-			'clear' => [
-				'type' => 'varchar',
-				'isRequired' => false,
-				'pattern' => '^y$'
-			],
-		]);
-
-		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
-
-		return $Get->get;
 	}
 }

@@ -3,7 +3,7 @@
 namespace modules\df\controllers;
 
 use \core\Get;
-use core\Post;
+use \core\Post;
 use \modules\df\controllers\MainController as MC;
 use \modules\df\models\SearchModel;
 
