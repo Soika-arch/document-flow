@@ -30,23 +30,29 @@ class DocumentsIncomingModel extends MainModel {
 	}
 
 	/**
-	 * @return array
+	 * @return array|false
 	 */
 	public function listPage (int $pageNum=1) {
 		$d['title'] = 'Вхідні документи - Список';
 
-		$SQLId = (new RecordSliceRetriever())
+		$SQLDocs = db_getSelect()
 			->from(DbPrefix .'incoming_documents_registry')
 			->columns([DbPrefix .'incoming_documents_registry.*'])
 			->orderBy('idr_id');
 
+		if (isset($_SESSION['getParameters'])) {
+			if (! ($SQLDocs = $this->documentsSearchSQLHendler($SQLDocs))) return false;
+		}
+
+		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		// dd($SQLDocs->SQL->prepare(), __FILE__, __LINE__,1);
 		$itemsPerPage = 5;
 
-		$d['documents'] = $SQLId->select($itemsPerPage, $pageNum);
+		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 
 		$url = url('/df/documents-incoming/list?pg=(:num)');
 
-		$Pagin = new Paginator($SQLId->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 
 		$d['Pagin'] = $Pagin;

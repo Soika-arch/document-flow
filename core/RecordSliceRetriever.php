@@ -2,6 +2,8 @@
 
 namespace core;
 
+use libs\query_builder\SelectQuery;
+
 /**
  * Цей клас відповідає за отримання зрізів даних з бази даних на основі певних умов. Основні функції
  * цього класу включають побудову SQL-запитів для отримання даних, визначення кількості рядків, що
@@ -59,8 +61,9 @@ class RecordSliceRetriever {
 	/**
 	 *
 	 */
-	public function __construct () {
-		$this->SQL = db_getSelect();
+	public function __construct (SelectQuery $SQL=null) {
+		if (! isset($SQL)) $this->SQL = db_getSelect();
+		else $this->SQL = $SQL;
 	}
 
 	/**

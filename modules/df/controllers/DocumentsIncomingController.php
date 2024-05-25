@@ -43,24 +43,13 @@ class DocumentsIncomingController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$Get = new Get([
-			'pg' => [
-				'type' => 'int',
-				'isRequired' => false,
-				'pattern' => '^\d{1,4}$'
-			],
-			'del_doc' => [
-				'type' => 'int',
-				'isRequired' => false,
-				'pattern' => '^\d{1,4}$'
-			]
-		]);
+		$get = $this->checkSearchParameters();
 
-		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
-
-		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
+		$pageNum = isset($get['pg']) ? $get['pg'] : 1;
 
 		$d = $this->Model->listPage($pageNum);
+
+		if (! $d) hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 
 		require $this->getViewFile('documents_incoming/list');
 	}

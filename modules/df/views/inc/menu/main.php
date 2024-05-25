@@ -18,8 +18,18 @@ e('<div class="secondary-menu">');
 		e('</div>');
 	}
 
+	if (($pos = strpos(URI, '?')) !== false) $url_1 = substr(URI, 0, $pos);
+	else $url_1 = URI;
+
 	e('<div>');
-		e('<a href="'. $url .'/search?uri='. str_replace('/', '_', URI) .'">Пошук</a>');
+		e('<a href="'. $url .'/search?uri='. str_replace('/', '_', trim($url_1, '/')) .'">Пошук</a>');
 	e('</div>');
+
+	if (isset($_SESSION['getParameters'])) {
+		e('<div>');
+			e('<a href="'. url(null, ['clear' => 'y']) .'"><img class="img-button" src="'.
+				url('/') .'/img/clear.png" title="Очистити фільтр"></a>');
+		e('</div>');
+	}
 
 e('</div>');

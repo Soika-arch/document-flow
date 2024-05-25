@@ -34,6 +34,14 @@ class SearchController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
+		$Get = new Get([
+			'uri' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^[a-z0-9_-]{2,32}$'
+			]
+		]);
+
 		$d = $this->Model->mainPage();
 
 		require $this->getViewFile('search/main');
@@ -44,6 +52,7 @@ class SearchController extends MC {
 	 */
 	public function handlerPage () {
 		$Us = rg_Rg()->get('Us');
+		$patterns = require DirConfig .'/regexp.php';
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
@@ -51,35 +60,35 @@ class SearchController extends MC {
 			'targetURL' => [
 				'type' => 'varchar',
 				'isRequired' => true,
-				'pattern' => '^[a-z0-9_-]{2,32}$'
+				'pattern' => $patterns['standartURI']
 			],
 			'dAge' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{4}$'
+				'pattern' => '(^\d{4}$|^$)'
 			],
 			'dMonth' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,2}$'
 			],
 			'dDay' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,2}$'
 			],
 			'dSenderExternal' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,5}$'
 			],
 			'dRecipientUser' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,5}$'
 			],
 			'dLocation' => [
-				'type' => 'int',
+				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,5}$'
 			],
@@ -92,7 +101,7 @@ class SearchController extends MC {
 
 		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
 
-		$d = $this->Model->handlerPage($Post);
+		$d = $this->Model->handlerPage();
 
 		hd_sendHeader('Location: '. $d['targetURL'], __FILE__, __LINE__);
 	}

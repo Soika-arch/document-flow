@@ -217,6 +217,17 @@ https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
   color: #007BFF; /* Синий цвет при наведении */
 }
 
+.secondary-menu .img-button {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+}
+
+.secondary-menu .img-button:hover {
+	border-radius: 10px;
+	box-shadow: #2f1fd8 1px 0 15px;
+}
+
 /* Адаптивный дизайн для мобильных устройств */
 @media (max-width: 600px) {
   .secondary-menu {

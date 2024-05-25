@@ -49,3 +49,17 @@ function sess_deleteSysMessage (int $key) {
 function sess_addConfirmData (array $data) {
 	$_SESSION['confirmation'] = $data;
 }
+
+/**
+ * Додавання даних в масив $_SESSION['getParameters'].
+ */
+function sess_addGetParameters (array $get) {
+	$_SESSION['getParameters'] = $get;
+}
+
+/**
+ * Видалення даних в масив $_SESSION['getParameters'].
+ */
+function sess_delGetParameters () {
+	if (isset($_SESSION['getParameters'])) unset($_SESSION['getParameters']);
+}

@@ -33,11 +33,26 @@ class MainController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
+		$get = $this->checkSearchParameters();
+
+		$pageNum = isset($_GET['pg']) ? $get['pg'] : 1;
+
+		$d = $this->Model->mainPage('pageNum:'. $pageNum);
+
+		if (! $d) hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
+
+		require $this->getViewFile('main');
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function checkSearchParameters () {
 		$Get = new Get([
-			'mode' => [
-				'type' => 'varchar',
+			'del_doc' => [
+				'type' => 'int',
 				'isRequired' => false,
-				'pattern' => '^(inc)|(out)|(int)$'
+				'pattern' => '^\d{1,4}$'
 			],
 			'pg' => [
 				'type' => 'int',
@@ -49,14 +64,30 @@ class MainController extends MC {
 				'isRequired' => false,
 				'pattern' => '^\d{4}$'
 			],
+			'd_month' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^\d{1,2}$'
+			],
+			'd_day' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^\d{1,2}$'
+			],
+			'd_location' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^\d{1,5}$'
+			],
+			'clear' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^y$'
+			],
 		]);
 
 		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
 
-		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
-
-		$d = $this->Model->mainPage('pageNum:'. $pageNum);
-
-		require $this->getViewFile('main');
+		return $Get->get;
 	}
 }
