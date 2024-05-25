@@ -2,7 +2,6 @@
 
 namespace modules\df\models;
 
-use \core\Get;
 use \modules\df\models\MainModel;
 
 /**
@@ -71,9 +70,13 @@ class SearchModel extends MainModel {
 			$params['d_recipient_user'] = $post['dRecipientUser'];
 		}
 
+		if (isset($post['dSenderUser']) && $post['dSenderUser']) {
+			$params['d_sender_user'] = $post['dSenderUser'];
+		}
+
 		sess_addGetParameters($params);
 
-		$d['targetURL'] = url('/'. $post['targetURL']);
+		$d['targetURL'] = url('/'. str_replace('_', '/', $post['targetURL']));
 
 		return $d;
 	}

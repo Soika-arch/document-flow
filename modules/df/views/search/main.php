@@ -37,8 +37,8 @@ e('<div class="fm">');
 
 		if (isset($d['sendersUsers']) && $d['sendersUsers']) {
 			e('<div class="label_block">');
-				e('<label for="dRecipientUser">Відправник</label>');
-				e('<select name="dRecipientUser">');
+				e('<label for="dSenderUser">Відправник</label>');
+				e('<select name="dSenderUser">');
 
 					e('<option value=""></option>');
 

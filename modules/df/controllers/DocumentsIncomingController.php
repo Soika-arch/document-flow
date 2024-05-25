@@ -43,9 +43,27 @@ class DocumentsIncomingController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$get = $this->checkSearchParameters();
+		$Get = new Get([
+			'del_doc' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			],
+			'pg' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			],
+			'clear' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^y$'
+			],
+		]);
 
-		$pageNum = isset($get['pg']) ? $get['pg'] : 1;
+		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
+
+		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
 
 		$d = $this->Model->listPage($pageNum);
 

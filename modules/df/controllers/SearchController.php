@@ -82,6 +82,16 @@ class SearchController extends MC {
 				'isRequired' => false,
 				'pattern' => '^\d{1,5}$'
 			],
+			'dSenderUser' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^\d{1,5}$'
+			],
+			'dRecipientExternal' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^\d{1,5}$'
+			],
 			'dRecipientUser' => [
 				'type' => 'varchar',
 				'isRequired' => false,
