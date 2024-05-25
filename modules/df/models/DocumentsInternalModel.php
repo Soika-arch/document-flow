@@ -92,6 +92,10 @@ class DocumentsInternalModel extends MainModel {
 
 		$params = $_SESSION['getParameters'];
 
+		if (isset($params['d_number'])) {
+			$SQL->where('inr_number', 'like', '%'. $params['d_number'] .'%');
+		}
+
 		if (isset($params['d_age'])) {
 			$SQL->whereRaw($SQL->raw('year(inr_document_date)') .' = "'.
 				$params['d_age'] .'"');

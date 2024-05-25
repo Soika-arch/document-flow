@@ -62,6 +62,11 @@ class SearchController extends MC {
 				'isRequired' => true,
 				'pattern' => $patterns['standartURI']
 			],
+			'dNumber' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '(^[a-zA-Z0-9]{1,10}$|^$)'
+			],
 			'dAge' => [
 				'type' => 'varchar',
 				'isRequired' => false,

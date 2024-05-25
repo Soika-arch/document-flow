@@ -92,6 +92,10 @@ class DocumentsOutgoingModel extends MainModel {
 
 		$params = $_SESSION['getParameters'];
 
+		if (isset($params['d_number'])) {
+			$SQL->where('odr_number', 'like', '%'. $params['d_number'] .'%');
+		}
+
 		if (isset($params['d_age'])) {
 			$SQL->whereRaw($SQL->raw('year(odr_document_date)') .' = "'.
 				$params['d_age'] .'"');

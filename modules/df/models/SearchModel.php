@@ -54,6 +54,8 @@ class SearchModel extends MainModel {
 
 		$params = [];
 
+		if (isset($post['dNumber']) && $post['dNumber']) $params['d_number'] = $post['dNumber'];
+
 		if (isset($post['dAge']) && $post['dAge']) $params['d_age'] = $post['dAge'];
 
 		if (isset($post['dMonth']) && $post['dAge']) $params['d_month'] = $post['dMonth'];

@@ -21,6 +21,11 @@ e('<div class="fm">');
 		e('<input type="hidden" name="targetURL" value="'. $d['targetURL'] .'">');
 
 		e('<div>');
+			e('<label for="dNumber">Номер документа<label>');
+			e('<input type="text" name="dNumber">');
+		e('</div>');
+
+		e('<div>');
 			e('<label for="dAge">Рік документа<label>');
 			e('<input type="number" name="dAge">');
 		e('</div>');

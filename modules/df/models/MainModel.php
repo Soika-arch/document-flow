@@ -93,6 +93,10 @@ class MainModel extends MM {
 
 		$params = $_SESSION['getParameters'];
 
+		if (isset($params['d_number'])) {
+			$SQL->where('idr_number', 'like', '%'. $params['d_number'] .'%');
+		}
+
 		if (isset($params['d_age'])) {
 			$SQL->whereRaw($SQL->raw('year(idr_document_date)') .' = "'.
 				$params['d_age'] .'"');
