@@ -73,10 +73,8 @@ class Post {
 
 				// Перевіряємо параметр за допомогою відповідного методу, якщо він існує.
 				if ($issetParam && (! $this->$checkMethod($name, $typeData))) {
-					if (($this->post[$name] !== '') && $typeData['isRequired']) {
-						$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
-							$checkMethod;
-					}
+					$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+						$checkMethod;
 				}
 			}
 			else {

@@ -6,7 +6,7 @@ use \core\db_record\internal_documents_registry;
 use \core\Get;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
-use libs\query_builder\SelectQuery;
+use \libs\query_builder\SelectQuery;
 use \modules\df\models\MainModel;
 
 /**
@@ -91,6 +91,7 @@ class DocumentsInternalModel extends MainModel {
 		}
 
 		$params = $_SESSION['getParameters'];
+		$orJoin = [];
 
 		if (isset($params['d_number'])) {
 			$SQL->where('inr_number', 'like', '%'. $params['d_number'] .'%');
@@ -118,15 +119,32 @@ class DocumentsInternalModel extends MainModel {
 		}
 
 		if (isset($params['d_sender_user'])) {
-			$SQL
-				->join(DbPrefix .'users', 'us_id', '=', 'inr_id_sender')
-				->where('inr_id_sender', '=', $params['d_sender_user']);
+			$orJoin['users'][] = 'us_id = inr_id_sender';
+			$SQL->where('inr_id_sender', '=', $params['d_sender_user']);
 		}
 
 		if (isset($params['d_recipient_user'])) {
-			$SQL
-				->join(DbPrefix .'users', 'us_id', '=', 'inr_id_recipient')
-				->where('inr_id_recipient', '=', $params['d_recipient_user']);
+			$orJoin['users'][] = 'us_id = inr_id_recipient';
+			$SQL->where('inr_id_recipient', '=', $params['d_recipient_user']);
+		}
+
+		if (isset($params['d_registrar_user'])) {
+			$orJoin['users'][] = 'us_id = inr_id_user';
+			$SQL->where('inr_id_user', '=', $params['d_registrar_user']);
+		}
+
+		if ($orJoin) {
+			foreach ($orJoin as $table => $joinData) {
+				$strJoin = '';
+
+				foreach ($joinData as $condition) {
+					$strJoin .= ' or '. $condition;
+				}
+
+				if (strpos($strJoin, ' or ') === 0) $strJoin = substr($strJoin, 4);
+
+				$SQL->joinRaw(DbPrefix . $table, $strJoin);
+			}
 		}
 
 		return $SQL;

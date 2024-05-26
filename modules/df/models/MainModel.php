@@ -47,6 +47,7 @@ class MainModel extends MM {
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($SQLDocs = $this->documentsSearchSQLHendler($SQLDocs))) return false;
+			// dd($SQLDocs->prepare(), __FILE__, __LINE__,1);
 		}
 
 		$SQLDocs = new RecordSliceRetriever($SQLDocs);
@@ -92,6 +93,7 @@ class MainModel extends MM {
 		}
 
 		$params = $_SESSION['getParameters'];
+		$orJoin = [];
 
 		if (isset($params['d_number'])) {
 			$SQL->where('idr_number', 'like', '%'. $params['d_number'] .'%');
@@ -125,9 +127,27 @@ class MainModel extends MM {
 		}
 
 		if (isset($params['d_recipient_user'])) {
-			$SQL
-				->join(DbPrefix .'users', 'us_id', '=', 'idr_id_recipient')
-				->where('idr_id_recipient', '=', $params['d_recipient_user']);
+			$orJoin['users'][] = 'us_id = idr_id_recipient';
+			$SQL->where('idr_id_recipient', '=', $params['d_recipient_user']);
+		}
+
+		if (isset($params['d_registrar_user'])) {
+			$orJoin['users'][] = 'us_id = idr_id_user';
+			$SQL->where('idr_id_user', '=', $params['d_registrar_user']);
+		}
+
+		if ($orJoin) {
+			foreach ($orJoin as $table => $joinData) {
+				$strJoin = '';
+
+				foreach ($joinData as $condition) {
+					$strJoin .= ' or '. $condition;
+				}
+
+				if (strpos($strJoin, ' or ') === 0) $strJoin = substr($strJoin, 4);
+
+				$SQL->joinRaw(DbPrefix . $table, $strJoin);
+			}
 		}
 
 		return $SQL;

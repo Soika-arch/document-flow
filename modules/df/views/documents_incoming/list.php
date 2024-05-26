@@ -28,8 +28,7 @@ if (isset($d['documents']) && $d['documents']) {
 		foreach ($d['documents'] as $docRow) {
 			$Doc = new incoming_documents_registry(null, $docRow);
 
-			$docCardURL = url('/df/documents-incoming/card',
-				['n' => str_replace('inc_', '', $Doc->_number)]);
+			$docCardURL = url('/df/documents-incoming/card', ['n' => $Doc->_number]);
 
 			$docTitle = '<a href="'. $docCardURL .'" target="_blank">'. $Doc->DocumentTitle->_title .'</a>';
 
@@ -37,7 +36,7 @@ if (isset($d['documents']) && $d['documents']) {
 				e('<span class="num">'. $num++ .'. </span>');
 				e('<span class="doc-title">'. $docTitle .'</span>');
 				e('<span class="doc-date">'. date('d.m.Y', strtotime($Doc->_document_date)) .'</span>');
-				e('<span class="doc-date">'. strtoupper($Doc->_number) .'</span>');
+				e('<span class="doc-date">'. strtoupper($Doc->displayedNumber) .'</span>');
 			e('</div>');
 		}
 

@@ -73,7 +73,7 @@ class DbRecord {
 			}
 
 			// Запитуване поле таблиці НЕ існує в таблиці даного об'єкту.
-			dd(__METHOD__, __FILE__, __LINE__,1);
+			dd([get_called_class() .'::'. $name, debug_backtrace()], __FILE__, __LINE__,1);
 		}
 		else {
 			// Запит значення властивості поточного класа.
@@ -93,7 +93,7 @@ class DbRecord {
 			}
 			else {
 				// Поточний клас не має властивості $this->$name.
-				dd(__METHOD__, __FILE__, __LINE__,1);
+				dd([get_called_class() .'::'. $name, debug_backtrace()], __FILE__, __LINE__,1);
 			}
 		}
   }

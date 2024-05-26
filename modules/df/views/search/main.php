@@ -100,6 +100,21 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
+		if (isset($d['registrarUsers']) && $d['registrarUsers']) {
+			e('<div class="label_block">');
+				e('<label for="dRegistrar">Реєстратор</label>');
+				e('<select name="dRegistrar">');
+
+					e('<option value=""></option>');
+
+					foreach ($d['registrarUsers'] as $mtRow) {
+						e('<option value="'. $mtRow['us_id'] .'">'.  $mtRow['us_login'] .'</option>');
+					}
+
+				e('</select>');
+			e('</div>');
+		}
+
 		if (isset($d['departaments']) && $d['departaments']) {
 			e('<div class="label_block">');
 				e('<label for="dLocation">Фізичне місцезнаходження оригінала</label>');

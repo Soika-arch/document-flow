@@ -27,6 +27,7 @@ class SearchModel extends MainModel {
 		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
 
 		$users = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$d['registrarUsers'] = $users;
 
 		if ($get['uri'] === 'df_documents-outgoing_list') {
 			$d['sendersUsers'] = $users;
@@ -74,6 +75,10 @@ class SearchModel extends MainModel {
 
 		if (isset($post['dSenderUser']) && $post['dSenderUser']) {
 			$params['d_sender_user'] = $post['dSenderUser'];
+		}
+
+		if (isset($post['dRegistrar']) && $post['dRegistrar']) {
+			$params['d_registrar_user'] = $post['dRegistrar'];
 		}
 
 		sess_addGetParameters($params);

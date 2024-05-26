@@ -16,19 +16,32 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 $Doc = $d['Doc'];
 
-e('<div>');
-	e('<span class="card-header">Назва (заголовок) документа:</span>');
-	e('<span class="card-header">'. $Doc->DocumentTitle->_title .'.</span>');
-e('</div>');
+e('<form class="fm">');
 
-e('<div>');
-	e('<span class="card-header">Номер документа:</span>');
-	e('<span class="card-header">'. strtoupper($Doc->_number) .'.</span>');
-e('</div>');
+	e('<div>');
+		e('<label>Назва</label>');
+		e('<input type="text" name="login" value="'. $Doc->DocumentTitle->_title .'">');
+	e('</div>');
 
-e('<div>');
-	e('<span class="card-header">Реєстратор документа:</span>');
-	e('<span class="card-header">'. $Doc->getRegistrarLogin() .'.</span>');
-e('</div>');
+	e('<div>');
+		e('<span class="card-header">Назва:</span>');
+		e('<span class="card-header">'. $Doc->DocumentTitle->_title .'.</span>');
+	e('</div>');
+
+	e('<div>');
+		e('<span class="card-header">Номер документа:</span>');
+		e('<span class="card-header">'. strtoupper($Doc->displayedNumber) .'.</span>');
+	e('</div>');
+
+	e('<div>');
+		e('<span class="card-header">Реєстратор документа:</span>');
+		e('<span class="card-header">'. $Doc->getRegistrarLogin() .'.</span>');
+	e('</div>');
+
+	e('<div>');
+		e('<button type="submit" name="bt_set">Змінити</button>');
+	e('</div>');
+
+e('</form>');
 
 require $this->getViewFile('/inc/footer');

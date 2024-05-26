@@ -75,67 +75,41 @@ class DocumentRegistrationModel extends MainModel {
 	 * Генерація вільного номеру вхідного документа.
 	 * @return string
 	 */
-	public function generateIncomingNumber () {
-		$pref = 'inc_';
-		$rStr = $pref . randStr(6);
+	public function generateDocumentNumber (string $tName, string $px, int $length) {
+		$SQL = db_getSelect();
 
-		$SQL = $this->selectCellByCol(
-			DbPrefix .'incoming_documents_registry', 'idr_number', $rStr, 'idr_id', '=', false
-		);
+		$SQL
+			->columns([$SQL->raw('max('. $px .'id) MAX_ID')])
+			->from(DbPrefix . $tName);
 
-		while (db_selectCell($SQL)) {
-			$rStr = $pref . randStr(6);
+		$maxId = db_selectCell($SQL);
 
-			$SQL = $this->selectCellByCol(
-				DbPrefix .'incoming_documents_registry', 'idr_number', $rStr, 'idr_id', '=', false
-			);
-		}
+		return formatWithLeadingZeros(($maxId + 1), $length);
+	}
 
-		return $rStr;
+	/**
+	 * Генерація вільного номеру вхідного документа.
+	 * @return string
+	 */
+	public function generateIncomingNumber (int $length=8) {
+
+		return $this->generateDocumentNumber('incoming_documents_registry', 'idr_', $length);
 	}
 
 	/**
 	 * @return string
 	 */
-	public function generateOutgoingNumber () {
-		$pref = 'out_';
-		$rStr = $pref . randStr(6);
+	public function generateOutgoingNumber (int $length=8) {
 
-		$SQL = $this->selectCellByCol(
-			DbPrefix .'outgoing_documents_registry', 'odr_number', $rStr, 'odr_id', '=', false
-		);
-
-		while (db_selectCell($SQL)) {
-			$rStr = $pref . randStr(6);
-
-			$SQL = $this->selectCellByCol(
-				DbPrefix .'outgoing_documents_registry', 'odr_number', $rStr, 'odr_id', '=', false
-			);
-		}
-
-		return $rStr;
+		return $this->generateDocumentNumber('outgoing_documents_registry', 'odr_', $length);
 	}
 
 	/**
 	 * @return string
 	 */
-	public function generateInternalNumber () {
-		$pref = 'int_';
-		$rStr = $pref . randStr(6);
+	public function generateInternalNumber (int $length=8) {
 
-		$SQL = $this->selectCellByCol(
-			DbPrefix .'internal_documents_registry', 'inr_number', $rStr, 'inr_id', '=', false
-		);
-
-		while (db_selectCell($SQL)) {
-			$rStr = $pref . randStr(6);
-
-			$SQL = $this->selectCellByCol(
-				DbPrefix .'internal_documents_registry', 'inr_number', $rStr, 'inr_id', '=', false
-			);
-		}
-
-		return $rStr;
+		return $this->generateDocumentNumber('internal_documents_registry', 'inr_', $length);
 	}
 
 	/**

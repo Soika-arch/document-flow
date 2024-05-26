@@ -293,3 +293,27 @@ function getArrayValue (array $arr, string $key, $defaultValue=null, bool $nullF
 	// Якщо значення не є порожнім, повертаємо його.
 	return $v;
 }
+
+/**
+ * Повертає надане значення, якщо його можна привести до значення true, інакше повертає значення
+ * за замовчуванням.
+ * @param mixed $value Значення для перевірки.
+ * @param string $default Значення за умовчанням, яке повертається, якщо значення $value має
+ * значення false.
+ * @return mixed Значення, якщо воно має значення true, інакше значення за замовчуванням.
+ */
+function getOrDefault (mixed $v, string $defaul='') {
+	return $v ? $v : $defaul;
+}
+
+/**
+ * Перетворює число в рядок із провідними нулями до заданої довжини.
+ *
+ * @param int $number Число перетворення.
+ * @param int $length Цільова довжина рядка.
+ * @return string Перетворений рядок з провідними нулями.
+ */
+function formatWithLeadingZeros (int $number, int $length) {
+
+	return sprintf('%0'. $length .'d', $number);
+}

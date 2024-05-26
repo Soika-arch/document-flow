@@ -177,7 +177,7 @@ class DocumentRegistrationController extends MC {
 			],
 			'dOutgoingNumber' => [
 				'type' => 'varchar',
-				'pattern' => '^OUT_\d{5}$',
+				'pattern' => '^(OUT_\d{8})?$',
 				'isRequired' => false
 			],
 			'dResponsibleUser' => [
@@ -216,6 +216,7 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
+			dd($Post, __FILE__, __LINE__,1);
 			sess_addErrMessage('Отримано некоректні дані форми');
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
@@ -382,7 +383,7 @@ class DocumentRegistrationController extends MC {
 			],
 			'dOutgoingNumber' => [
 				'type' => 'varchar',
-				'pattern' => '^OUT_\d{5}$',
+				'pattern' => '^(OUT_\d{8})?$',
 				'isRequired' => false
 			],
 			'dResponsibleUser' => [

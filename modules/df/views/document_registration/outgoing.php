@@ -40,7 +40,7 @@ e('<div class="fm">');
 
 		if (isset($d['registrationForms']) && $d['registrationForms']) {
 			e('<div class="label_block">');
-				e('<label for="registrationForm">Бланк</label>');
+				e('<label for="registrationForm">Реєстраційний номер бланка</label>');
 				e('<select name="registrationForm" required>');
 
 					e('<option></option>');

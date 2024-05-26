@@ -91,6 +91,7 @@ class DocumentsOutgoingModel extends MainModel {
 		}
 
 		$params = $_SESSION['getParameters'];
+		$orJoin = [];
 
 		if (isset($params['d_number'])) {
 			$SQL->where('odr_number', 'like', '%'. $params['d_number'] .'%');
@@ -117,16 +118,34 @@ class DocumentsOutgoingModel extends MainModel {
 				->where('odr_id_document_location', '=', $params['d_location']);
 		}
 
-		if (isset($params['d_sender_user'])) {
-			$SQL
-				->join(DbPrefix .'users', 'us_id', '=', 'odr_id_sender')
-				->where('odr_id_sender', '=', $params['d_sender_user']);
-		}
-
 		if (isset($params['d_recipient_external'])) {
 			$SQL
 				->join(DbPrefix .'document_senders', 'dss_id', '=', 'odr_id_recipient')
 				->where('odr_id_recipient', '=', $params['d_recipient_external']);
+		}
+
+		if (isset($params['d_sender_user'])) {
+			$orJoin['users'][] = 'us_id = odr_id_sender';
+			$SQL->where('odr_id_sender', '=', $params['d_sender_user']);
+		}
+
+		if (isset($params['d_registrar_user'])) {
+			$orJoin['users'][] = 'us_id = idr_id_user';
+			$SQL->where('idr_id_user', '=', $params['d_registrar_user']);
+		}
+
+		if ($orJoin) {
+			foreach ($orJoin as $table => $joinData) {
+				$strJoin = '';
+
+				foreach ($joinData as $condition) {
+					$strJoin .= ' or '. $condition;
+				}
+
+				if (strpos($strJoin, ' or ') === 0) $strJoin = substr($strJoin, 4);
+
+				$SQL->joinRaw(DbPrefix . $table, $strJoin);
+			}
 		}
 
 		return $SQL;

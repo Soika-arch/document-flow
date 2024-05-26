@@ -102,6 +102,11 @@ class SearchController extends MC {
 				'isRequired' => false,
 				'pattern' => '^\d{1,5}$'
 			],
+			'dRegistrar' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^\d{1,5}$'
+			],
 			'dLocation' => [
 				'type' => 'varchar',
 				'isRequired' => false,

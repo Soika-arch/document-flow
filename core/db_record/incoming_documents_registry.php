@@ -5,15 +5,15 @@ namespace core\db_record;
 /**
  * Модель для роботи з записом таблиці incoming_documents_registry.
  */
-class incoming_documents_registry extends DbRecord {
+class incoming_documents_registry extends DfDocument {
 
-	protected document_titles $DocumentTitle;
-	protected users $RegistrarUser;
+	protected outgoing_documents_registry|null $OutgoingDocument;
 
 	/**
 	 *
 	 */
 	public function __construct (int|null $id, array $dbRow=[]) {
+		$this->displayedNumberPrefix = 'INC_';
 		parent::__construct($id, $dbRow);
 	}
 
@@ -35,33 +35,18 @@ class incoming_documents_registry extends DbRecord {
 	}
 
 	/**
-	 * @return document_titles
+	 * @return outgoing_documents_registry|null
 	 */
-	protected function get_DocumentTitle () {
-		if (! isset($this->DocumentTitle)) {
-			$this->DocumentTitle = new document_titles($this->_id_title);
+	protected function get_OutgoingDocument () {
+		if (! isset($this->OutgoingDocument)) {
+			if ($this->_id_outgoing_number) {
+				$this->OutgoingDocument = new outgoing_documents_registry($this->_id_outgoing_number);
+			}
+			else {
+				$this->OutgoingDocument = null;
+			}
 		}
 
-		return $this->DocumentTitle;
-	}
-
-	/**
-	 * @return users
-	 */
-	protected function get_RegistrarUser () {
-		if (! isset($this->RegistrarUser)) {
-			$this->RegistrarUser = new users($this->dbRow['idr_id_user']);
-		}
-
-		return $this->RegistrarUser;
-	}
-
-	/**
-	 * Отримання логіна користувача, який зареєстрував документ.
-	 * @return string
-	 */
-	public function getRegistrarLogin () {
-
-		return $this->get_RegistrarUser()->_login;
+		return $this->OutgoingDocument;
 	}
 }

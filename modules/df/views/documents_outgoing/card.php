@@ -16,19 +16,38 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 $Doc = $d['Doc'];
 
-e('<div>');
-	e('<span class="card-header">Назва (заголовок) документа:</span>');
-	e('<span class="card-header">'. $Doc->DocumentTitle->_title .'.</span>');
-e('</div>');
+e('<div class="document-card">');
 
-e('<div>');
-	e('<span class="card-header">Номер документа:</span>');
-	e('<span class="card-header">'. strtoupper($Doc->_number) .'.</span>');
-e('</div>');
+	e('<div>');
+		e('<span class="card-header">Назва:</span>');
+		e('<span class="card-title">'. $Doc->DocumentTitle->_title .'.</span>');
+	e('</div>');
 
-e('<div>');
-	e('<span class="card-header">Реєстратор документа:</span>');
-	e('<span class="card-header">'. $Doc->getRegistrarLogin() .'.</span>');
+	e('<div>');
+		e('<span class="card-header">Номер документа:</span>');
+		e('<span class="card-number">'. strtoupper($Doc->displayedNumber) .'.</span>');
+	e('</div>');
+
+	e('<div>');
+		e('<span class="card-header">Реєстратор документа:</span>');
+		e('<span class="card-registrar">'. $Doc->getRegistrarLogin() .'.</span>');
+	e('</div>');
+
+	if ($Doc->IncomingDocument) {
+		$docIncURL = $Doc->IncomingDocument->cardURL;
+		$displayedNumber = $Doc->IncomingDocument->displayedNumber;
+
+		$docIncLink = '<a href="'. $docIncURL .'" target="_blank">'. $displayedNumber .'</a>';
+	}
+	else {
+		$docIncLink = '';
+	}
+
+	e('<div>');
+		e('<span class="card-header">Відповідний вхідний:</span>');
+		e('<span class="card-registrar">'. $docIncLink .'.</span>');
+	e('</div>');
+
 e('</div>');
 
 require $this->getViewFile('/inc/footer');

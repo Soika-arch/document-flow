@@ -233,3 +233,16 @@
 .menu-journal-1 .elem:hover {
 	background-color: #cdc9c9;
 }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Картка документа. */
+
+.document-card {
+	font-size: 18px;
+}
+
+.document-card .card-header {
+	display: inline-block;
+	width: 250px;
+	font-weight: bold;
+}
