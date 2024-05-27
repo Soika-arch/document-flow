@@ -2,7 +2,7 @@
 
 namespace core\controllers;
 
-use core\Post;
+use \core\Post;
 
 /**
  * Контролер користувачів.

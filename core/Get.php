@@ -34,6 +34,10 @@ class Get {
 		$this->get_get();
 		$this->validateAndProcessGetParameters($types);
 		rg_Rg()->add('Get', $this);
+
+		if ((rg_Rg()->get('Us')->Status->_access_level < 3) && isset($this->errors) && $this->errors) {
+			sess_addErrMessage($this->printErrors());
+		}
 	}
 
 	/**
@@ -181,5 +185,22 @@ class Get {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function printErrors () {
+		$str = '';
+
+		if (isset($this->errors) && $this->errors) {
+			$str = '<div class="get-errors">';
+
+			foreach ($this->errors as $msg) $str .= '<div>'. $msg .'</div>';
+
+			$str .= '</div>';
+		}
+
+		return $str;
 	}
 }

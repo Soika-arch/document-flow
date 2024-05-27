@@ -7,6 +7,11 @@ namespace core\db_record;
  */
 class users extends DbRecord {
 
+	// Зв'язок користувача з його статусом.
+	protected users_rel_statuses|null $UserRelStatus;
+	// Статус користувача.
+	protected user_statuses $Status;
+
 	/**
 	 *
 	 */
@@ -39,5 +44,41 @@ class users extends DbRecord {
 		}
 
 		return $this->foreignKeys;
+	}
+
+	/**
+	 * @return users_rel_statuses
+	 */
+	protected function get_UserRelStatus () {
+		if (! isset($this->UserRelStatus)) {
+			$SQL = db_getSelect();
+			$tName = DbPrefix .'users_rel_statuses';
+
+			$SQL
+				->columns([$tName .'.*'])
+				->from($tName)
+				->join(DbPrefix .'users', 'us_id', '=', 'usr_id_user')
+				->where('us_id', '=', $this->_id);
+
+			$row = db_selectRow($SQL);
+
+			if ($row) {
+				$this->UserRelStatus = new users_rel_statuses($row['usr_id'], $row);
+			}
+			else {
+				$this->UserRelStatus = null;
+			}
+		}
+
+		return $this->UserRelStatus;
+	}
+
+	/**
+	 * @return user_statuses
+	 */
+	protected function get_Status () {
+		if ($this->get_UserRelStatus()) $this->Status = $this->get_UserRelStatus()->UserStatus;
+
+		return $this->Status;
 	}
 }

@@ -98,6 +98,8 @@ class DocumentRegistrationController extends MC {
 			]
 		]);
 
+		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
+
 		$pageNum = isset($Post->post['pg']) ? $Post->post['pg'] : 1;
 
 		$d = $this->Model->outgoingPage($pageNum);
@@ -216,7 +218,6 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
-			dd($Post, __FILE__, __LINE__,1);
 			sess_addErrMessage('Отримано некоректні дані форми');
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
@@ -277,7 +278,7 @@ class DocumentRegistrationController extends MC {
 			'dIncomingNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^INC_\d{5}$',
+				'pattern' => '^(INC_\d{8})?$',
 			],
 			'dSender' => [
 				'type' => 'int',

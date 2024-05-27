@@ -82,7 +82,7 @@ class DocumentsIncomingController extends MC {
 			'n' => [
 				'type' => 'varchar',
 				'isRequired' => true,
-				'pattern' => '^\d{4}$'
+				'pattern' => '^\d{8}$'
 			]
 		]);
 
@@ -100,11 +100,20 @@ class DocumentsIncomingController extends MC {
 			'n' => [
 				'type' => 'varchar',
 				'isRequired' => true,
-				'pattern' => '^\d{4}$'
+				'pattern' => '^\d{8}$'
 			]
 		]);
 
+		if ($Get->errors) hd_sendHeader('Location: '. url('/not-found'), __FILE__, __LINE__);
+
+		$regexp = require DirConfig .'/regexp.php';
+
 		$Post = new Post('inc_card_action', [
+			'dIdTitle' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^('. $regexp['freeTextClass'] .')?$'
+			],
 			'dTitle' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -113,22 +122,32 @@ class DocumentsIncomingController extends MC {
 			'dNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^INC_[A-Z0-9]{6}$'
+				'pattern' => '^(INC_\d{8})?$'
+			],
+			'dIdRegistrar' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
 			],
 			'dRegistrar' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,4}$'
+				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
 			],
-			'dIncNumber' => [
+			'dOutNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^OUT_[A-Z0-9]{6}$'
+				'pattern' => '^(OUT_\d{8})?$'
+			],
+			'dIdExecutorUser' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
 			],
 			'dExecutorUser' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,4}$'
+				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
 			],
 			'dIsReceivedExecutorUser' => [
 				'type' => 'varchar',
@@ -144,14 +163,17 @@ class DocumentsIncomingController extends MC {
 
 		/** @var incoming_documents_registry|false */
 		$Doc = $this->Model->cardActionPage();
-		$num = $Get->get['n'];
 
-		if ($Doc) {
+		$num = $Doc ? $Doc->_number : $Get->get['n'];
+
+
+		if ($Doc && ((time() - strtotime($Doc->_change_date)) < 1)) {
 			sess_addSysMessage('Дані змінено.');
-			hd_sendHeader('Location: '. url('/df/documents-incoming/card?n='. $num), __FILE__, __LINE__);
+		}
+		else if (! $Doc) {
+			sess_addErrMessage('Помилка зміни даних.');
 		}
 
-		sess_addErrMessage('Помилка зміни даних.');
 		hd_sendHeader('Location: '. url('/df/documents-incoming/card?n='. $num), __FILE__, __LINE__);
 	}
 }

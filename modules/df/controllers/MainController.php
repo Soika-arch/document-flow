@@ -97,7 +97,7 @@ class MainController extends MC {
 		// Отримання запису з таблиці реєстру документів для файла з номером $docNumber.
 		/** @var array */
 		$dbRow = $this->Model->selectRowByCol(
-			DbPrefix . $docTypes[$px], $tableColPx . 'number', $docNumber,
+			DbPrefix . $docTypes[$px], $tableColPx . 'number', substr($docNumber, 4)
 		);
 
 		$docClass = '\core\db_record\\'. $docTypes[$px];

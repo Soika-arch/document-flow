@@ -30,6 +30,10 @@ class Post {
 		$this->get_post();
 		$this->validateAndProcessPostData($types);
 		rg_Rg()->add('Post', $this);
+
+		if ((rg_Rg()->get('Us')->Status->_access_level < 3) && isset($this->errors) && $this->errors) {
+			sess_addErrMessage($this->printErrors());
+		}
 	}
 
 	/**
@@ -175,5 +179,22 @@ class Post {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function printErrors () {
+		$str = '';
+
+		if (isset($this->errors) && $this->errors) {
+			$str = '<div class="post-errors">';
+
+			foreach ($this->errors as $msg) $str .= '<div>'. $msg .'</div>';
+
+			$str .= '</div>';
+		}
+
+		return $str;
 	}
 }

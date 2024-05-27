@@ -65,17 +65,17 @@ class DocumentsOutgoingModel extends MainModel {
 	/**
 	 * @return array
 	 */
-	public function cardPage (Get $Get) {
-		$incNumber = 'out_'. $Get->get['n'];
+	public function cardPage () {
+		$get = rg_Rg()->get('Get')->get;
 
 		$dbRow = $this->selectRowByCol(
-			DbPrefix .'outgoing_documents_registry', 'odr_number', $incNumber
+			DbPrefix .'outgoing_documents_registry', 'odr_number', $get['n']
 		);
 
 		$Doc = new outgoing_documents_registry($dbRow['odr_id'], $dbRow);
 
 		$d['Doc'] = $Doc;
-		$d['title'] = 'Картка вихідного документа [ <b>'. strtoupper($incNumber) .'</b> ]';
+		$d['title'] = 'Картка вихідного документа [ <b>'. $Doc->displayedNumber .'</b> ]';
 
 		return $d;
 	}

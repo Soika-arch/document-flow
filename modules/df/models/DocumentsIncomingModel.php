@@ -74,7 +74,10 @@ class DocumentsIncomingModel extends MainModel {
 		$Doc = new incoming_documents_registry($dbRow['idr_id'], $dbRow);
 
 		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
-		$d['isRegistrarRights'] = ($Us->_id === $Doc->_id_user);
+		$d['isRegistrarRights'] = (
+			($Us->_id === $Doc->_id_user) || ($Us->_id === $Doc->ExecutorUser->_id)
+		);
+
 		/** @var bool якщо true, то користувач має права адміна на редагування. */
 		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
 
@@ -87,44 +90,57 @@ class DocumentsIncomingModel extends MainModel {
 	}
 
 	/**
-	 * @return
+	 * @return incoming_documents_registry|false
 	 */
 	public function cardActionPage () {
 		$Us = rg_Rg()->get('Us');
 		$get = rg_Rg()->get('Get')->get;
 		$post = rg_Rg()->get('Post')->post;
-
 		$dbRow = $this->selectRowByCol(DbPrefix .'incoming_documents_registry', 'idr_number', $get['n']);
 		$Doc = new incoming_documents_registry($dbRow['idr_id'], $dbRow);
+		$updated = [];
 
-		// Дані, які дозволено змінювати користувачу.
-		$updated = [
-			'idr_id_title' => getArrayValue($post, 'dTitle', null),
-			'idr_id_assigned_user' => getArrayValue($post, 'dExecutorUser', null),
-		];
-
-		if ($post['dOutNumber'] && ($post['dOutNumber'] !== $Doc->OutgoingDocument->_number)) {
-			$newOutgoingId = $this->selectCellByCol(DbPrefix .'outgoing_documents_registry',
-				'odr_number', $post['dOutNumber'], 'odr_id');
+		if ($post['dIdTitle'] && ($Us->Status->_access_level < 4)) {
+			if (intval($post['dIdTitle']) !== $Doc->_id_title) $updated['idr_id_title'] = $post['dIdTitle'];
 		}
 
-		if (isset($newOutgoingId)) $updated['idr_id_outgoing_number'] = $newOutgoingId;
+		if ($post['dIdExecutorUser'] && (intval($post['dIdExecutorUser']) !== $Doc->_id_assigned_user)) {
+			$updated['idr_id_assigned_user'] = getArrayValue($post, 'dIdExecutorUser', null);
+		}
+
+		if ($post['dOutNumber']) {
+			$newOutgoingId = $this->selectCellByCol(DbPrefix .'outgoing_documents_registry',
+				'odr_number', substr($post['dOutNumber'], 4), 'odr_id');
+
+			if (($Doc->Registrar->Status->_access_level < 3) ||
+					($Doc->Registrar->_id === $Us->_id)) {
+				$updated['idr_id_outgoing_number'] = $newOutgoingId;
+			}
+		}
 
 		// Дані, які дозволено змінювати адміну.
 		if ($Us->Status->_access_level < 3) {
-			$updated['idr_id_user'] = getArrayValue($post, 'dRegistrar', null);
+			if ($post['dIdRegistrar'] && (intval($post['dIdRegistrar']) !== $Doc->_id_user)) {
+				$updated['idr_id_user'] = getArrayValue($post, 'dIdRegistrar', null);
+			}
 
 			if ($post['dNumber']) {
-				if (substr($post['dNumber'], 4) !== $Doc->_number) $updated['idr_number'] = $get['n'];
+				$newDocNumber = substr($post['dNumber'], 4);
+				if ($newDocNumber !== $Doc->_number) $updated['idr_number'] = $newDocNumber;
 			}
 
 			if ($post['dIsReceivedExecutorUser']) {
 				$dt = tm_getDatetime($post['dIsReceivedExecutorUser'])->format('Y-m-d H:i:s');
-				$updated['idr_date_of_receipt_by_executor'] = $dt;
+
+				if ($dt !== $Doc->_date_of_receipt_by_executor) {
+					$updated['idr_date_of_receipt_by_executor'] = $dt;
+				}
 			}
 		}
 
-		if (! $Doc->update($updated)) return false;
+		if ($updated) {
+			if (! $Doc->update($updated)) return false;
+		}
 
 		return $Doc;
 	}

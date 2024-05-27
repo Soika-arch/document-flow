@@ -28,7 +28,7 @@ if (isset($d['documents']) && $d['documents']) {
 		foreach ($d['documents'] as $docRow) {
 			$Doc = new outgoing_documents_registry(null, $docRow);
 
-			$docCardURL = url('/df/documents-outgoing/card', ['n' => $Doc->number]);
+			$docCardURL = url('/df/documents-outgoing/card', ['n' => $Doc->_number]);
 
 			$docTitle = '<a href="'. $docCardURL .'" target="_blank">'. $Doc->DocumentTitle->_title .'</a>';
 

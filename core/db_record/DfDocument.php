@@ -8,7 +8,7 @@ namespace core\db_record;
 class DfDocument extends DbRecord {
 
 	// Номер документа, що відображається.
-	protected string $displayedNumber;
+	protected string|null $displayedNumber;
 	protected string $displayedNumberPrefix;
 	protected document_titles $DocumentTitle;
 	// Користувач, який зареєстрував документ.
@@ -34,6 +34,9 @@ class DfDocument extends DbRecord {
 	protected function get_displayedNumber () {
 		if (! isset($this->displayedNumber) && $this->_number) {
 			$this->displayedNumber = $this->displayedNumberPrefix . $this->_number;
+		}
+		else {
+			$this->displayedNumber = null;
 		}
 
 		return $this->displayedNumber;
@@ -110,7 +113,7 @@ class DfDocument extends DbRecord {
 	 */
 	protected function get_fileName () {
 		if (! isset($this->fileName)) {
-			$this->fileName = $this->_number .'.'. $this->_file_extension;
+			$this->fileName = $this->displayedNumberPrefix . $this->_number .'.'. $this->_file_extension;
 		}
 
 		return $this->fileName;

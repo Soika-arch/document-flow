@@ -145,7 +145,7 @@ class DocumentRegistrationModel extends MainModel {
 		// Обробка завантаженого файлу документа.
 		$pathInfo = pathinfo($_FILES['dFile']['name']);
 		$storagePath = $this->get_storagePath();
-		$newDocName = $newDocNum .'.'. $pathInfo['extension'];
+		$newDocName = 'INC_'. $newDocNum .'.'. $pathInfo['extension'];
 
 		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
 		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
@@ -221,7 +221,7 @@ class DocumentRegistrationModel extends MainModel {
 		// Обробка завантаженого файлу документа.
 		$pathInfo = pathinfo($_FILES['dFile']['name']);
 		$storagePath = $this->get_storagePath();
-		$newDocName = $newDocNum .'.'. $pathInfo['extension'];
+		$newDocName = 'OUT_'. $newDocNum .'.'. $pathInfo['extension'];
 
 		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
 		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
@@ -268,7 +268,7 @@ class DocumentRegistrationModel extends MainModel {
 		// Обробка завантаженого файлу документа.
 		$pathInfo = pathinfo($_FILES['dFile']['name']);
 		$storagePath = $this->get_storagePath();
-		$newDocName = $newDocNum .'.'. $pathInfo['extension'];
+		$newDocName = 'INT_'. $newDocNum .'.'. $pathInfo['extension'];
 
 		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
 		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {

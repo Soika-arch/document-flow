@@ -26,11 +26,11 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		$docTitle = getOrDefault($Doc->DocumentTitle->_title, '');
 
 		e('<div class="label_block">');
-			e('<label for="dTitle">Назва</label>');
 
 			// Права на редагування тільки у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-				e('<select id="dTitle" name="dTitle">');
+				e('<label for="dIdTitle">Назва</label>');
+				e('<select id="dIdTitle" name="dIdTitle">');
 
 					foreach ($d['dTitles'] as $row) {
 						if ($row['dts_title'] === $docTitle) {
@@ -44,6 +44,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
+				e('<label for="dIdTitle">Назва</label>');
 				e('<input type="text" name="dTitle" value="'. $docTitle .'" readonly>');
 			}
 
@@ -59,11 +60,11 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 	if (isset($d['users']) && $d['users']) {
 		e('<div class="label_block">');
-			e('<label for="dRegistrar">Реєстратор</label>');
 
 			// Права на редагування тільки у адміна.
 			if ($d['isAdminRights']) {
-				e('<select id="dRegistrar" name="dRegistrar">');
+				e('<label for="dIdRegistrar">Реєстратор</label>');
+				e('<select id="dIdRegistrar" name="dIdRegistrar">');
 					$registrarId = $Doc->Registrar->_id;
 
 					foreach ($d['users'] as $row) {
@@ -78,6 +79,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
+				e('<label for="dRegistrar">Реєстратор</label>');
 				e('<input type="text" name="dRegistrar" value="'. $Doc->getRegistrarLogin() .'" readonly>');
 			}
 
@@ -100,7 +102,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		e('<label for="dOutNumber">Відповідний вихідний</label>');
 
 		e('<input type="text" id="dOutNumber" name="dOutNumber" value="'. $displayedNumberOut .
-			'"'. ($d['isAdminRights'] ? '' : ' readonly') .'>');
+			'"'. (($d['isRegistrarRights'] || $d['isAdminRights']) ? '' : ' readonly') .'>');
 
 		if (isset($docOutURL)) {
 			e('<div><a href="'. $docOutURL .'" target="_blank">Картка відповідного вихідного</a></div>');
@@ -110,11 +112,10 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 	if (isset($d['users']) && $d['users']) {
 		e('<div class="label_block">');
-			e('<label for="dExecutorUser">Виконавець користувач</label>');
-
 			// Права на редагування у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-				e('<select id="dExecutorUser" name="dExecutorUser">');
+				e('<label for="dIdExecutorUser">Виконавець користувач</label>');
+				e('<select id="dIdExecutorUser" name="dIdExecutorUser">');
 
 					$ExecutorUser = $Doc->ExecutorUser;
 
@@ -134,6 +135,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 			else {
 				$executorUserLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : '';
 
+				e('<label for="dExecutorUser">Виконавець користувач</label>');
 				e('<input type="text" name="dExecutorUser" value="'. $executorUserLogin .
 					'" readonly>');
 			}
@@ -163,9 +165,11 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		e('<span class="card-registrar">'. $downloadLink .'.</span>');
 	e('</div>');
 
-	e('<div>');
-		e('<button type="submit" name="bt_edit">Змінити</button>');
-	e('</div>');
+	if ($Us->Status->_access_level < 4) {
+		e('<div>');
+			e('<button type="submit" name="bt_edit">Змінити</button>');
+		e('</div>');
+	}
 
 e('</form>');
 

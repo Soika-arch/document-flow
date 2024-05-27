@@ -3,34 +3,19 @@
 namespace core;
 
 use \core\db_record\users;
-use \core\db_record\users_rel_statuses;
-use \core\db_record\user_statuses;
 use \core\db_record\visitor_routes;
 
 class User extends users {
 
-	private string $ip;
-	private string $userAgent;
-	private visitor_routes $VR;
-	// Зв'язок користувача з його статусом.
-	private UserRelStatus|null $UserRelStatus;
-	// Статус користувача.
-	private user_statuses $Status;
+	protected string $ip;
+	protected string $userAgent;
+	protected visitor_routes $VR;
 
 	/**
 	 *
 	 */
 	public function __construct (int|null $id, array $dbRow=[]) {
 		parent::__construct($id, $dbRow);
-	}
-
-	/**
-	 * @return user_statuses
-	 */
-	protected function get_Status () {
-		if ($this->get_UserRelStatus()) $this->Status = $this->get_UserRelStatus()->UserStatus;
-
-		return $this->Status;
 	}
 
 	/**
@@ -56,33 +41,6 @@ class User extends users {
 	 */
 	protected function get_VR () {
 		if (isset($this->VR)) return $this->VR;
-	}
-
-	/**
-	 * @return users_rel_statuses
-	 */
-	protected function get_UserRelStatus () {
-		if (! isset($this->UserRelStatus)) {
-			$SQL = db_getSelect();
-			$tName = DbPrefix .'users_rel_statuses';
-
-			$SQL
-				->columns([$tName .'.*'])
-				->from($tName)
-				->join(DbPrefix .'users', 'us_id', '=', 'usr_id_user')
-				->where('us_id', '=', $this->_id);
-
-			$row = db_selectRow($SQL);
-
-			if ($row) {
-				$this->UserRelStatus = new UserRelStatus($row['usr_id'], $row);
-			}
-			else {
-				$this->UserRelStatus = null;
-			}
-		}
-
-		return $this->UserRelStatus;
 	}
 
 	/**

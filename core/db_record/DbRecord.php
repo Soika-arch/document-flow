@@ -174,6 +174,10 @@ class DbRecord {
 	 */
 	protected function get_foreignKeys () {}
 
+	protected function set_dbRow (array|null $dbRow) {
+		$this->dbRow = $dbRow;
+	}
+
 	/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/**
@@ -311,7 +315,7 @@ class DbRecord {
 	 * Подготавливает данные для перезаписи значения указанного столбца текущей записи.
 	 */
 	public function upColumn (string $colName, string $colValue=NULL) {
-		dd('', __FILE__, __LINE__,1);
+		dd(__METHOD__, __FILE__, __LINE__,1);
 
 		if (strval($value) !== $colValue) $this->dataForColumns[$colName] = $colValue;
 
@@ -348,7 +352,11 @@ class DbRecord {
 		$res = db_update($SQL);
 
 		// Якщо запит оновлення запису успішний - повертається $this.
-		if ($res['result'] && ($res['affectedRowCount'] <= 1)) return $this;
+		if ($res['result'] && ($res['affectedRowCount'] <= 1)) {
+			unset($this->dbRow);
+
+			return $this;
+		}
 
 		throw new DbRecordException(6000);
 	}

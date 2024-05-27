@@ -65,7 +65,7 @@ class SearchController extends MC {
 			'dNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '(^[a-zA-Z0-9]{1,10}$|^$)'
+				'pattern' => '^([a-zA-Z0-9]{1,10})?$'
 			],
 			'dAge' => [
 				'type' => 'varchar',
@@ -75,42 +75,42 @@ class SearchController extends MC {
 			'dMonth' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,2}$'
+				'pattern' => '^(\d{1,2})?$'
 			],
 			'dDay' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,2}$'
+				'pattern' => '^(\d{1,2})?$'
 			],
 			'dSenderExternal' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,5}$'
+				'pattern' => '^(\d{1,5})?$'
 			],
 			'dSenderUser' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,5}$'
+				'pattern' => '^(\d{1,5})?$'
 			],
 			'dRecipientExternal' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,5}$'
+				'pattern' => '^(\d{1,5})?$'
 			],
 			'dRecipientUser' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,5}$'
+				'pattern' => '^(\d{1,5})?$'
 			],
 			'dRegistrar' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,5}$'
+				'pattern' => '^(\d{1,5})?$'
 			],
 			'dLocation' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^\d{1,5}$'
+				'pattern' => '^(\d{1,5})?$'
 			],
 			'bt_search' => [
 				'type' => 'varchar',
@@ -118,8 +118,6 @@ class SearchController extends MC {
 				'pattern' => '^$'
 			],
 		]);
-
-		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
 
 		$d = $this->Model->handlerPage();
 

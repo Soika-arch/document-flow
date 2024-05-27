@@ -66,16 +66,14 @@ class DocumentsInternalModel extends MainModel {
 	 * @return array
 	 */
 	public function cardPage (Get $Get) {
-		$docNumber = 'int_'. $Get->get['n'];
-
 		$dbRow = $this->selectRowByCol(
-			DbPrefix .'internal_documents_registry', 'inr_number', $docNumber
+			DbPrefix .'internal_documents_registry', 'inr_number', $Get->get['n']
 		);
 
 		$Doc = new internal_documents_registry($dbRow['inr_id'], $dbRow);
 
 		$d['Doc'] = $Doc;
-		$d['title'] = 'Картка внутрішнього документа [ <b>'. strtoupper($docNumber) .'</b> ]';
+		$d['title'] = 'Картка внутрішнього документа [ <b>'. $Doc->displayedNumber .'</b> ]';
 
 		return $d;
 	}
