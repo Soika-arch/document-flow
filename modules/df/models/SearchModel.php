@@ -26,7 +26,7 @@ class SearchModel extends MainModel {
 		$d['targetURL'] = $get['uri'];
 		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
 
-		$users = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$users = $this->getDocumentFlowParticipants();
 		$d['registrarUsers'] = $users;
 
 		if ($get['uri'] === 'df_documents-outgoing_list') {

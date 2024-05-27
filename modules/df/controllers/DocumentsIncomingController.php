@@ -134,6 +134,21 @@ class DocumentsIncomingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
 			],
+			'dDate' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => $regexp['date']
+			],
+			'dRegistrationDate' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => $regexp['date']
+			],
+			'dIdDocumentLocation' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dOutNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,

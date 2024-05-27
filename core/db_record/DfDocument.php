@@ -11,10 +11,13 @@ class DfDocument extends DbRecord {
 	protected string|null $displayedNumber;
 	protected string $displayedNumberPrefix;
 	protected document_titles $DocumentTitle;
+	protected departaments|null $DocumentLocation;
 	// Користувач, який зареєстрував документ.
 	protected users $Registrar;
 	// Виконавець користувач.
 	protected users|null $ExecutorUser;
+	// Отримувач користувач.
+	protected users|null $Recipient;
 	protected string $cardURL;
 	// Ім'я файла документа.
 	protected string $fileName;
@@ -54,6 +57,20 @@ class DfDocument extends DbRecord {
 	}
 
 	/**
+	 * @return departaments|null
+	 */
+	protected function get_DocumentLocation () {
+		if (! isset($this->DocumentLocation) && $this->_id_document_location) {
+			$this->DocumentLocation = new departaments($this->_id_document_location);
+		}
+		else {
+			$this->DocumentLocation = null;
+		}
+
+		return $this->DocumentLocation;
+	}
+
+	/**
 	 * @return users
 	 */
 	protected function get_Registrar () {
@@ -78,6 +95,22 @@ class DfDocument extends DbRecord {
 		}
 
 		return $this->ExecutorUser;
+	}
+
+	/**
+	 * @return users
+	 */
+	protected function get_Recipient () {
+		if (! isset($this->Recipient)) {
+			if ($this->_id_recipient) {
+				$this->Recipient = new users($this->_id_recipient);
+			}
+			else {
+				$this->Recipient = null;
+			}
+		}
+
+		return $this->Recipient;
 	}
 
 	/**
@@ -137,5 +170,12 @@ class DfDocument extends DbRecord {
 	public function getRegistrarLogin () {
 
 		return $this->get_Registrar()->_login;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getDocumentLocationName () {
+		if ($this->get_DocumentLocation()) return $this->get_DocumentLocation()->_name;
 	}
 }

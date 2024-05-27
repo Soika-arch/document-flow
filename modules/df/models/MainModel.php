@@ -152,4 +152,22 @@ class MainModel extends MM {
 
 		return $SQL;
 	}
+
+	/**
+	 * Отримання користувачів, які приймають участь в документообігу (мають доступи не тільки до
+	 * перегляду).
+	 * @return
+	 */
+	public function getDocumentFlowParticipants () {
+		$SQL = db_getSelect();
+
+		$SQL
+			->columns([DbPrefix .'users.*'])
+			->from(DbPrefix .'users')
+			->join(DbPrefix .'users_rel_statuses', 'usr_id_user', '=', 'us_id')
+			->join(DbPrefix .'user_statuses', 'uss_id', '=', 'usr_id_status')
+			->where('uss_access_level', '<', '4');
+
+		return db_select($SQL);
+	}
 }

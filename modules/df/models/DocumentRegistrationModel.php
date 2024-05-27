@@ -23,7 +23,7 @@ class DocumentRegistrationModel extends MainModel {
 
 	public function incomingPage () {
 		$d['title'] = 'Реєстрація вхідного документа';
-		$d['users'] = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['titles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
@@ -40,7 +40,7 @@ class DocumentRegistrationModel extends MainModel {
 
 	public function outgoingPage () {
 		$d['title'] = 'Реєстрація в<b>и</b>хідного документа';
-		$d['users'] = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['registrationForms'] = $this->selectRowsByCol(DbPrefix .'registration_forms');
 		$d['titles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
@@ -57,7 +57,7 @@ class DocumentRegistrationModel extends MainModel {
 
 	public function internalPage () {
 		$d['title'] = 'Реєстрація внутрішнього документа';
-		$d['users'] = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['titles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');

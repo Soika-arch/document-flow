@@ -82,7 +82,8 @@ class DocumentsIncomingModel extends MainModel {
 		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
 
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
-		$d['users'] = $this->selectRowsByCol(DbPrefix .'users', 'us_id', '0', [], '>');
+		$d['users'] = $this->getDocumentFlowParticipants();
+		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
 		$d['Doc'] = $Doc;
 		$d['title'] = 'Картка вхідного документа [ <b>'. $Doc->displayedNumber .'</b> ]';
 
@@ -100,26 +101,53 @@ class DocumentsIncomingModel extends MainModel {
 		$Doc = new incoming_documents_registry($dbRow['idr_id'], $dbRow);
 		$updated = [];
 
-		if ($post['dIdTitle'] && ($Us->Status->_access_level < 4)) {
-			if (intval($post['dIdTitle']) !== $Doc->_id_title) $updated['idr_id_title'] = $post['dIdTitle'];
-		}
+		/** @var bool Права реєстратора або виконавця на зміну даних. */
+		$isRegistrarRights = (
+			($Us->Status->_access_level < 4) ||
+			($Doc->_id_user === $Us->_id) ||
+			(isset($Doc->Executor) && ($Doc->Executor->_id === $Us->_id))
+		);
 
-		if ($post['dIdExecutorUser'] && (intval($post['dIdExecutorUser']) !== $Doc->_id_assigned_user)) {
-			$updated['idr_id_assigned_user'] = getArrayValue($post, 'dIdExecutorUser', null);
-		}
+		/** @var bool Права адміна на зміну даних. */
+		$isAdminRights = ($Us->Status->_access_level < 3);
 
-		if ($post['dOutNumber']) {
-			$newOutgoingId = $this->selectCellByCol(DbPrefix .'outgoing_documents_registry',
-				'odr_number', substr($post['dOutNumber'], 4), 'odr_id');
+		/** @var bool Права суперадміна на зміну даних. */
+		$isSuperAdminRights = ($Us->Status->_access_level === 1);
 
-			if (($Doc->Registrar->Status->_access_level < 3) ||
-					($Doc->Registrar->_id === $Us->_id)) {
-				$updated['idr_id_outgoing_number'] = $newOutgoingId;
+		if ($isRegistrarRights) {
+			if ($post['dIdTitle'] && $isRegistrarRights) {
+				if (intval($post['dIdTitle']) !== $Doc->_id_title) $updated['idr_id_title'] = $post['dIdTitle'];
+			}
+
+			$dIdExecutorUser = intval($post['dIdExecutorUser']);
+
+			if ($dIdExecutorUser && ($dIdExecutorUser !== $Doc->_id_assigned_user)) {
+				$updated['idr_id_assigned_user'] = getArrayValue($post, 'dIdExecutorUser', null);
+			}
+
+			if ($post['dOutNumber']) {
+				$newOutgoingId = $this->selectCellByCol(DbPrefix .'outgoing_documents_registry',
+					'odr_number', substr($post['dOutNumber'], 4), 'odr_id');
+
+				if ($newOutgoingId !== $Doc->_id_outgoing_number) {
+					$updated['idr_id_outgoing_number'] = $newOutgoingId;
+				}
+			}
+
+			if ($post['dDate']) {
+				$dt = tm_getDatetime($post['dDate'])->format('Y-m-d H:i:s');
+
+				if ($dt !== $Doc->_document_date) $updated['idr_document_date'] = $dt;
+			}
+
+			$dIdDocumentLocation = intval($post['dIdDocumentLocation']);
+
+			if ($dIdDocumentLocation && ($dIdDocumentLocation !== $Doc->_id_document_location)) {
+				$updated['idr_id_document_location'] = getArrayValue($post, 'dIdDocumentLocation', null);
 			}
 		}
 
-		// Дані, які дозволено змінювати адміну.
-		if ($Us->Status->_access_level < 3) {
+		if ($isAdminRights) {
 			if ($post['dIdRegistrar'] && (intval($post['dIdRegistrar']) !== $Doc->_id_user)) {
 				$updated['idr_id_user'] = getArrayValue($post, 'dIdRegistrar', null);
 			}
@@ -135,6 +163,14 @@ class DocumentsIncomingModel extends MainModel {
 				if ($dt !== $Doc->_date_of_receipt_by_executor) {
 					$updated['idr_date_of_receipt_by_executor'] = $dt;
 				}
+			}
+		}
+
+		if ($isSuperAdminRights) {
+			if ($post['dRegistrationDate']) {
+				$dt = tm_getDatetime($post['dRegistrationDate'])->format('Y-m-d H:i:s');
+
+				if ($dt !== $Doc->_add_date) $updated['idr_add_date'] = $dt;
 			}
 		}
 
