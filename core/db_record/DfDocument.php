@@ -191,6 +191,6 @@ class DfDocument extends DbRecord {
 	 * @return string|null
 	 */
 	public function getDocumentLocationName () {
-		if ($this->get_DocumentLocation()) return $this->get_DocumentLocation()->_name;
+		if ($this->get_DocumentLocation()) return $this->DocumentLocation->_name;
 	}
 }

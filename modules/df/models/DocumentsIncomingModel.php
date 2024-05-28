@@ -79,6 +79,7 @@ class DocumentsIncomingModel extends MainModel {
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['resolutions'] = $this->selectRowsByCol(DbPrefix .'document_resolutions');
 		$d['Doc'] = $Doc;
 		$d['title'] = 'Картка вхідного документа [ <b>'. $Doc->displayedNumber .'</b> ]';
 

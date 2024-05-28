@@ -105,9 +105,15 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 	e('<div class="label_block">');
 		e('<label for="dRegistrationDate">Дата реєстрації документа</label>');
 
-		e('<input type="date" id="dRegistrationDate" name="dRegistrationDate" value="'.
-			tm_getDatetime($Doc->_add_date)->format('Y-m-d') .'"'.
-			($d['isAdminRights'] ? '' : ' readonly') .'>');
+		$dRegistrationDate = tm_getDatetime($Doc->_add_date)->format('Y-m-d');
+
+		if ($d['isAdminRights']) {
+			e('<input type="date" id="dRegistrationDate" name="dRegistrationDate" value="'.
+				$dRegistrationDate .'">');
+		}
+		else {
+			e('<div>'. $dRegistrationDate .'</div>');
+		}
 
 	e('</div>');
 
@@ -138,8 +144,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 	if (isset($d['departments']) && $d['departments']) {
 		e('<div class="label_block">');
 
-			// Права на редагування тільки у адміна.
-			if ($d['isAdminRights']) {
+			if ($d['isAdminRights'] || $d['isRegistrarRights']) {
 				e('<label for="dIdDocumentLocation">Фізичне місцезнаходження документа</label>');
 				e('<select id="dIdDocumentLocation" name="dIdDocumentLocation">');
 
@@ -238,8 +243,13 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 			$ReceivedExecutorUserDate = '';
 		}
 
-		e('<input type="date" id="dIsReceivedExecutorUser" name="dIsReceivedExecutorUser" value="'.
-			$ReceivedExecutorUserDate .'"'. ($d['isAdminRights'] ? '' : ' readonly') .'>');
+		if ($d['isAdminRights']) {
+			e('<input type="date" id="dIsReceivedExecutorUser" name="dIsReceivedExecutorUser" value="'.
+				$ReceivedExecutorUserDate .'">');
+		}
+		else {
+			e('<div>'. ($ReceivedExecutorUserDate ? $ReceivedExecutorUserDate : 'Не отримано') .'</div>');
+		}
 
 	e('</div>');
 
@@ -257,6 +267,37 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 			$dueDateBefore .'"'. ($d['isRegistrarRights'] ? '' : ' readonly') .'>');
 
 	e('</div>');
+
+	if (isset($d['resolutions']) && $d['resolutions']) {
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdRresolution">Резолюція</label>');
+				e('<select id="dIdRresolution" name="dIdRresolution">');
+
+					if (! ($Resolution = $Doc->Resolution)) e('<option></option>');
+
+					foreach ($d['resolutions'] as $row) {
+						if ($Resolution && ($row['drs_id'] === $Resolution->_id)) {
+							e('<option value="'. $row['drs_id'] .'" selected>'. $row['drs_content'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['drs_id'] .'">'.  $row['drs_content'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				$resolutionContent = $Doc->Resolution ? $Doc->Resolution->_content : '';
+
+				e('<label for="dIdRresolution">Резолюція</label>');
+				e('<input type="text" name="dIdRresolution" value="'. $resolutionContent .
+					'" readonly>');
+			}
+
+		e('</div>');
+	}
 
 	e('<div class="label_block">');
 		e('<label for="dChangeDate">Дата останньої зміни реєстраціїного запису</label>');
