@@ -44,16 +44,11 @@ class DocumentsIncomingModel extends MainModel {
 		}
 
 		$SQLDocs = new RecordSliceRetriever($SQLDocs);
-		// dd($SQLDocs->SQL->prepare(), __FILE__, __LINE__,1);
 		$itemsPerPage = 5;
-
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
-
 		$url = url('/df/documents-incoming/list?pg=(:num)');
-
 		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
-
 		$d['Pagin'] = $Pagin;
 
 		return $d;

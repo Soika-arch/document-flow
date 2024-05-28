@@ -226,6 +226,8 @@ class DocumentRegistrationController extends MC {
 
 		if ($DocNew) {
 			sess_addSysMessage('Документ додано до реєстра');
+			hd_sendHeader('Location: '. url('/df/documents-incoming/card?n='. $DocNew->_number),
+				__FILE__, __LINE__);
 		}
 		else {
 			sess_addErrMessage('Помилка! Документ не додано до реєстра');
@@ -242,6 +244,8 @@ class DocumentRegistrationController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
+		$regexp = require DirConfig .'/regexp.php';
+
 		$Post = new Post('fm_addIncomingDocument', [
 			'dOutgoingDate' => [
 				'type' => 'date',
@@ -251,9 +255,10 @@ class DocumentRegistrationController extends MC {
 				'type' => 'int',
 				'isRequired' => true
 			],
-			'registrationForm' => [
-				'type' => 'int',
-				'isRequired' => true
+			'registrationFormNumber' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^([a-zA-Z0-9_-]{1,255})?$'
 			],
 			'dCarrierType' => [
 				'type' => 'int',

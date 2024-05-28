@@ -42,7 +42,6 @@ class DocumentRegistrationModel extends MainModel {
 		$d['title'] = 'Реєстрація в<b>и</b>хідного документа';
 		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
-		$d['registrationForms'] = $this->selectRowsByCol(DbPrefix .'registration_forms');
 		$d['titles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');

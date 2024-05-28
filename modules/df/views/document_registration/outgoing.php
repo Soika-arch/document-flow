@@ -38,20 +38,10 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['registrationForms']) && $d['registrationForms']) {
-			e('<div class="label_block">');
-				e('<label for="registrationForm">Реєстраційний номер бланка</label>');
-				e('<select name="registrationForm" required>');
-
-					e('<option></option>');
-
-					foreach ($d['registrationForms'] as $dtRow) {
-						e('<option value="'. $dtRow['rf_id'] .'">'.  $dtRow['rf_name'] .'</option>');
-					}
-
-				e('</select>');
-			e('</div>');
-		}
+		e('<div class="label_block">');
+			e('<label for="registrationFormNumber">Реєстраційний номер бланка</label>');
+			e('<input id="registrationFormNumber" type="text" name="registrationFormNumber">');
+		e('</div>');
 
 		if (isset($d['carrierTypes']) && $d['carrierTypes']) {
 			e('<div class="label_block">');
