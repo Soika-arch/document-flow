@@ -135,7 +135,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
-	if (isset($d['departaments']) && $d['departaments']) {
+	if (isset($d['departments']) && $d['departments']) {
 		e('<div class="label_block">');
 
 			// Права на редагування тільки у адміна.
@@ -145,7 +145,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 					if (! $Doc->_id_document_location) e('<option></option>');
 
-					foreach ($d['departaments'] as $row) {
+					foreach ($d['departments'] as $row) {
 						if ($row['dp_id'] === $Doc->_id_document_location) {
 							e('<option value="'. $row['dp_id'] .'" selected>'. $row['dp_name'] .'</option>');
 						}
@@ -170,8 +170,8 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		e('<div class="label_block">');
 			// Права на редагування у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-				e('<label for="dRecipient">Отримувач користувач</label>');
-				e('<select id="dRecipient" name="dRecipient">');
+				e('<label for="dIdRecipient">Отримувач користувач</label>');
+				e('<select id="dIdRecipient" name="dIdRecipient">');
 
 					if (! ($Recipient = $Doc->Recipient)) e('<option></option>');
 
@@ -240,6 +240,21 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 		e('<input type="date" id="dIsReceivedExecutorUser" name="dIsReceivedExecutorUser" value="'.
 			$ReceivedExecutorUserDate .'"'. ($d['isAdminRights'] ? '' : ' readonly') .'>');
+
+	e('</div>');
+
+	e('<div class="label_block">');
+		e('<label for="dDueDateBefore">Термін виконання до</label>');
+
+		if ($Doc->_control_date) {
+			$dueDateBefore = tm_getDatetime($Doc->_control_date)->format('Y-m-d');
+		}
+		else {
+			$dueDateBefore = '';
+		}
+
+		e('<input type="date" id="dDueDateBefore" name="dDueDateBefore" value="'.
+			$dueDateBefore .'"'. ($d['isRegistrarRights'] ? '' : ' readonly') .'>');
 
 	e('</div>');
 

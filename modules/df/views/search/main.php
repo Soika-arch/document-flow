@@ -40,6 +40,23 @@ e('<div class="fm">');
 			e('<input type="number" name="dDay">');
 		e('</div>');
 
+		e('<div>');
+			e('<hr>');
+			e('<h3>Період дати документу</h3>');
+
+			e('<div>');
+				e('<label for="dDateFrom">Від<label>');
+				e('<input id="dDateFrom" type="date" name="dDateFrom">');
+			e('</div>');
+
+			e('<div>');
+				e('<label for="dDateUntil">До<label>');
+				e('<input id="dDateUntil" type="date" name="dDateUntil">');
+			e('</div>');
+
+			e('<hr>');
+		e('</div>');
+
 		if (isset($d['sendersUsers']) && $d['sendersUsers']) {
 			e('<div class="label_block">');
 				e('<label for="dSenderUser">Відправник</label>');
@@ -115,14 +132,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['departaments']) && $d['departaments']) {
+		if (isset($d['departments']) && $d['departments']) {
 			e('<div class="label_block">');
 				e('<label for="dLocation">Фізичне місцезнаходження оригінала</label>');
 				e('<select name="dLocation">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['departaments'] as $mtRow) {
+					foreach ($d['departments'] as $mtRow) {
 						e('<option value="'. $mtRow['dp_id'] .'">'.  $mtRow['dp_name'] .'</option>');
 					}
 

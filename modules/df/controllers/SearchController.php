@@ -82,6 +82,16 @@ class SearchController extends MC {
 				'isRequired' => false,
 				'pattern' => '^(\d{1,2})?$'
 			],
+			'dDateFrom' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^('. $patterns['date'] .')?$'
+			],
+			'dDateUntil' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^('. $patterns['date'] .')?$'
+			],
 			'dSenderExternal' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -118,6 +128,17 @@ class SearchController extends MC {
 				'pattern' => '^$'
 			],
 		]);
+
+		$post = $Post->post;
+
+		if ((isset($post['dDateFrom']) && $post['dDateFrom'])) {
+			if ((isset($post['dDateUntil']) && $post['dDateUntil'])) {
+				if (strtotime($post['dDateUntil']) < strtotime($post['dDateFrom'])) {
+					sess_addErrMessage('Період дати документу: дата "Від" повинна бути менше дати "До"');
+					hd_sendHeader('Location: '. $_SERVER['HTTP_REFERER'], __FILE__, __LINE__);
+				}
+			}
+		}
 
 		$d = $this->Model->handlerPage();
 

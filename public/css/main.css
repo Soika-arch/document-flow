@@ -168,12 +168,13 @@ https://chatgpt.com/c/a70b7689-e251-41a6-8ff9-e5fa03dff4c0
 	display: block; /* Позволяет ссылкам занимать всю ширину родителя */
 	padding: 10px 20px; /* Внутренний отступ */
 	text-decoration: none; /* Убирает подчеркивание текста */
-	color: #007BFF; /* Светло-синий цвет текста */
+	font-size: 19px;
+	color: #1900ff; /* Светло-синий цвет текста */
 	transition: background-color 0.3s ease, color 0.3s ease; /* Плавный переход для фона и цвета текста */
 }
 
 .main-menu a:hover {
-	background-color: #e0e0e0; /* Светло-серый цвет фона при наведении */
+	background-color: #eeeded; /* Светло-серый цвет фона при наведении */
 	color: #0056b3; /* Темно-синий цвет текста при наведении */
 }
 
@@ -222,7 +223,7 @@ https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
 
 /* Цвет при наведении */
 .secondary-menu a:hover {
-  color: #007BFF; /* Синий цвет при наведении */
+  color: #130ce6; /* Синий цвет при наведении */
 }
 
 .secondary-menu .img-button {
@@ -279,17 +280,20 @@ https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
 	min-width: 25px;
 	max-width: 50px;
 	margin-right: 5px;
-	background-color: azure;
+	background-color: rgb(211, 211, 211);
 	text-align: center;
+	font-size: 22px;
 }
 
 .menu-pagin span:hover {
-	background-color: rgb(221, 245, 245);
+	font-weight: bold;
+	background-color: rgb(239, 238, 238);
 }
 
 .menu-pagin .active {
-	background-color: rgb(221, 245, 245);
+	background-color: rgb(239, 238, 238);
 	font-weight: bold;
+	font-size: 24px;
 }
 
 .menu-pagin span a {

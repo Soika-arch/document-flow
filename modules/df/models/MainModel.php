@@ -99,19 +99,33 @@ class MainModel extends MM {
 			$SQL->where('idr_number', 'like', '%'. $params['d_number'] .'%');
 		}
 
-		if (isset($params['d_age'])) {
-			$SQL->whereRaw($SQL->raw('year(idr_document_date)') .' = "'.
-				$params['d_age'] .'"');
-		}
+		if (isset($params['d_age']) || isset($params['d_month']) || isset($params['d_day'])) {
+			if (isset($params['d_age'])) {
+				$SQL->whereRaw($SQL->raw('year(idr_document_date)') .' = "'.
+					$params['d_age'] .'"');
+			}
 
-		if (isset($params['d_month'])) {
-			$SQL->whereRaw($SQL->raw('month(idr_document_date)') .' = "'.
-				$params['d_month'] .'"');
-		}
+			if (isset($params['d_month'])) {
+				$SQL->whereRaw($SQL->raw('month(idr_document_date)') .' = "'.
+					$params['d_month'] .'"');
+			}
 
-		if (isset($params['d_day'])) {
-			$SQL->whereRaw($SQL->raw('day(idr_document_date)') .' = "'.
-				$params['d_day'] .'"');
+			if (isset($params['d_day'])) {
+				$SQL->whereRaw($SQL->raw('day(idr_document_date)') .' = "'.
+					$params['d_day'] .'"');
+			}
+		}
+		else if (isset($params['d_date_from']) || isset($params['d_date_until'])) {
+			if (isset($params['d_date_from']) && isset($params['d_date_until'])) {
+				$SQL->whereRaw('idr_document_date >= "'. $params['d_date_from'] .'"'.
+					' and idr_document_date <= "'. $params['d_date_until'] .'"');
+			}
+			else if (isset($params['d_date_from'])) {
+				$SQL->whereRaw('idr_document_date >= "'. $params['d_date_from'] .'"');
+			}
+			else if (isset($params['d_date_until'])) {
+				$SQL->whereRaw('idr_document_date <= "'. $params['d_date_until'] .'"');
+			}
 		}
 
 		if (isset($params['d_location'])) {

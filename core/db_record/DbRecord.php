@@ -36,7 +36,7 @@ class DbRecord {
 			if (isset($id)) $this->id = $id;
 
 			if ($dbRow) $this->dbRow = $dbRow;
-
+			if (! db_getColumnsPrefix($this->tName)) dd($this->tName, __FILE__, __LINE__,1);
 			$this->px = db_getColumnsPrefix($this->tName);
 		}
 	}

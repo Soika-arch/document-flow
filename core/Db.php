@@ -2,11 +2,12 @@
 
 namespace core;
 
-use libs\query_builder\Connection;
-use libs\query_builder\DeleteQuery;
-use libs\query_builder\InsertQuery;
-use libs\query_builder\SelectQuery;
-use libs\query_builder\UpdateQuery;
+use \core\exceptions\DbException;
+use \libs\query_builder\Connection;
+use \libs\query_builder\DeleteQuery;
+use \libs\query_builder\InsertQuery;
+use \libs\query_builder\SelectQuery;
+use \libs\query_builder\UpdateQuery;
 
 /**
  * Клас взаємодії з базою MySQL.
@@ -285,6 +286,10 @@ class Db {
 				->orderBy('COLUMNS.ORDINAL_POSITION');
 
 			$colsInfo = db_select($SQL);
+
+			if (! $colsInfo) {
+				throw new DbException(5002, ['sql' => $SQL->prepare()]);
+			}
 
 			$this->tblData[$tName]['columns'] = [];
 

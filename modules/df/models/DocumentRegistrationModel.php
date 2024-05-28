@@ -29,7 +29,7 @@ class DocumentRegistrationModel extends MainModel {
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
 		$d['documentStatuses'] = $this->selectRowsByCol(DbPrefix .'document_statuses');
-		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
 		$d['resolutions'] = $this->selectRowsByCol(DbPrefix .'document_resolutions');
 		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
 		$d['senders'] = $this->selectRowsByCol(DbPrefix .'document_senders');
@@ -47,7 +47,7 @@ class DocumentRegistrationModel extends MainModel {
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
 		$d['documentStatuses'] = $this->selectRowsByCol(DbPrefix .'document_statuses');
-		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
 		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
 		$d['recipients'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 		$d['terms'] = $this->selectRowsByCol(DbPrefix .'terms_of_execution');
@@ -63,7 +63,7 @@ class DocumentRegistrationModel extends MainModel {
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
 		$d['documentStatuses'] = $this->selectRowsByCol(DbPrefix .'document_statuses');
-		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
 		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
 		$d['recipients'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 		$d['terms'] = $this->selectRowsByCol(DbPrefix .'terms_of_execution');
@@ -126,7 +126,7 @@ class DocumentRegistrationModel extends MainModel {
 		if ($numOutDoc) {
 			/** @var int id відповідного вихідного документа. */
 			$idOutDoc = $this->selectCellByCol(
-				DbPrefix .'outgoing_documents_registry', 'odr_number', $numOutDoc, 'odr_id'
+				DbPrefix .'outgoing_documents_registry', 'odr_number', substr($numOutDoc, 4), 'odr_id'
 			);
 
 			if (! $idOutDoc) {

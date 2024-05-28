@@ -149,6 +149,11 @@ class DocumentsIncomingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
 			],
+			'dIdRecipient' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dOutNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -165,6 +170,11 @@ class DocumentsIncomingController extends MC {
 				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
 			],
 			'dIsReceivedExecutorUser' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '(^$|^\d{4}-\d{2}-\d{2}$)$'
+			],
+			'dDueDateBefore' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '(^$|^\d{4}-\d{2}-\d{2}$)$'

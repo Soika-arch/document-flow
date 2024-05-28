@@ -83,7 +83,7 @@ class DocumentsIncomingModel extends MainModel {
 
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['users'] = $this->getDocumentFlowParticipants();
-		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
 		$d['Doc'] = $Doc;
 		$d['title'] = 'Картка вхідного документа [ <b>'. $Doc->displayedNumber .'</b> ]';
 
@@ -122,7 +122,8 @@ class DocumentsIncomingModel extends MainModel {
 			$dIdExecutorUser = intval($post['dIdExecutorUser']);
 
 			if ($dIdExecutorUser && ($dIdExecutorUser !== $Doc->_id_assigned_user)) {
-				$updated['idr_id_assigned_user'] = getArrayValue($post, 'dIdExecutorUser', null);
+				$updated['idr_id_assigned_user'] = $dIdExecutorUser;
+				$updated['idr_date_of_receipt_by_executor'] = null;
 			}
 
 			if ($post['dOutNumber']) {
@@ -143,13 +144,27 @@ class DocumentsIncomingModel extends MainModel {
 			$dIdDocumentLocation = intval($post['dIdDocumentLocation']);
 
 			if ($dIdDocumentLocation && ($dIdDocumentLocation !== $Doc->_id_document_location)) {
-				$updated['idr_id_document_location'] = getArrayValue($post, 'dIdDocumentLocation', null);
+				$updated['idr_id_document_location'] = $dIdDocumentLocation;
+			}
+
+			$dIdRecipient = intval($post['dIdRecipient']);
+
+			if ($dIdRecipient && ($dIdRecipient !== $Doc->_id_recipient)) {
+				$updated['idr_id_recipient'] = $dIdRecipient;
+			}
+
+			if ($post['dDueDateBefore']) {
+				$dt = tm_getDatetime($post['dDueDateBefore'])->format('Y-m-d H:i:s');
+
+				if ($dt !== $Doc->_control_date) $updated['idr_control_date'] = $dt;
 			}
 		}
 
 		if ($isAdminRights) {
-			if ($post['dIdRegistrar'] && (intval($post['dIdRegistrar']) !== $Doc->_id_user)) {
-				$updated['idr_id_user'] = getArrayValue($post, 'dIdRegistrar', null);
+			$dIdRegistrar = intval($post['dIdRegistrar']);
+
+			if ($dIdRegistrar && ($dIdRegistrar !== $Doc->_id_user)) {
+				$updated['idr_id_user'] = $dIdRegistrar;
 			}
 
 			if ($post['dNumber']) {
@@ -157,7 +172,7 @@ class DocumentsIncomingModel extends MainModel {
 				if ($newDocNumber !== $Doc->_number) $updated['idr_number'] = $newDocNumber;
 			}
 
-			if ($post['dIsReceivedExecutorUser']) {
+			if ($post['dIsReceivedExecutorUser'] && ! isset($updated['idr_date_of_receipt_by_executor'])) {
 				$dt = tm_getDatetime($post['dIsReceivedExecutorUser'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_date_of_receipt_by_executor) {

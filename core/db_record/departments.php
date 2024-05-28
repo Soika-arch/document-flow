@@ -3,9 +3,9 @@
 namespace core\db_record;
 
 /**
- * Модель для роботи з записом таблиці departaments.
+ * Модель для роботи з записом таблиці departments.
  */
-class departaments extends DbRecord {
+class departments extends DbRecord {
 
 	/**
 	 *

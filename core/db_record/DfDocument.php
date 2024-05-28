@@ -11,13 +11,14 @@ class DfDocument extends DbRecord {
 	protected string|null $displayedNumber;
 	protected string $displayedNumberPrefix;
 	protected document_titles $DocumentTitle;
-	protected departaments|null $DocumentLocation;
+	protected departments|null $DocumentLocation;
 	// Користувач, який зареєстрував документ.
 	protected users $Registrar;
 	// Виконавець користувач.
 	protected users|null $ExecutorUser;
 	// Отримувач користувач.
 	protected users|null $Recipient;
+	protected document_resolutions|null $Resolution;
 	protected string $cardURL;
 	// Ім'я файла документа.
 	protected string $fileName;
@@ -57,11 +58,11 @@ class DfDocument extends DbRecord {
 	}
 
 	/**
-	 * @return departaments|null
+	 * @return departments|null
 	 */
 	protected function get_DocumentLocation () {
 		if (! isset($this->DocumentLocation) && $this->_id_document_location) {
-			$this->DocumentLocation = new departaments($this->_id_document_location);
+			$this->DocumentLocation = new departments($this->_id_document_location);
 		}
 		else {
 			$this->DocumentLocation = null;
@@ -127,6 +128,20 @@ class DfDocument extends DbRecord {
 		}
 
 		return $this->OutgoingDocument;
+	}
+
+	/**
+	 * @return document_resolutions|null
+	 */
+	protected function get_Resolution () {
+		if (! isset($this->Resolution) && $this->_id_resolution) {
+			$this->Resolution = new document_resolutions($this->_id_resolution);
+		}
+		else {
+			$this->Resolution = null;
+		}
+
+		return $this->Resolution;
 	}
 
 	/**

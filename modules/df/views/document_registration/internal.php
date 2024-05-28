@@ -58,14 +58,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['departaments']) && $d['departaments']) {
+		if (isset($d['departments']) && $d['departments']) {
 			e('<div class="label_block">');
 				e('<label for="dLocation">Фізичне місцезнаходження оригінала</label>');
 				e('<select name="dLocation">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['departaments'] as $mtRow) {
+					foreach ($d['departments'] as $mtRow) {
 						e('<option value="'. $mtRow['dp_id'] .'">'.  $mtRow['dp_name'] .'</option>');
 					}
 
@@ -176,14 +176,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['departaments']) && $d['departaments']) {
+		if (isset($d['departments']) && $d['departments']) {
 			e('<div class="label_block">');
 				e('<label for="dAssignedDepartament">Відділ, якому призначено на виконання</label>');
 				e('<select name="dAssignedDepartament">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['departaments'] as $mtRow) {
+					foreach ($d['departments'] as $mtRow) {
 						e('<option value="'. $mtRow['dp_id'] .'">'.  $mtRow['dp_name'] .'</option>');
 					}
 
@@ -219,14 +219,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['departaments']) && $d['departaments']) {
+		if (isset($d['departments']) && $d['departments']) {
 			e('<div class="label_block">');
 				e('<label for="distributionScope">Поширюється на</label>');
 				e('<select name="distributionScope">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['departaments'] as $mtRow) {
+					foreach ($d['departments'] as $mtRow) {
 						e('<option value="'. $mtRow['dp_id'] .'">'.  $mtRow['dp_name'] .'</option>');
 					}
 

@@ -90,6 +90,135 @@
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Журнал документів. */
+
+.document-list {
+	padding: 10px 10px 0px 10px;
+	font-size: 18px;
+	/* border: silver 1px solid; */
+}
+
+.document-list .doc-header {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0px 0px 10px 0px;
+	border: silver 1px solid;
+}
+
+/* Адаптивный дизайн для мобильных устройств */
+@media (max-width: 1200px) {
+  .document-list .doc-header {
+		display: none;
+	}
+}
+
+.document-list .header-num, .header-title, .header-date, .header-number, .header-executor,
+.header-resolution, .header-location {
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	height: 100%;
+	font-weight: bolder;
+	/* border: silver 1px solid; */
+}
+
+.document-list .header-num {
+	width: 40px;
+}
+
+.document-list .header-title {
+	width: 280px;
+}
+
+.document-list .header-date {
+	width: 100px;
+}
+
+.document-list .header-number {
+	width: 140px;
+}
+
+.document-list .header-executor {
+	width: 160px;
+}
+
+.document-list .header-resolution {
+	width: 160px;
+}
+
+.document-list .header-location {
+	width: 270px;
+}
+
+.document-list .doc-block {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0px 0px 10px 0px;
+	font-size: 18px;
+	background-color: #f0f0f0;
+	/* border: silver 1px solid; */
+}
+
+.document-list .doc-block:hover {
+	background-color: #f4f3ed;
+}
+
+.document-list .doc-num, .doc-title, .doc-title a, .doc-date, .doc-number, .doc-executor,
+.doc-resolution, .doc-location {
+	display: flex;
+	height: auto;
+	/* border: silver 1px solid; */
+}
+
+.document-list .doc-num {
+	justify-content: center;
+	text-align: center;
+	width: 40px;
+}
+
+.document-list .doc-title {
+	padding-left: 5px;
+	width: 280px;
+}
+
+.document-list .doc-title a {
+	width: 100%;
+	color: rgb(3, 0, 198);
+	text-decoration: none;
+}
+
+.document-list .doc-title a:hover {
+	color: #9c0683;
+	background-color: #fffef8;
+}
+
+.document-list .doc-date {
+	justify-content: center;
+	width: 100px;
+}
+
+.document-list .doc-number {
+	justify-content: center;
+	width: 140px;
+}
+
+.document-list .doc-executor {
+	justify-content: center;
+	width: 160px;
+}
+
+.document-list .doc-resolution {
+	padding-left: 5px;
+	width: 160px;
+}
+
+.document-list .doc-location {
+	padding-left: 5px;
+	width: 270px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Форма додавання нового типу документів. */
 
 .form-add_dt {

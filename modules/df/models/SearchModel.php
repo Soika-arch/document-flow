@@ -24,7 +24,7 @@ class SearchModel extends MainModel {
 
 		$d['title'] = 'Пошук документів';
 		$d['targetURL'] = $get['uri'];
-		$d['departaments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
 
 		$users = $this->getDocumentFlowParticipants();
 		$d['registrarUsers'] = $users;
@@ -64,6 +64,12 @@ class SearchModel extends MainModel {
 		if (isset($post['dMonth']) && $post['dMonth']) $params['d_month'] = $post['dMonth'];
 
 		if (isset($post['dDay']) && $post['dDay']) $params['d_day'] = $post['dDay'];
+
+		if (isset($post['dDateFrom']) && $post['dDateFrom']) $params['d_date_from'] = $post['dDateFrom'];
+
+		if (isset($post['dDateUntil']) && $post['dDateUntil']) {
+			$params['d_date_until'] = $post['dDateUntil'];
+		}
 
 		if (isset($post['dLocation']) && $post['dLocation']) $params['d_location'] = $post['dLocation'];
 
