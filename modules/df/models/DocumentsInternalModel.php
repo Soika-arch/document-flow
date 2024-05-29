@@ -66,11 +66,22 @@ class DocumentsInternalModel extends MainModel {
 	 * @return array
 	 */
 	public function cardPage (Get $Get) {
+		$Us = rg_Rg()->get('Us');
+
 		$dbRow = $this->selectRowByCol(
 			DbPrefix .'internal_documents_registry', 'inr_number', $Get->get['n']
 		);
 
 		$Doc = new internal_documents_registry($dbRow['inr_id'], $dbRow);
+
+		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
+		$d['isRegistrarRights'] = (
+			($Us->_id === $Doc->_id_user) ||
+			($Us->_id === (($Doc->ExecutorUser) && $Doc->ExecutorUser->_id))
+		);
+
+		/** @var bool якщо true, то користувач має права адміна на редагування. */
+		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
 
 		$d['Doc'] = $Doc;
 		$d['title'] = 'Картка внутрішнього документа [ <b>'. $Doc->displayedNumber .'</b> ]';

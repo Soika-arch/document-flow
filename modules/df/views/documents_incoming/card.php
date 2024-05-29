@@ -14,7 +14,7 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-/** @var incoming_documents_registry|outgoing_documents_registry|internal_documents_registry */
+/** @var incoming_documents_registry */
 $Doc = $d['Doc'];
 $docNumber = $Doc->_number;
 $displayedNumber = $Doc->displayedNumber;

@@ -7,6 +7,10 @@ namespace core\db_record;
  */
 class incoming_documents_registry extends DfDocument {
 
+	// Відправник зовнішній.
+	protected document_senders|null $Sender;
+	// Отримувач користувач.
+	protected users|null $Recipient;
 	protected outgoing_documents_registry|null $OutgoingDocument;
 
 	/**
@@ -62,5 +66,21 @@ class incoming_documents_registry extends DfDocument {
 		}
 
 		return $this->Sender;
+	}
+
+	/**
+	 * @return users
+	 */
+	protected function get_Recipient () {
+		if (! isset($this->Recipient)) {
+			if ($this->_id_recipient) {
+				$this->Recipient = new users($this->_id_recipient);
+			}
+			else {
+				$this->Recipient = null;
+			}
+		}
+
+		return $this->Recipient;
 	}
 }

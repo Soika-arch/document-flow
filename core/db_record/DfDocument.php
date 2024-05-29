@@ -17,9 +17,6 @@ class DfDocument extends DbRecord {
 	protected users $Registrar;
 	// Виконавець користувач.
 	protected users|null $ExecutorUser;
-	// Отримувач користувач.
-	protected users|null $Recipient;
-	protected document_senders|users|null $Sender;
 	// Тип контроллю за виконанням.
 	protected document_control_types|null $ControlType;
 	protected document_resolutions|null $Resolution;
@@ -114,22 +111,6 @@ class DfDocument extends DbRecord {
 		}
 
 		return $this->ExecutorUser;
-	}
-
-	/**
-	 * @return users
-	 */
-	protected function get_Recipient () {
-		if (! isset($this->Recipient)) {
-			if ($this->_id_recipient) {
-				$this->Recipient = new users($this->_id_recipient);
-			}
-			else {
-				$this->Recipient = null;
-			}
-		}
-
-		return $this->Recipient;
 	}
 
 	/**

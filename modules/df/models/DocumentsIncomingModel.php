@@ -70,7 +70,8 @@ class DocumentsIncomingModel extends MainModel {
 
 		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
 		$d['isRegistrarRights'] = (
-			($Us->_id === $Doc->_id_user) || ($Us->_id === $Doc->ExecutorUser->_id)
+			($Us->_id === $Doc->_id_user) ||
+			($Us->_id === (($Doc->ExecutorUser) && $Doc->ExecutorUser->_id))
 		);
 
 		/** @var bool якщо true, то користувач має права адміна на редагування. */

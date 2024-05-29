@@ -352,7 +352,7 @@ class DocumentRegistrationController extends MC {
 			],
 			'dAdditionalNumber' => [
 				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9_-]{1,10}$',
+				'pattern' => '^([a-zA-Z0-9_-]{1,10})?$',
 				'isRequired' => false
 			],
 			'dUserInitiator' => [
@@ -428,8 +428,9 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
+			dd($Post, __FILE__, __LINE__,1);
 			sess_addErrMessage('Отримано некоректні дані форми');
-			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
+			hd_sendHeader('Location: '. url('/df/document-registration/internal'), __FILE__, __LINE__);
 		}
 
 		$DocNew = $this->Model->addInternalDocument($Post);

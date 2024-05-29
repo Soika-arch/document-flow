@@ -16,7 +16,7 @@ if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
 $url = url('/df');
 
-e('<div class="df-selecting_source_document">');
+e('<div class="fm df-selecting_source_document">');
 
 	e('<div>');
 		e('<a href="'. $url .'/document-registration/incoming">Вхідний</a>');

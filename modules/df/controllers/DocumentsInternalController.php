@@ -81,7 +81,7 @@ class DocumentsInternalController extends MC {
 			'n' => [
 				'type' => 'varchar',
 				'isRequired' => true,
-				'pattern' => '^\d{4}$'
+				'pattern' => '^\d{8}$'
 			]
 		]);
 
