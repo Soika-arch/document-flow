@@ -20,27 +20,10 @@ class SearchModel extends MainModel {
 	 * @return array
 	 */
 	public function mainPage () {
-		$get = rg_Rg()->get('Get')->get;
-
 		$d['title'] = 'Пошук документів';
-		$d['targetURL'] = $get['uri'];
 		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
-
-		$users = $this->getDocumentFlowParticipants();
-		$d['registrarUsers'] = $users;
-
-		if ($get['uri'] === 'df_documents-outgoing_list') {
-			$d['sendersUsers'] = $users;
-			$d['recipientsExternal'] = $this->selectRowsByCol(DbPrefix .'document_senders');
-		}
-		else if (($get['uri'] === 'df_documents-incoming_list') || ($get['uri'] === 'df')) {
-			$d['sendersExternal'] = $this->selectRowsByCol(DbPrefix .'document_senders');
-			$d['recipientsUsers'] = $users;
-		}
-		else if ($get['uri'] === 'df_documents-internal_list') {
-			$d['sendersUsers'] = $users;
-			$d['recipientsUsers'] = $users;
-		}
+		$d['users'] = $this->getDocumentFlowParticipants();
+		$d['documentSenders'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 
 		return $d;
 	}
@@ -54,9 +37,17 @@ class SearchModel extends MainModel {
 		if (isset($post['pg'])) unset($post['pg']);
 
 		$params = [];
+		$dNumber = $post['dNumber'];
 
 		if (isset($post['dNumber']) && $post['dNumber']) {
-			$params['d_number'] = substr($post['dNumber'], 4);
+			if (($pos = strpos($post['dNumber'], '_')) !== false) $dNumber = substr($dNumber, ($pos + 1));
+
+			if (! is_numeric($dNumber)) {
+				sess_addErrMessage('У полі номера документа мають бути тильки числа');
+				hd_sendHeader('Location: '. url('/df/search'), __FILE__, __LINE__);
+			}
+
+			$params['d_number'] = $dNumber;
 		}
 
 		if (isset($post['dAge']) && $post['dAge']) $params['d_age'] = $post['dAge'];
@@ -91,7 +82,12 @@ class SearchModel extends MainModel {
 
 		sess_addGetParameters($params);
 
-		$d['targetURL'] = url('/'. str_replace('_', '/', $post['targetURL']));
+		if ($post['documentDirection'] === '') {
+			$d['targetURL'] = url('/df');
+		}
+		else {
+			$d['targetURL'] = $post['documentDirection'];
+		}
 
 		return $d;
 	}

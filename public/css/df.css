@@ -167,6 +167,7 @@
 .document-list .doc-num, .doc-title, .doc-title a, .doc-date, .doc-number, .doc-executor,
 .doc-resolution, .doc-location {
 	display: flex;
+	align-items: center;
 	height: auto;
 	/* border: silver 1px solid; */
 }

@@ -18,11 +18,8 @@ e('<div class="secondary-menu">');
 		e('</div>');
 	}
 
-	if (($pos = strpos(URI, '?')) !== false) $url_1 = substr(URI, 0, $pos);
-	else $url_1 = URI;
-
 	e('<div>');
-		e('<a href="'. $url .'/search?uri='. str_replace('/', '_', trim($url_1, '/')) .'">Пошук</a>');
+		e('<a href="'. $url .'/search">Пошук</a>');
 	e('</div>');
 
 	if (isset($_SESSION['getParameters'])) {

@@ -14,33 +14,47 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
+e('<div id="notification" class="notification"></div>');
+
 e('<div class="fm">');
 
 	e('<form name="search_1" action="'. url('/df/search/handler') .'" method="POST">');
 
-		e('<input type="hidden" name="targetURL" value="'. $d['targetURL'] .'">');
-
-		e('<div>');
-			e('<label for="dNumber">Номер документа<label>');
-			e('<input type="text" name="dNumber">');
+		e('<div class="label_block">');
+			e('<label for="documentDirection">Типи документів</label>');
+			e('<select id="documentDirection" name="documentDirection">');
+				e('<option value=""></option>');
+				e('<option value="'. url('/df/documents-incoming/list') .'">Вхідні</option>');
+				e('<option value="'. url('/df/documents-outgoing/list') .'">Вихідні</option>');
+				e('<option value="'. url('/df/documents-internal/list') .'">Внутрішні</option>');
+			e('</select>');
 		e('</div>');
 
-		e('<div>');
-			e('<label for="dAge">Рік документа<label>');
-			e('<input type="number" name="dAge">');
+		e('<div id="dateApart">');
+
+			e('<div>');
+				e('<label for="dNumber">Номер документа<label>');
+				e('<input id="dNumber" type="text" name="dNumber">');
+			e('</div>');
+
+			e('<div>');
+				e('<label for="dAge">Рік документа<label>');
+				e('<input id="dAge" type="number" name="dAge">');
+			e('</div>');
+
+			e('<div>');
+				e('<label for="dMonth">Місяць документа<label>');
+				e('<input id="dMonth" type="number" name="dMonth">');
+			e('</div>');
+
+			e('<div>');
+				e('<label for="dDay">Число місяця документа<label>');
+				e('<input id="dDay" type="number" name="dDay">');
+			e('</div>');
+
 		e('</div>');
 
-		e('<div>');
-			e('<label for="dMonth">Місяць документа<label>');
-			e('<input type="number" name="dMonth">');
-		e('</div>');
-
-		e('<div>');
-			e('<label for="dDay">Число місяця документа<label>');
-			e('<input type="number" name="dDay">');
-		e('</div>');
-
-		e('<div>');
+		e('<div id="datePeriod">');
 			e('<hr>');
 			e('<h3>Період дати документу</h3>');
 
@@ -57,29 +71,29 @@ e('<div class="fm">');
 			e('<hr>');
 		e('</div>');
 
-		if (isset($d['sendersUsers']) && $d['sendersUsers']) {
-			e('<div class="label_block">');
+		if (isset($d['users']) && $d['users']) {
+			e('<div id="divSenderUser" class="label_block">');
 				e('<label for="dSenderUser">Відправник</label>');
-				e('<select name="dSenderUser">');
+				e('<select id="dSenderUser" name="dSenderUser">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['sendersUsers'] as $mtRow) {
-						e('<option value="'. $mtRow['us_id'] .'">'.  $mtRow['us_login'] .'</option>');
+					foreach ($d['users'] as $row) {
+						e('<option value="'. $row['us_id'] .'">'.  $row['us_login'] .'</option>');
 					}
 
 				e('</select>');
 			e('</div>');
 		}
 
-		if (isset($d['sendersExternal']) && $d['sendersExternal']) {
-			e('<div class="label_block">');
+		if (isset($d['documentSenders']) && $d['documentSenders']) {
+			e('<div id="divSenderExternal" class="label_block">');
 				e('<label for="dSenderExternal">Відправник</label>');
-				e('<select name="dSenderExternal">');
+				e('<select id="dSenderExternal" name="dSenderExternal">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['sendersExternal'] as $mtRow) {
+					foreach ($d['documentSenders'] as $mtRow) {
 						e('<option value="'. $mtRow['dss_id'] .'">'.  $mtRow['dss_name'] .'</option>');
 					}
 
@@ -87,14 +101,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['recipientsExternal']) && $d['recipientsExternal']) {
-			e('<div class="label_block">');
+		if (isset($d['documentSenders']) && $d['documentSenders']) {
+			e('<div id="divRecipientExternal" class="label_block">');
 				e('<label for="dRecipientExternal">Отримувач</label>');
-				e('<select name="dRecipientExternal">');
+				e('<select id="dRecipientExternal" name="dRecipientExternal">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['recipientsExternal'] as $mtRow) {
+					foreach ($d['documentSenders'] as $mtRow) {
 						e('<option value="'. $mtRow['dss_id'] .'">'.  $mtRow['dss_name'] .'</option>');
 					}
 
@@ -102,14 +116,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['recipientsUsers']) && $d['recipientsUsers']) {
-			e('<div class="label_block">');
+		if (isset($d['users']) && $d['users']) {
+			e('<div id="divRecipientUser" class="label_block">');
 				e('<label for="dRecipientUser">Отримувач</label>');
-				e('<select name="dRecipientUser">');
+				e('<select id="dRecipientUser" name="dRecipientUser">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['recipientsUsers'] as $mtRow) {
+					foreach ($d['users'] as $mtRow) {
 						e('<option value="'. $mtRow['us_id'] .'">'.  $mtRow['us_login'] .'</option>');
 					}
 
@@ -117,14 +131,14 @@ e('<div class="fm">');
 			e('</div>');
 		}
 
-		if (isset($d['registrarUsers']) && $d['registrarUsers']) {
+		if (isset($d['users']) && $d['users']) {
 			e('<div class="label_block">');
 				e('<label for="dRegistrar">Реєстратор</label>');
-				e('<select name="dRegistrar">');
+				e('<select id="dRegistrar" name="dRegistrar">');
 
 					e('<option value=""></option>');
 
-					foreach ($d['registrarUsers'] as $mtRow) {
+					foreach ($d['users'] as $mtRow) {
 						e('<option value="'. $mtRow['us_id'] .'">'.  $mtRow['us_login'] .'</option>');
 					}
 
@@ -135,7 +149,7 @@ e('<div class="fm">');
 		if (isset($d['departments']) && $d['departments']) {
 			e('<div class="label_block">');
 				e('<label for="dLocation">Фізичне місцезнаходження оригінала</label>');
-				e('<select name="dLocation">');
+				e('<select id="dLocation" name="dLocation">');
 
 					e('<option value=""></option>');
 
@@ -154,5 +168,8 @@ e('<div class="fm">');
 	e('<form>');
 
 e('</div>');
+
+e('<script src="/js/main.js"></script>');
+e('<script src="/js/df_search.js"></script>');
 
 require $this->getViewFile('/inc/footer');

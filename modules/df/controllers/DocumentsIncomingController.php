@@ -83,8 +83,21 @@ class DocumentsIncomingController extends MC {
 				'type' => 'varchar',
 				'isRequired' => true,
 				'pattern' => '^\d{8}$'
-			]
+			],
+			'clear' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^y$'
+			],
 		]);
+
+		$get = $Get->get;
+
+		if (isset($Get->get['clear']) && ($Get->get['clear'] === 'y')) {
+			sess_delGetParameters();
+			unset($get['clear']);
+			hd_sendHeader('Location: '. url('', $get), __FILE__, __LINE__);
+		}
 
 		$d = $this->Model->cardPage();
 
@@ -112,12 +125,17 @@ class DocumentsIncomingController extends MC {
 			'dIdTitle' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^('. $regexp['freeTextClass'] .')?$'
+				'pattern' => '^(\d{1,4})?$'
 			],
 			'dTitle' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
+			],
+			'dDescription' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
 			],
 			'dNumber' => [
 				'type' => 'varchar',
@@ -137,14 +155,19 @@ class DocumentsIncomingController extends MC {
 			'dDate' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => $regexp['date']
+				'pattern' => '^('. $regexp['date'] .')?$'
 			],
 			'dRegistrationDate' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => $regexp['date']
+				'pattern' => '^('. $regexp['date'] .')?$'
 			],
 			'dIdDocumentLocation' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
+			'dIdSender' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
@@ -178,6 +201,21 @@ class DocumentsIncomingController extends MC {
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '(^$|^\d{4}-\d{2}-\d{2}$)$'
+			],
+			'dIdControlType' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
+			'dIdRresolution' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
+			'dResolutionDate' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^('. $regexp['date'] .')?$'
 			],
 			'bt_edit' => [
 				'type' => 'varchar',

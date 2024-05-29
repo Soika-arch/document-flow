@@ -7,9 +7,9 @@
 $Us = rg_Rg()->get('Us');
 
 e('<!DOCTYPE html>');
-e('<html lang="ua">');
+e('<html lang="uk">');
 	e('<head>');
-		e('<meta http-equiv="Content-Type" content="text/html" charset="utf-8" >');
+		e('<meta charset="UTF-8">');
 		e('<meta name="viewport" content="width=device-width, initial-scale=1">');
 		e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. MainCssName .'.css">');
 

@@ -49,4 +49,18 @@ class incoming_documents_registry extends DfDocument {
 
 		return $this->OutgoingDocument;
 	}
+
+	/**
+	 * @return document_senders
+	 */
+	protected function get_Sender () {
+		if (! isset($this->Sender) && $this->_id_sender) {
+			$this->Sender = new document_senders($this->_id_sender);
+		}
+		else {
+			$this->Sender = null;
+		}
+
+		return $this->Sender;
+	}
 }

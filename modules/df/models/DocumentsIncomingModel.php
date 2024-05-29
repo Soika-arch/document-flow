@@ -77,8 +77,11 @@ class DocumentsIncomingModel extends MainModel {
 		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
 
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
+		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['users'] = $this->getDocumentFlowParticipants();
+		$d['senders'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
+		$d['controlTypes'] = $this->selectRowsByCol(DbPrefix .'document_control_types');
 		$d['resolutions'] = $this->selectRowsByCol(DbPrefix .'document_resolutions');
 		$d['Doc'] = $Doc;
 		$d['title'] = 'Картка вхідного документа [ <b>'. $Doc->displayedNumber .'</b> ]';
@@ -111,8 +114,16 @@ class DocumentsIncomingModel extends MainModel {
 		$isSuperAdminRights = ($Us->Status->_access_level === 1);
 
 		if ($isRegistrarRights) {
-			if ($post['dIdTitle'] && $isRegistrarRights) {
-				if (intval($post['dIdTitle']) !== $Doc->_id_title) $updated['idr_id_title'] = $post['dIdTitle'];
+			$dIdTitle = intval($post['dIdTitle']);
+
+			if ($dIdTitle) {
+				if ($dIdTitle !== $Doc->_id_title) $updated['idr_id_title'] = $dIdTitle;
+			}
+
+			$dDescription = intval($post['dDescription']);
+
+			if ($dDescription) {
+				if ($dDescription !== $Doc->_id_description) $updated['idr_id_description'] = $dDescription;
 			}
 
 			$dIdExecutorUser = intval($post['dIdExecutorUser']);
@@ -126,13 +137,20 @@ class DocumentsIncomingModel extends MainModel {
 				$newOutgoingId = $this->selectCellByCol(DbPrefix .'outgoing_documents_registry',
 					'odr_number', substr($post['dOutNumber'], 4), 'odr_id');
 
+				if (! $newOutgoingId) {
+					sess_addErrMessage('Не знайдено відповідний вихідний документ з номером <b>'.
+						strval($post['dOutNumber']) .'</b>');
+
+					return false;
+				}
+
 				if ($newOutgoingId !== $Doc->_id_outgoing_number) {
 					$updated['idr_id_outgoing_number'] = $newOutgoingId;
 				}
 			}
 
 			if ($post['dDate']) {
-				$dt = tm_getDatetime($post['dDate'])->format('Y-m-d H:i:s');
+				$dt = tm_getDatetime($post['dDate'])->format('Y-m-d');
 
 				if ($dt !== $Doc->_document_date) $updated['idr_document_date'] = $dt;
 			}
@@ -142,6 +160,10 @@ class DocumentsIncomingModel extends MainModel {
 			if ($dIdDocumentLocation && ($dIdDocumentLocation !== $Doc->_id_document_location)) {
 				$updated['idr_id_document_location'] = $dIdDocumentLocation;
 			}
+
+			$dIdSender = intval($post['dIdSender']);
+
+			if ($dIdSender && ($dIdSender !== $Doc->_id_sender)) $updated['idr_id_sender'] = $dIdSender;
 
 			$dIdRecipient = intval($post['dIdRecipient']);
 
@@ -153,6 +175,19 @@ class DocumentsIncomingModel extends MainModel {
 				$dt = tm_getDatetime($post['dDueDateBefore'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_control_date) $updated['idr_control_date'] = $dt;
+			}
+
+			$dIdControlType = intval($post['dIdControlType']);
+
+			if ($dIdControlType && ($dIdControlType !== $Doc->_id_execution_control)) {
+				$updated['idr_id_execution_control'] = $dIdControlType;
+			}
+
+			$dIdRresolution = intval($post['dIdRresolution']);
+
+			if ($dIdRresolution && ($dIdRresolution !== $Doc->_id_resolution)) {
+				$updated['idr_id_resolution'] = $dIdRresolution;
+				$updated['idr_resolution_date'] = tm_getDatetime()->format('Y-m-d H:i:s');
 			}
 		}
 
@@ -179,9 +214,10 @@ class DocumentsIncomingModel extends MainModel {
 
 		if ($isSuperAdminRights) {
 			if ($post['dRegistrationDate']) {
-				$dt = tm_getDatetime($post['dRegistrationDate'])->format('Y-m-d H:i:s');
+				$Dt = tm_getDatetime($post['dRegistrationDate']);
+				$dtStr = $Dt->format('Y-m-d H:i:s');
 
-				if ($dt !== $Doc->_add_date) $updated['idr_add_date'] = $dt;
+				if ($dtStr !== $Doc->_add_date) $updated['idr_add_date'] = $dtStr;
 			}
 		}
 

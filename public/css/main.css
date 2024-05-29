@@ -1,4 +1,26 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Спливаюче повідомлення для користувача. */
+
+.notification {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: rgba(228, 238, 228, 0.744);
+	color: rgb(237, 84, 84);
+	text-align: center;
+	padding: 15px;
+	font-size: 20px;
+	font-weight: bold;
+	z-index: 1000;
+}
+
+.notification.show {
+	display: block;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .sys-messages {
 	padding: 10px 0px 0px 20px;
@@ -134,6 +156,7 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 .user-menu-1 {
 	display: flex;
 	flex-direction: row-reverse;
+	width: 98%;
 	margin: 0px 0px 10px 0px;
 }
 

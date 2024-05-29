@@ -89,7 +89,8 @@ e('<div class="fm">');
 					e('<option value=""></option>');
 
 					foreach ($d['descriptions'] as $mtRow) {
-						e('<option value="'. $mtRow['dds_id'] .'">'.  $mtRow['dds_description'] .'</option>');
+						e('<option value="'. $mtRow['dds_id'] .'">'. mb_substr($mtRow['dds_description'], 0, 53) .
+							' ...</option>');
 					}
 
 				e('</select>');

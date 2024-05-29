@@ -45,8 +45,39 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				e('<label for="dIdTitle">Назва</label>');
-				e('<input type="text" name="dTitle" value="'. $docTitle .'" readonly>');
+				e('<h3>Назва</h3>');
+				e('<div>'. $docTitle .'</div>');
+			}
+
+		e('</div>');
+	}
+
+	if (isset($d['descriptions']) && $d['descriptions']) {
+		$dDescription = $Doc->Description ? $Doc->Description->_description : 'Відсутній';
+
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dDescription">Опис або короткий зміст документа</label>');
+				e('<div>'. $dDescription .'</div>');
+				e('<select id="dDescription" name="dDescription">');
+
+					foreach ($d['descriptions'] as $row) {
+						$subStr = mb_substr($row['dds_description'], 0, 53) .' ...';
+
+						if ($Doc->Description && ($row['dds_id'] === $Doc->Description->_id)) {
+							e('<option value="'. $row['dds_id'] .'" selected>'. $subStr .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dds_id'] .'">'.  $subStr .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				e('<h3>Опис або короткий зміст документа</h3>');
+				e('<div>'. $dDescription .'</div>');
 			}
 
 		e('</div>');
@@ -54,9 +85,15 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 	// Права на редагування тільки у адміна.
 	e('<div class="label_block">');
-		e('<label for="dNumber">Номер документа</label>');
-		e('<input type="text" id="dNumber" name="dNumber" value="'. $displayedNumber .'"'.
-			($d['isAdminRights'] ? '' : ' readonly') .'>');
+		if ($d['isAdminRights']) {
+			e('<label for="dNumber">Номер документа</label>');
+			e('<input type="text" id="dNumber" name="dNumber" value="'. $displayedNumber .'">');
+		}
+		else {
+			e('<h3>Номер документа</h3>');
+			e('<div>'. $displayedNumber .'</div>');
+		}
+
 	e('</div>');
 
 	if (isset($d['users']) && $d['users']) {
@@ -80,45 +117,55 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				e('<label for="dRegistrar">Реєстратор</label>');
-				e('<input type="text" name="dRegistrar" value="'. $Doc->getRegistrarLogin() .'" readonly>');
+				e('<h3>Реєстратор</h3>');
+				e('<div>'. $Doc->getRegistrarLogin() .'</div>');
 			}
 
 		e('</div>');
 	}
 
 	e('<div class="label_block">');
-		e('<label for="dDate">Дата документа</label>');
 
 		if ($Doc->_document_date) {
-			$documentDate = tm_getDatetime($Doc->_document_date)->format('Y-m-d');
+			$DocumentDate = tm_getDatetime($Doc->_document_date);
 		}
 		else {
-			$documentDate = '';
+			$DocumentDate = '';
 		}
 
-		e('<input type="date" id="dDate" name="dDate" value="'.
-			$documentDate .'"'. ($d['isRegistrarRights'] ? '' : ' readonly') .'>');
+		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			e('<label for="dDate">Дата документа</label>');
+
+			e('<input type="date" id="dDate" name="dDate" value="'.
+				($DocumentDate ? $DocumentDate->format('Y-m-d') : '') .'">');
+		}
+		else {
+			e('<h3>Дата документа</h3>');
+			e('<div>'. ($DocumentDate ? $DocumentDate->format('d.m.Y') : 'Відсутня') .'</div>');
+		}
 
 	e('</div>');
 
 	e('<div class="label_block">');
-		e('<label for="dRegistrationDate">Дата реєстрації документа</label>');
 
-		$dRegistrationDate = tm_getDatetime($Doc->_add_date)->format('Y-m-d');
+		$DRegistrationDate = tm_getDatetime($Doc->_add_date);
 
 		if ($d['isAdminRights']) {
+			e('<label for="dRegistrationDate">Дата реєстрації документа</label>');
+
 			e('<input type="date" id="dRegistrationDate" name="dRegistrationDate" value="'.
-				$dRegistrationDate .'">');
+				$DRegistrationDate->format('Y-m-d') .'">');
 		}
 		else {
-			e('<div>'. $dRegistrationDate .'</div>');
+			e('<h3>Дата реєстрації документа</h3>');
+			e('<div>'. $DRegistrationDate->format('d.m.Y') .'</div>');
 		}
 
 	e('</div>');
 
 	if ($Doc->OutgoingDocument) {
 		$docOutURL = $Doc->OutgoingDocument->cardURL;
+		$docOutTitle = $Doc->OutgoingDocument->DocumentTitle->_title;
 		$displayedNumberOut = $Doc->OutgoingDocument->displayedNumber;
 
 		$docOutLink = '<a href="'. $docOutURL .'" target="_blank">'. $displayedNumberOut .'</a>';
@@ -128,15 +175,19 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		$displayedNumberOut = '';
 	}
 
-	// Права на редагування тільки у адміна.
 	e('<div class="label_block">');
-		e('<label for="dOutNumber">Відповідний вихідний</label>');
 
-		e('<input type="text" id="dOutNumber" name="dOutNumber" value="'. $displayedNumberOut .
-			'"'. (($d['isRegistrarRights'] || $d['isAdminRights']) ? '' : ' readonly') .'>');
+		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			e('<label for="dOutNumber">Відповідний вихідний</label>');
+			e('<input type="text" id="dOutNumber" name="dOutNumber" value="'. $displayedNumberOut .'">');
+		}
+		else {
+			e('<h3>Відповідний вихідний</h3>');
+			e('<div>'. ($displayedNumberOut ? $displayedNumberOut : 'Відсутній') .'</div>');
+		}
 
 		if (isset($docOutURL)) {
-			e('<div><a href="'. $docOutURL .'" target="_blank">Картка відповідного вихідного</a></div>');
+			e('<div><a href="'. $docOutURL .'" target="_blank">'. $docOutTitle .'</a></div>');
 		}
 
 	e('</div>');
@@ -162,10 +213,40 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				e('<label for="dIdDocumentLocation">Фізичне місцезнаходження документа</label>');
+				$documentLocationName = $Doc->getDocumentLocationName();
 
-				e('<input type="text" name="dIdDocumentLocation" value="'. $Doc->getDocumentLocationName() .
-					'" readonly>');
+				e('<h3>Фізичне місцезнаходження документа</h3>');
+				e('<div>'. ($documentLocationName ? $documentLocationName : 'Відсутнє') .'</div>');
+			}
+
+		e('</div>');
+	}
+
+	if (isset($d['senders']) && $d['senders']) {
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdSender">Відправник</label>');
+				e('<select id="dIdSender" name="dIdSender">');
+
+					$Sender = $Doc->Sender;
+
+					foreach ($d['senders'] as $row) {
+						if ($Sender && ($row['dss_id'] === $Sender->_id)) {
+							e('<option value="'. $row['dss_id'] .'" selected>'. $row['dss_name'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dss_id'] .'">'.  $row['dss_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				$senderName = $Doc->Sender ? $Doc->Sender->_name : 'Відсутній';
+
+				e('<h3>Відправник</h3>');
+				e('<div>'. $senderName .'</div>');
 			}
 
 		e('</div>');
@@ -178,7 +259,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('<label for="dIdRecipient">Отримувач користувач</label>');
 				e('<select id="dIdRecipient" name="dIdRecipient">');
 
-					if (! ($Recipient = $Doc->Recipient)) e('<option></option>');
+					$Recipient = $Doc->Recipient;
 
 					foreach ($d['users'] as $row) {
 						if ($Recipient && ($row['us_id'] === $Recipient->_id)) {
@@ -192,11 +273,10 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				$recipientUserLogin = $Doc->Recipient ? $Doc->Recipient->_login : '';
+				$recipientUserLogin = $Doc->Recipient ? $Doc->Recipient->_login : 'Відсутній';
 
-				e('<label for="dRecipient">Отримувач користувач</label>');
-				e('<input type="text" name="dRecipient" value="'. $recipientUserLogin .
-					'" readonly>');
+				e('<h3>Отримувач користувач</h3>');
+				e('<div>'. $recipientUserLogin .'</div>');
 			}
 
 		e('</div>');
@@ -223,48 +303,86 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				$executorUserLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : '';
+				$executorUserLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : 'Відсутній';
 
-				e('<label for="dExecutorUser">Виконавець користувач</label>');
-				e('<input type="text" name="dExecutorUser" value="'. $executorUserLogin .
-					'" readonly>');
+				e('<h3>Виконавець користувач</h3>');
+				e('<div>'. $executorUserLogin .'</div>');
 			}
 
 		e('</div>');
 	}
 
 	e('<div class="label_block">');
-		e('<label for="dIsReceivedExecutorUser">Отримано виконавцем користувачем</label>');
 
 		if ($Doc->_date_of_receipt_by_executor) {
-			$ReceivedExecutorUserDate = tm_getDatetime($Doc->_date_of_receipt_by_executor)->format('Y-m-d');
+			$ReceivedExecutorUserDate = tm_getDatetime($Doc->_date_of_receipt_by_executor);
 		}
 		else {
 			$ReceivedExecutorUserDate = '';
 		}
 
 		if ($d['isAdminRights']) {
+			e('<label for="dIsReceivedExecutorUser">Отримано виконавцем користувачем</label>');
+
 			e('<input type="date" id="dIsReceivedExecutorUser" name="dIsReceivedExecutorUser" value="'.
-				$ReceivedExecutorUserDate .'">');
+				($ReceivedExecutorUserDate ? $ReceivedExecutorUserDate->format('Y-m-d') : '') .'">');
 		}
 		else {
-			e('<div>'. ($ReceivedExecutorUserDate ? $ReceivedExecutorUserDate : 'Не отримано') .'</div>');
+			e('<h3>Отримано виконавцем користувачем</h3>');
+
+			e('<div>'. ($ReceivedExecutorUserDate ?
+				$ReceivedExecutorUserDate->format('d.m.Y H:i') : 'Не отримано') .'</div>');
 		}
 
 	e('</div>');
 
+	if (isset($d['controlTypes']) && $d['controlTypes']) {
+		$controlType = $Doc->ControlType ? $Doc->ControlType->_name : 'Відсутній';
+
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdControlType">Тип контролю за виконанням</label>');
+				e('<select id="dIdControlType" name="dIdControlType">');
+
+					foreach ($d['controlTypes'] as $row) {
+						if ($Doc->ControlType && ($row['dct_id'] === $Doc->ControlType->_id)) {
+							e('<option value="'. $row['dct_id'] .'" selected>'. $row['dct_name'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dct_id'] .'">'.  $row['dct_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				e('<h3>Тип контролю за виконанням</h3>');
+				e('<div>'. $controlType .'</div>');
+			}
+
+		e('</div>');
+	}
+
 	e('<div class="label_block">');
-		e('<label for="dDueDateBefore">Термін виконання до</label>');
 
 		if ($Doc->_control_date) {
-			$dueDateBefore = tm_getDatetime($Doc->_control_date)->format('Y-m-d');
+			$DueDateBefore = tm_getDatetime($Doc->_control_date);
 		}
 		else {
-			$dueDateBefore = '';
+			$DueDateBefore = '';
 		}
 
-		e('<input type="date" id="dDueDateBefore" name="dDueDateBefore" value="'.
-			$dueDateBefore .'"'. ($d['isRegistrarRights'] ? '' : ' readonly') .'>');
+		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			e('<label for="dDueDateBefore">Термін виконання до</label>');
+
+			e('<input type="date" id="dDueDateBefore" name="dDueDateBefore" value="'.
+				($DueDateBefore ? $DueDateBefore->format('Y-m-d') : '') .'">');
+		}
+		else {
+			e('<h3>Отримано виконавцем користувачем</h3>');
+			e('<div>'. ($DueDateBefore ? $DueDateBefore->format('d.m.Y') : 'Не встановлено') .'</div>');
+		}
 
 	e('</div>');
 
@@ -289,19 +407,40 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				$resolutionContent = $Doc->Resolution ? $Doc->Resolution->_content : '';
+				$resolutionContent = $Doc->Resolution ? $Doc->Resolution->_content : 'Не накладена';
 
-				e('<label for="dIdRresolution">Резолюція</label>');
-				e('<input type="text" name="dIdRresolution" value="'. $resolutionContent .
-					'" readonly>');
+				e('<h3>Резолюція</h3>');
+				e('<div>'. $resolutionContent .'</div>');
 			}
 
 		e('</div>');
 	}
 
 	e('<div class="label_block">');
-		e('<label for="dChangeDate">Дата останньої зміни реєстраціїного запису</label>');
 
+		if ($Doc->_resolution_date) {
+			$DResolutionDate = tm_getDatetime($Doc->_resolution_date);
+		}
+		else {
+			$DResolutionDate = '';
+		}
+
+		if ($d['isAdminRights']) {
+			e('<label for="dResolutionDate">Дата накладання резолюції</label>');
+
+			e('<input type="date" id="dResolutionDate" name="dResolutionDate" value="'.
+				($DResolutionDate ? $DResolutionDate->format('Y-m-d') : '') .'">');
+		}
+		else {
+			e('<h3>Дата накладання резолюції</h3>');
+			e('<div>'. ($DResolutionDate ? $DResolutionDate->format('d.m.Y H:i') : 'Відсутня') .'</div>');
+		}
+
+	e('</div>');
+
+	e('<div class="label_block">');
+
+		e('<h3>Дата останньої зміни реєстраціїного запису</h3>');
 		e('<div>'. tm_getDatetime($Doc->_change_date)->format('d.m.Y H:i') .'</div>');
 
 	e('</div>');

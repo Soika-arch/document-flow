@@ -35,12 +35,20 @@ class SearchController extends MC {
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
 		$Get = new Get([
-			'uri' => [
+			'clear' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^[a-z0-9_-]{2,32}$'
+				'pattern' => '^y$'
 			]
 		]);
+
+		$get = $Get->get;
+
+		if (isset($Get->get['clear']) && ($Get->get['clear'] === 'y')) {
+			sess_delGetParameters();
+			unset($get['clear']);
+			hd_sendHeader('Location: '. url('', $get), __FILE__, __LINE__);
+		}
 
 		$d = $this->Model->mainPage();
 
@@ -57,15 +65,15 @@ class SearchController extends MC {
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
 		$Post = new Post('search_1', [
-			'targetURL' => [
+			'documentDirection' => [
 				'type' => 'varchar',
 				'isRequired' => true,
-				'pattern' => $patterns['standartURI']
+				'pattern' => '^.*$'
 			],
 			'dNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^([a-zA-Z0-9]{1,10})?$'
+				'pattern' => '^([a-zA-Z0-9_]{1,12})?$'
 			],
 			'dAge' => [
 				'type' => 'varchar',
@@ -128,14 +136,14 @@ class SearchController extends MC {
 				'pattern' => '^$'
 			],
 		]);
-
+		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
 		$post = $Post->post;
 
 		if ((isset($post['dDateFrom']) && $post['dDateFrom'])) {
 			if ((isset($post['dDateUntil']) && $post['dDateUntil'])) {
 				if (strtotime($post['dDateUntil']) < strtotime($post['dDateFrom'])) {
 					sess_addErrMessage('Період дати документу: дата "Від" повинна бути менше дати "До"');
-					hd_sendHeader('Location: '. $_SERVER['HTTP_REFERER'], __FILE__, __LINE__);
+					hd_sendHeader('Location: '. url('/df/search'), __FILE__, __LINE__);
 				}
 			}
 		}

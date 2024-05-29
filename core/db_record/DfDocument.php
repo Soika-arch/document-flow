@@ -11,6 +11,7 @@ class DfDocument extends DbRecord {
 	protected string|null $displayedNumber;
 	protected string $displayedNumberPrefix;
 	protected document_titles $DocumentTitle;
+	protected document_descriptions|null $Description;
 	protected departments|null $DocumentLocation;
 	// Користувач, який зареєстрував документ.
 	protected users $Registrar;
@@ -18,6 +19,9 @@ class DfDocument extends DbRecord {
 	protected users|null $ExecutorUser;
 	// Отримувач користувач.
 	protected users|null $Recipient;
+	protected document_senders|users|null $Sender;
+	// Тип контроллю за виконанням.
+	protected document_control_types|null $ControlType;
 	protected document_resolutions|null $Resolution;
 	protected string $cardURL;
 	// Ім'я файла документа.
@@ -55,6 +59,20 @@ class DfDocument extends DbRecord {
 		}
 
 		return $this->DocumentTitle;
+	}
+
+	/**
+	 * @return document_descriptions
+	 */
+	protected function get_Description () {
+		if (! isset($this->Description) && $this->_id_description) {
+			$this->Description = new document_descriptions($this->_id_description);
+		}
+		else {
+			$this->Description = null;
+		}
+
+		return $this->Description;
 	}
 
 	/**
@@ -131,6 +149,20 @@ class DfDocument extends DbRecord {
 	}
 
 	/**
+	 * @return document_control_types
+	 */
+	protected function get_ControlType () {
+		if (! isset($this->ControlType) && $this->_id_execution_control) {
+			$this->ControlType = new document_control_types($this->_id_execution_control);
+		}
+		else {
+			$this->ControlType = null;
+		}
+
+		return $this->ControlType;
+	}
+
+	/**
 	 * @return document_resolutions|null
 	 */
 	protected function get_Resolution () {
@@ -148,8 +180,11 @@ class DfDocument extends DbRecord {
 	 * @return string
 	 */
 	protected function get_cardURL () {
-		if (! isset($this->cardURL)) {
-			$this->cardURL = url('/'. URIModule .'/documents-incoming/card?n='.
+		if (! isset($this->cardURL) && $this->_number) {
+			$str = str_replace(DbPrefix, '', $this->tName);
+			$str = substr($str, 0, strpos($str, '_'));
+
+			$this->cardURL = url('/'. URIModule .'/documents-'. $str .'/card?n='.
 				str_replace('inc_', '', $this->_number));
 		}
 

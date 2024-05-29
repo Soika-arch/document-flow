@@ -22,6 +22,8 @@ function tm_getDatetime (string $dt='') {
  * @return string Форматований рядок дати.
  */
 function tm_convertToDatetime (string $dt='', string $format='Y-m-d H:i:s') {
+	if (! $dt) $dt = date('Y-m-d H:i:s');
+
 	if (! preg_match('/ \d\d:\d\d:\d\d/', $dt, $m)) $dt = trim($dt) .' '. date('H:i:s', time());
 
 	return tm_getDatetime($dt)->format($format);
