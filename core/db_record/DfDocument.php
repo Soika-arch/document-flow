@@ -12,6 +12,7 @@ class DfDocument extends DbRecord {
 	protected string $displayedNumberPrefix;
 	protected document_titles $DocumentTitle;
 	protected document_descriptions|null $Description;
+	protected document_carrier_types $CarrierType;
 	protected departments|null $DocumentLocation;
 	// Користувач, який зареєстрував документ.
 	protected users $Registrar;
@@ -70,6 +71,20 @@ class DfDocument extends DbRecord {
 		}
 
 		return $this->Description;
+	}
+
+	/**
+	 * @return document_carrier_types
+	 */
+	protected function get_CarrierType () {
+		if (! isset($this->CarrierType) && $this->_id_carrier_type) {
+			$this->CarrierType = new document_carrier_types($this->_id_carrier_type);
+		}
+		else {
+			$this->CarrierType = null;
+		}
+
+		return $this->CarrierType;
 	}
 
 	/**

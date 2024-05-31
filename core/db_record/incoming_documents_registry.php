@@ -12,6 +12,8 @@ class incoming_documents_registry extends DfDocument {
 	// Отримувач користувач.
 	protected users|null $Recipient;
 	protected outgoing_documents_registry|null $OutgoingDocument;
+	// Відповідальний за виконання.
+	protected users|null $ResponsibleUser;
 
 	/**
 	 *
@@ -82,5 +84,21 @@ class incoming_documents_registry extends DfDocument {
 		}
 
 		return $this->Recipient;
+	}
+
+	/**
+	 * @return users
+	 */
+	protected function get_ResponsibleUser () {
+		if (! isset($this->ResponsibleUser)) {
+			if ($this->_id_responsible_user) {
+				$this->ResponsibleUser = new users($this->_id_responsible_user);
+			}
+			else {
+				$this->ResponsibleUser = null;
+			}
+		}
+
+		return $this->ResponsibleUser;
 	}
 }

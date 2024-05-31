@@ -96,6 +96,36 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
+	e('<div class="label_block">');
+
+		$dCarrierType = $Doc->CarrierType ? $Doc->CarrierType->_name : '';
+
+		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			if (isset($d['carrierTypes']) && $d['carrierTypes']) {
+				e('<label for="dIdCarrierType">Тип носія документа</label>');
+				e('<select id="dIdCarrierType" name="dIdCarrierType">');
+
+					$idCarrierType = $Doc->CarrierType->_id;
+
+					foreach ($d['carrierTypes'] as $row) {
+						if ($row['cts_id'] === $idCarrierType) {
+							e('<option value="'. $row['cts_id'] .'" selected>'. $row['cts_name'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['cts_id'] .'">'.  $row['cts_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+		}
+		else {
+			e('<h3>Тип носія документа</h3>');
+			e('<div>'. ($dCarrierType ? $dCarrierType : 'Відсутній') .'</div>');
+		}
+
+	e('</div>');
+
 	if (isset($d['users']) && $d['users']) {
 		e('<div class="label_block">');
 

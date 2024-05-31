@@ -32,24 +32,24 @@ e('<div class="fm">');
 
 		e('<div id="dateApart">');
 
-			e('<div>');
+			e('<div class="label_block">');
 				e('<label for="dNumber">Номер документа<label>');
 				e('<input id="dNumber" type="text" name="dNumber">');
 			e('</div>');
 
-			e('<div>');
+			e('<div class="label_block">');
 				e('<label for="dAge">Рік документа<label>');
-				e('<input id="dAge" type="number" name="dAge">');
+				e('<input id="dAge" type="text" name="dAge">');
 			e('</div>');
 
-			e('<div>');
+			e('<div class="label_block">');
 				e('<label for="dMonth">Місяць документа<label>');
-				e('<input id="dMonth" type="number" name="dMonth">');
+				e('<input id="dMonth" type="text" name="dMonth">');
 			e('</div>');
 
-			e('<div>');
+			e('<div class="label_block">');
 				e('<label for="dDay">Число місяця документа<label>');
-				e('<input id="dDay" type="number" name="dDay">');
+				e('<input id="dDay" type="text" name="dDay">');
 			e('</div>');
 
 		e('</div>');
@@ -58,12 +58,12 @@ e('<div class="fm">');
 			e('<hr>');
 			e('<h3>Період дати документу</h3>');
 
-			e('<div>');
+			e('<div class="label_block">');
 				e('<label for="dDateFrom">Від<label>');
 				e('<input id="dDateFrom" type="date" name="dDateFrom">');
 			e('</div>');
 
-			e('<div>');
+			e('<div class="label_block">');
 				e('<label for="dDateUntil">До<label>');
 				e('<input id="dDateUntil" type="date" name="dDateUntil">');
 			e('</div>');

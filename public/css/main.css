@@ -32,8 +32,8 @@ h2 {
 	top: 0;
 	left: 0;
 	width: 100%;
-	background-color: rgba(228, 238, 228, 0.744);
-	color: rgb(237, 84, 84);
+	background-color: rgba(228, 238, 228, 0.942);
+	color: rgb(230, 63, 63);
 	text-align: center;
 	padding: 15px;
 	font-size: 20px;
@@ -62,7 +62,7 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 /* Клас fm треба призначати блоку div який містить цільову форму. */
 .fm {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 1em auto;
   padding: 1em;
   background: #f9f9f9;
   border-radius: 8px;

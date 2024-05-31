@@ -7,6 +7,11 @@ namespace core\db_record;
  */
 class internal_documents_registry extends DfDocument {
 
+	// Отримувач користувач.
+	protected users|null $Recipient;
+	// Відповідальний за виконання.
+	protected users|null $ResponsibleUser;
+
 	/**
 	 *
 	 */
@@ -30,5 +35,37 @@ class internal_documents_registry extends DfDocument {
 		}
 
 		return $this->foreignKeys;
+	}
+
+	/**
+	 * @return users
+	 */
+	protected function get_Recipient () {
+		if (! isset($this->Recipient)) {
+			if ($this->_id_recipient) {
+				$this->Recipient = new users($this->_id_recipient);
+			}
+			else {
+				$this->Recipient = null;
+			}
+		}
+
+		return $this->Recipient;
+	}
+
+	/**
+	 * @return users
+	 */
+	protected function get_ResponsibleUser () {
+		if (! isset($this->ResponsibleUser)) {
+			if ($this->_id_responsible_user) {
+				$this->ResponsibleUser = new users($this->_id_responsible_user);
+			}
+			else {
+				$this->ResponsibleUser = null;
+			}
+		}
+
+		return $this->ResponsibleUser;
 	}
 }

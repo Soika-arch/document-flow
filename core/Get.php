@@ -70,7 +70,7 @@ class Get {
 				if (isset($typeData['isRequired']) && $typeData['isRequired']) {
 					// Якщо параметр обов'язковий, але відсутній, додаємо повідомлення про помилку.
 					if (! $issetParam) {
-						$this->errors[] = 'Відсутній обов\'язковий параметр $_GET["'. $name .'"]';
+						$this->errors[$name] = 'Відсутній обов\'язковий параметр $_GET["'. $name .'"]';
 
 						continue;
 					}
@@ -82,14 +82,14 @@ class Get {
 				// Перевіряємо параметр за допомогою відповідного методу, якщо він існує.
 				if ($issetParam && (! $this->$checkMethod($name, $typeData))) {
 					if (($this->get[$name] !== '') && $typeData['isRequired']) {
-						$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+						$this->errors[$name] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
 							$checkMethod;
 					}
 				}
 			}
 			else {
 				// Якщо тип даних не є дозволеним, додаємо повідомлення про помилку.
-				$this->errors[] = 'Отримано недозволений тип даних: '. $typeData['type'];
+				$this->errors[$name] = 'Отримано недозволений тип даних: '. $typeData['type'];
 			}
 
 			// Видаляємо оброблений параметр із масиву $get.
@@ -98,7 +98,7 @@ class Get {
 
 		// Перевіряємо, чи є непередбачені параметри в масиві $_GET.
 		foreach ($get as $name => $value) {
-			$this->errors[] = 'Отримано непередбачене значення параметру: $_GET["'. $name .'"] - '.
+			$this->errors[$name] = 'Отримано непередбачене значення параметру: $_GET["'. $name .'"] - '.
 				var_export($value, true);
 		}
 	}
@@ -122,7 +122,7 @@ class Get {
 	private function checkInt (string $name, array $typeData) {
 		if (isset($typeData['pattern'])) {
 			if (! ($res = preg_match('/'. $typeData['pattern'] .'/', intval($this->get[$name])))) {
-				$this->errors[] = 'Параметр: $_GET["'. $name .'"] - не відповідає шаблону [ '.
+				$this->errors[$name] = 'Параметр: $_GET["'. $name .'"] - не відповідає шаблону [ '.
 					$typeData['pattern'] .' ]';
 			}
 		}

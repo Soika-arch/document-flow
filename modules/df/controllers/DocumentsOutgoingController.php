@@ -135,6 +135,11 @@ class DocumentsOutgoingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^(OUT_\d{8})?$'
 			],
+			'dIdCarrierType' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dIdRegistrar' => [
 				'type' => 'varchar',
 				'isRequired' => false,

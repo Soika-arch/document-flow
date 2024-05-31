@@ -85,6 +85,7 @@ class DocumentsOutgoingModel extends MainModel {
 
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
+		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
 		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['senders'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
@@ -130,6 +131,14 @@ class DocumentsOutgoingModel extends MainModel {
 
 			if ($dDescription) {
 				if ($dDescription !== $Doc->_id_description) $updated['odr_id_description'] = $dDescription;
+			}
+
+			$dIdCarrierType = intval($post['dIdCarrierType']);
+
+			if ($dIdCarrierType) {
+				if ($dIdCarrierType !== $Doc->_id_carrier_type) {
+					$updated['odr_id_carrier_type'] = $dIdCarrierType;
+				}
 			}
 
 			if ($post['dIncNumber']) {

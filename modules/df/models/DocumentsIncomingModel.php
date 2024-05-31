@@ -79,6 +79,7 @@ class DocumentsIncomingModel extends MainModel {
 
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
+		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
 		$d['users'] = $this->getDocumentFlowParticipants();
 		$d['senders'] = $this->selectRowsByCol(DbPrefix .'document_senders');
 		$d['departments'] = $this->selectRowsByCol(DbPrefix .'departments');
@@ -127,11 +128,25 @@ class DocumentsIncomingModel extends MainModel {
 				if ($dDescription !== $Doc->_id_description) $updated['idr_id_description'] = $dDescription;
 			}
 
+			$dIdCarrierType = intval($post['dIdCarrierType']);
+
+			if ($dIdCarrierType) {
+				if ($dIdCarrierType !== $Doc->_id_carrier_type) {
+					$updated['idr_id_carrier_type'] = $dIdCarrierType;
+				}
+			}
+
 			$dIdExecutorUser = intval($post['dIdExecutorUser']);
 
 			if ($dIdExecutorUser && ($dIdExecutorUser !== $Doc->_id_assigned_user)) {
 				$updated['idr_id_assigned_user'] = $dIdExecutorUser;
 				$updated['idr_date_of_receipt_by_executor'] = null;
+			}
+
+			$dIdResponsibleUser = intval($post['dIdResponsibleUser']);
+
+			if ($dIdResponsibleUser && ($dIdResponsibleUser !== $Doc->_id_responsible_user)) {
+				$updated['idr_id_responsible_user'] = $dIdResponsibleUser;
 			}
 
 			if ($post['dOutNumber']) {
@@ -176,6 +191,12 @@ class DocumentsIncomingModel extends MainModel {
 				$dt = tm_getDatetime($post['dDueDateBefore'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_control_date) $updated['idr_control_date'] = $dt;
+			}
+
+			if ($post['dExecutionDate']) {
+				$dt = tm_getDatetime($post['dExecutionDate'])->format('Y-m-d H:i:s');
+
+				if ($dt !== $Doc->_control_date) $updated['idr_execution_date	'] = $dt;
 			}
 
 			$dIdControlType = intval($post['dIdControlType']);

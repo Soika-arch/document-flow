@@ -66,7 +66,7 @@ class Post {
 				if (isset($typeData['isRequired']) && $typeData['isRequired']) {
 					// Якщо параметр обов'язковий, але відсутній, додаємо повідомлення про помилку.
 					if (! $issetParam) {
-						$this->errors[] = 'Відсутній обов\'язковий параметр $_POST["'. $name .'"]';
+						$this->errors[$name] = 'Відсутній обов\'язковий параметр $_POST["'. $name .'"]';
 
 						continue;
 					}
@@ -77,13 +77,13 @@ class Post {
 
 				// Перевіряємо параметр за допомогою відповідного методу, якщо він існує.
 				if ($issetParam && (! $this->$checkMethod($name, $typeData))) {
-					$this->errors[] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
+					$this->errors[$name] = 'Параметр '. $name .' не пройшов перевірку типу даних метода '.
 						$checkMethod;
 				}
 			}
 			else {
 				// Якщо тип даних не є дозволеним, додаємо повідомлення про помилку.
-				$this->errors[] = 'Отримано недозволений тип даних: '. $typeData['type'];
+				$this->errors[$name] = 'Отримано недозволений тип даних: '. $typeData['type'];
 			}
 
 			// Видаляємо оброблений параметр із масиву $_POST.
@@ -92,7 +92,7 @@ class Post {
 
 		// Перевіряємо, чи є непередбачені параметри в масиві $_POST.
 		foreach ($post as $name => $value) {
-			$this->errors[] = 'Отримано непередбачене значення параметру: $_POST["'. $name .'"] - '.
+			$this->errors[$name] = 'Отримано непередбачене значення параметру: $_POST["'. $name .'"] - '.
 				var_export($value, true);
 		}
 	}
@@ -116,7 +116,7 @@ class Post {
 	private function checkInt (string $name, array $typeData) {
 		if (isset($typeData['pattern'])) {
 			if (! ($res = preg_match('/'. $typeData['pattern'] .'/', intval($this->post[$name])))) {
-				$this->errors[] = 'Параметр: $_POST["'. $name .'"] - не відповідає шаблону [ '.
+				$this->errors[$name] = 'Параметр: $_POST["'. $name .'"] - не відповідає шаблону [ '.
 					$typeData['pattern'] .' ]';
 			}
 		}

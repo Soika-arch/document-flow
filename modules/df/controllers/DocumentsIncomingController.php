@@ -137,6 +137,11 @@ class DocumentsIncomingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
 			],
+			'dIdCarrierType' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -195,12 +200,22 @@ class DocumentsIncomingController extends MC {
 			'dIsReceivedExecutorUser' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '(^$|^\d{4}-\d{2}-\d{2}$)$'
+				'pattern' => '^('. $regexp['date'] .')?$'
 			],
 			'dDueDateBefore' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '(^$|^\d{4}-\d{2}-\d{2}$)$'
+				'pattern' => '^('. $regexp['date'] .')?$'
+			],
+			'dExecutionDate' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^('. $regexp['date'] .')?$'
+			],
+			'dIdResponsibleUser' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
 			],
 			'dIdControlType' => [
 				'type' => 'varchar',
