@@ -83,6 +83,8 @@ class DocumentsOutgoingModel extends MainModel {
 		/** @var bool якщо true, то користувач має права адміна на редагування. */
 		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
 
+		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
+		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
@@ -121,6 +123,14 @@ class DocumentsOutgoingModel extends MainModel {
 		$isSuperAdminRights = ($Us->Status->_access_level === 1);
 
 		if ($isRegistrarRights) {
+			$dIdDocumentType = intval($post['dIdDocumentType']);
+
+			if ($dIdDocumentType) {
+				if ($dIdDocumentType !== $Doc->_id_document_type) {
+					$updated['odr_id_document_type'] = $dIdDocumentType;
+				}
+			}
+
 			$dIdTitle = intval($post['dIdTitle']);
 
 			if ($dIdTitle) {
@@ -157,6 +167,12 @@ class DocumentsOutgoingModel extends MainModel {
 				}
 			}
 
+			if ($post['dRegistrationFormNumber']) {
+				if ($post['dRegistrationFormNumber'] !== $Doc->_registration_form_number) {
+					$updated['odr_registration_form_number'] = $post['dRegistrationFormNumber'];
+				}
+			}
+
 			if ($post['dDate']) {
 				$dt = tm_getDatetime($post['dDate'])->format('Y-m-d');
 
@@ -190,13 +206,6 @@ class DocumentsOutgoingModel extends MainModel {
 			if ($dIdControlType && ($dIdControlType !== $Doc->_id_execution_control)) {
 				$updated['odr_id_execution_control'] = $dIdControlType;
 			}
-
-			$dIdRresolution = intval($post['dIdRresolution']);
-
-			if ($dIdRresolution && ($dIdRresolution !== $Doc->_id_resolution)) {
-				$updated['odr_id_resolution'] = $dIdRresolution;
-				$updated['odr_resolution_date'] = tm_getDatetime()->format('Y-m-d H:i:s');
-			}
 		}
 
 		if ($isAdminRights) {
@@ -209,14 +218,6 @@ class DocumentsOutgoingModel extends MainModel {
 			if ($post['dNumber']) {
 				$newDocNumber = substr($post['dNumber'], 4);
 				if ($newDocNumber !== $Doc->_number) $updated['odr_number'] = $newDocNumber;
-			}
-
-			if ($post['dIsReceivedExecutorUser'] && ! isset($updated['odr_date_of_receipt_by_executor'])) {
-				$dt = tm_getDatetime($post['dIsReceivedExecutorUser'])->format('Y-m-d H:i:s');
-
-				if ($dt !== $Doc->_date_of_receipt_by_executor) {
-					$updated['odr_date_of_receipt_by_executor'] = $dt;
-				}
 			}
 		}
 

@@ -22,6 +22,38 @@ $displayedNumber = $Doc->displayedNumber;
 e('<form name="out_card_action" class="fm document-card" action="'.
 	url('/df/documents-outgoing/card-action?n='. $docNumber) .'" method="POST">');
 
+	if (isset($d['documentTypes']) && $d['documentTypes']) {
+		$DocumentType = $Doc->DocumentType ? $Doc->DocumentType : '';
+
+		$dIdDocumentType = $DocumentType ? $DocumentType->_id : '';
+
+		e('<div class="label_block">');
+
+			// Права на редагування тільки у адміна і реєстратора.
+
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdDocumentType">Тип документа</label>');
+				e('<select id="dIdDocumentType" name="dIdDocumentType">');
+
+					foreach ($d['documentTypes'] as $row) {
+						if ($row['dt_id'] === $dIdDocumentType) {
+							e('<option value="'. $row['dt_id'] .'" selected>'.  $DocumentType->_name .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dt_id'] .'">'.  $row['dt_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				e('<h3>Тип документа</h3>');
+				e('<div>'. ($DocumentType ? $DocumentType->_name : 'Відсутній') .'</div>');
+			}
+
+		e('</div>');
+	}
+
 	if (isset($d['dTitles']) && $d['dTitles']) {
 		$docTitle = getOrDefault($Doc->DocumentTitle->_title, '');
 
@@ -222,6 +254,23 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
+	e('<div class="label_block">');
+
+		$dRegistrationFormNumber = $Doc->_registration_form_number ? $Doc->_registration_form_number : '';
+
+		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			e('<label for="dRegistrationFormNumber">Реєстраційний номер бланка</label>');
+
+			e('<input type="text" id="dRegistrationFormNumber" name="dRegistrationFormNumber" value="'.
+				 $dRegistrationFormNumber .'">');
+		}
+		else {
+			e('<h3>Реєстраційний номер бланка</h3>');
+			e('<div>'. ($dRegistrationFormNumber ? $dRegistrationFormNumber : 'Відсутній') .'</div>');
+		}
+
+	e('</div>');
+
 	if (isset($d['departments']) && $d['departments']) {
 		e('<div class="label_block">');
 
@@ -399,11 +448,14 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
-	e('<div>');
-		$downloadLink = '<a href="'. url('/df/document-download?n='. strtolower($displayedNumber)) .
-			'" target="_blank">Завантажити документ</a>';
+	e('<div class="label_block">');
+		e('<h3>Завантажити документ</h3>');
 
-		e('<span class="card-registrar">'. $downloadLink .'.</span>');
+		$downloadLink = '<a class="file-downloadLink" href="'. url('/df/document-download?n='.
+			strtolower($displayedNumber)) .'" target="_blank">'. $displayedNumber .'.'.
+			$Doc->_file_extension .'</a>';
+
+		e('<div>'. $downloadLink .'.</div>');
 	e('</div>');
 
 	if ($Us->Status->_access_level < 4) {

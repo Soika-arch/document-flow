@@ -22,6 +22,38 @@ $displayedNumber = $Doc->displayedNumber;
 e('<form name="inc_card_action" class="fm document-card" action="'.
 	url('/df/documents-incoming/card-action?n='. $docNumber) .'" method="POST">');
 
+	if (isset($d['documentTypes']) && $d['documentTypes']) {
+		$DocumentType = $Doc->DocumentType ? $Doc->DocumentType : '';
+
+		$dIdDocumentType = $DocumentType ? $DocumentType->_id : '';
+
+		e('<div class="label_block">');
+
+			// Права на редагування тільки у адміна і реєстратора.
+
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdDocumentType">Тип документа</label>');
+				e('<select id="dIdDocumentType" name="dIdDocumentType">');
+
+					foreach ($d['documentTypes'] as $row) {
+						if ($row['dt_id'] === $dIdDocumentType) {
+							e('<option value="'. $row['dt_id'] .'" selected>'.  $DocumentType->_name .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dt_id'] .'">'.  $row['dt_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				e('<h3>Тип документа</h3>');
+				e('<div>'. ($DocumentType ? $DocumentType->_name : 'Відсутній') .'</div>');
+			}
+
+		e('</div>');
+	}
+
 	if (isset($d['dTitles']) && $d['dTitles']) {
 		$docTitle = getOrDefault($Doc->DocumentTitle->_title, '');
 
@@ -58,9 +90,9 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		e('<div class="label_block">');
 			// Права на редагування у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-				e('<label for="dDescription">Опис або короткий зміст документа</label>');
+				e('<label for="dIdDescription">Опис або короткий зміст документа</label>');
 				e('<div>'. $dDescription .'</div>');
-				e('<select id="dDescription" name="dDescription">');
+				e('<select id="dIdDescription" name="dIdDescription">');
 
 					foreach ($d['descriptions'] as $row) {
 						$subStr = mb_substr($row['dds_description'], 0, 53) .' ...';
@@ -466,6 +498,35 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		e('</div>');
 	}
 
+	if (isset($d['departments']) && $d['departments']) {
+		$ResponsibleDepartament = $Doc->ResponsibleDepartament ? $Doc->ResponsibleDepartament : '';
+
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdResponsibleDepartament">Відділ який відповідає за виконання</label>');
+				e('<select id="dIdResponsibleDepartament" name="dIdResponsibleDepartament">');
+
+					foreach ($d['departments'] as $row) {
+						if ($ResponsibleDepartament && ($row['dp_id'] === $ResponsibleDepartament->_id)) {
+							e('<option value="'. $row['dp_id'] .'" selected>'. $row['dp_name'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dp_id'] .'">'.  $row['dp_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				e('<h3>Відділ який відповідає за виконання</h3>');
+				e('<div>'. ($ResponsibleDepartament ? $ResponsibleDepartament->_name : 'Відсутній') .
+					'</div>');
+			}
+
+		e('</div>');
+	}
+
 	if (isset($d['resolutions']) && $d['resolutions']) {
 		e('<div class="label_block">');
 			// Права на редагування у адміна і реєстратора.
@@ -525,11 +586,14 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
-	e('<div>');
-		$downloadLink = '<a href="'. url('/df/document-download?n='. strtolower($displayedNumber)) .
-			'" target="_blank">Завантажити документ</a>';
+	e('<div class="label_block">');
+		e('<h3>Завантажити документ</h3>');
 
-		e('<span class="card-registrar">'. $downloadLink .'.</span>');
+		$downloadLink = '<a class="file-downloadLink" href="'. url('/df/document-download?n='.
+			strtolower($displayedNumber)) .'" target="_blank">'. $displayedNumber .'.'.
+			$Doc->_file_extension .'</a>';
+
+		e('<div>'. $downloadLink .'.</div>');
 	e('</div>');
 
 	if ($Us->Status->_access_level < 4) {

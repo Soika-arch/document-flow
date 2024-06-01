@@ -7,6 +7,8 @@ namespace core\db_record;
  */
 class DfDocument extends DbRecord {
 
+	// Тип документа.
+	protected document_types $DocumentType;
 	// Номер документа, що відображається.
 	protected string|null $displayedNumber;
 	protected string $displayedNumberPrefix;
@@ -32,6 +34,17 @@ class DfDocument extends DbRecord {
 	public function __construct (int|null $id, array $dbRow=[]) {
 		$this->tName = DbPrefix . substr(get_called_class(), (strrpos(get_called_class(), '\\') + 1));
 		parent::__construct($id, $dbRow);
+	}
+
+	/**
+	 * @return document_types
+	 */
+	protected function get_DocumentType () {
+		if (! isset($this->DocumentType)) {
+			$this->DocumentType = new document_types($this->_id_document_type);
+		}
+
+		return $this->DocumentType;
 	}
 
 	/**

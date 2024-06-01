@@ -22,6 +22,38 @@ $displayedNumber = $Doc->displayedNumber;
 e('<form name="int_card_action" class="fm document-card" action="'.
 	url('/df/documents-internal/card-action?n='. $docNumber) .'" method="POST">');
 
+	if (isset($d['documentTypes']) && $d['documentTypes']) {
+		$DocumentType = $Doc->DocumentType ? $Doc->DocumentType : '';
+
+		$dIdDocumentType = $DocumentType ? $DocumentType->_id : '';
+
+		e('<div class="label_block">');
+
+			// Права на редагування тільки у адміна і реєстратора.
+
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdDocumentType">Тип документа</label>');
+				e('<select id="dIdDocumentType" name="dIdDocumentType">');
+
+					foreach ($d['documentTypes'] as $row) {
+						if ($row['dt_id'] === $dIdDocumentType) {
+							e('<option value="'. $row['dt_id'] .'" selected>'.  $DocumentType->_name .'</option>');
+						}
+						else {
+							e('<option value="'. $row['dt_id'] .'">'.  $row['dt_name'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				e('<h3>Тип документа</h3>');
+				e('<div>'. ($DocumentType ? $DocumentType->_name : 'Відсутній') .'</div>');
+			}
+
+		e('</div>');
+	}
+
 	if (isset($d['dTitles']) && $d['dTitles']) {
 		$docTitle = getOrDefault($Doc->DocumentTitle->_title, '');
 
@@ -233,6 +265,36 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 
 				e('<h3>Фізичне місцезнаходження документа</h3>');
 				e('<div>'. ($documentLocationName ? $documentLocationName : 'Відсутнє') .'</div>');
+			}
+
+		e('</div>');
+	}
+
+	if (isset($d['users']) && $d['users']) {
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdInitiator">Ініціатор</label>');
+				e('<select id="dIdInitiator" name="dIdInitiator">');
+
+					$Initiator = $Doc->InitiatorUser;
+
+					foreach ($d['users'] as $row) {
+						if ($Initiator && ($row['us_id'] === $Initiator->_id)) {
+							e('<option value="'. $row['us_id'] .'" selected>'. $row['us_login'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['us_id'] .'">'.  $row['us_login'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				$initiatorLogin = $Initiator ? $Initiator->_login : 'Відсутній';
+
+				e('<h3>Ініціатор</h3>');
+				e('<div>'. $initiatorLogin .'</div>');
 			}
 
 		e('</div>');
@@ -459,11 +521,14 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
-	e('<div>');
-		$downloadLink = '<a href="'. url('/df/document-download?n='. strtolower($displayedNumber)) .
-			'" target="_blank">Завантажити документ</a>';
+	e('<div class="label_block">');
+		e('<h3>Завантажити документ</h3>');
 
-		e('<span class="card-registrar">'. $downloadLink .'.</span>');
+		$downloadLink = '<a class="file-downloadLink" href="'. url('/df/document-download?n='.
+			strtolower($displayedNumber)) .'" target="_blank">'. $displayedNumber .'.'.
+			$Doc->_file_extension .'</a>';
+
+		e('<div>'. $downloadLink .'.</div>');
 	e('</div>');
 
 	if ($Us->Status->_access_level < 4) {

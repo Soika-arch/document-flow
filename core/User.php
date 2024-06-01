@@ -135,5 +135,14 @@ class User extends users {
 		$_SESSION['user']['loginTimestamp'] = microtime(true);
 		// Часова мітка останнього запиту користувача до сервера.
 		$_SESSION['user']['lastRequestTimestamp'] = microtime(true);
+
+		// Устанавливаем время жизни сессии в секундах
+    ini_set('session.gc_maxlifetime', SessionTimeout);
+    ini_set('session.cookie_lifetime', SessionTimeout);
+
+    // Обновление времени жизни сессии при каждом запросе
+    if (isset($_COOKIE[session_name()])) {
+			setcookie(session_name(), $_COOKIE[session_name()], time() + SessionTimeout, "/");
+    }
 	}
 }

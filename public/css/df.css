@@ -326,6 +326,10 @@
 	cursor: pointer;
 }
 
+.label_block .file-downloadLink {
+	text-decoration: none;
+}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Форма реєстрації вхідного документа на сторінкі 'df/document-registration/incoming'. */
 

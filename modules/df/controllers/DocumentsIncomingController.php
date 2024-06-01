@@ -122,6 +122,11 @@ class DocumentsIncomingController extends MC {
 		$regexp = require DirConfig .'/regexp.php';
 
 		$Post = new Post('inc_card_action', [
+			'dIdDocumentType' => [
+				'type' => 'varchar',
+				'isRequired' => true,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dIdTitle' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -132,7 +137,7 @@ class DocumentsIncomingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
 			],
-			'dDescription' => [
+			'dIdDescription' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
@@ -213,6 +218,11 @@ class DocumentsIncomingController extends MC {
 				'pattern' => '^('. $regexp['date'] .')?$'
 			],
 			'dIdResponsibleUser' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,4})?$'
+			],
+			'dIdResponsibleDepartament' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'

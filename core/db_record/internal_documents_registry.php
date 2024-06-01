@@ -7,10 +7,14 @@ namespace core\db_record;
  */
 class internal_documents_registry extends DfDocument {
 
+	// Ініціатор користувач.
+	protected users|null $InitiatorUser;
 	// Отримувач користувач.
 	protected users|null $Recipient;
 	// Відповідальний за виконання.
 	protected users|null $ResponsibleUser;
+	// Відділ який відповідає за виконання.
+	protected departments|null $ResponsibleDepartament;
 
 	/**
 	 *
@@ -35,6 +39,20 @@ class internal_documents_registry extends DfDocument {
 		}
 
 		return $this->foreignKeys;
+	}
+
+	/**
+	 * @return users
+	 */
+	protected function get_InitiatorUser () {
+		if (! isset($this->InitiatorUser) && $this->_id_initiator) {
+			$this->InitiatorUser = new users($this->_id_initiator);
+		}
+		else {
+			$this->InitiatorUser = null;
+		}
+
+		return $this->InitiatorUser;
 	}
 
 	/**
@@ -67,5 +85,21 @@ class internal_documents_registry extends DfDocument {
 		}
 
 		return $this->ResponsibleUser;
+	}
+
+	/**
+	 * @return departments
+	 */
+	protected function get_ResponsibleDepartament () {
+		if (! isset($this->ResponsibleDepartament)) {
+			if ($this->_id_assigned_departament) {
+				$this->ResponsibleDepartament = new departments($this->_id_assigned_departament);
+			}
+			else {
+				$this->ResponsibleDepartament = null;
+			}
+		}
+
+		return $this->ResponsibleDepartament;
 	}
 }

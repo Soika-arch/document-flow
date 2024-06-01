@@ -115,6 +115,11 @@ class DocumentsOutgoingController extends MC {
 		$regexp = require DirConfig .'/regexp.php';
 
 		$Post = new Post('out_card_action', [
+			'dIdDocumentType' => [
+				'type' => 'varchar',
+				'isRequired' => true,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dIdTitle' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -179,6 +184,11 @@ class DocumentsOutgoingController extends MC {
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^(INC_\d{8})?$'
+			],
+			'dRegistrationFormNumber' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^([a-zA-Z0-9_]{1,32})?$'
 			],
 			'dIdExecutorUser' => [
 				'type' => 'varchar',

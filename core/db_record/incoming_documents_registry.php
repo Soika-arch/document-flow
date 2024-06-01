@@ -14,6 +14,8 @@ class incoming_documents_registry extends DfDocument {
 	protected outgoing_documents_registry|null $OutgoingDocument;
 	// Відповідальний за виконання.
 	protected users|null $ResponsibleUser;
+	// Відділ який відповідає за виконання.
+	protected departments|null $ResponsibleDepartament;
 
 	/**
 	 *
@@ -100,5 +102,21 @@ class incoming_documents_registry extends DfDocument {
 		}
 
 		return $this->ResponsibleUser;
+	}
+
+	/**
+	 * @return departments
+	 */
+	protected function get_ResponsibleDepartament () {
+		if (! isset($this->ResponsibleDepartament)) {
+			if ($this->_id_assigned_departament) {
+				$this->ResponsibleDepartament = new departments($this->_id_assigned_departament);
+			}
+			else {
+				$this->ResponsibleDepartament = null;
+			}
+		}
+
+		return $this->ResponsibleDepartament;
 	}
 }

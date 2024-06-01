@@ -184,4 +184,24 @@ class MainModel extends MM {
 
 		return db_select($SQL);
 	}
+
+	/**
+	 * Перевірка та обробка події відкриття картки документа призначеним виконавцем.
+	 * Повертає ture, якщо поточний користувач є виконавцем документа.
+	 * @return bool
+	 */
+	protected function checkCardOpenedByExecutor (object $Obj) {
+		$Us = rg_Rg()->get('Us');
+
+		if ($idExecutor = $Obj->_id_assigned_user) {
+			if (($idExecutor === $Us->_id) && (! $Obj->_date_of_receipt_by_executor)) {
+
+				return $Obj->update([
+					$Obj->px .'date_of_receipt_by_executor' => tm_getDatetime()->format('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		return false;
+	}
 }

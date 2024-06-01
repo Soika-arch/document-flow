@@ -74,6 +74,8 @@ class DocumentsInternalModel extends MainModel {
 
 		$Doc = new internal_documents_registry($dbRow['inr_id'], $dbRow);
 
+		if ($Obj = $this->checkCardOpenedByExecutor($Doc)) $Doc = $Obj;
+
 		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
 		$d['isRegistrarRights'] = (
 			($Us->_id === $Doc->_id_user) ||
@@ -82,6 +84,8 @@ class DocumentsInternalModel extends MainModel {
 
 		/** @var bool якщо true, то користувач має права адміна на редагування. */
 		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
+
+		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
@@ -191,13 +195,21 @@ class DocumentsInternalModel extends MainModel {
 		$isSuperAdminRights = ($Us->Status->_access_level === 1);
 
 		if ($isRegistrarRights) {
+			$dIdDocumentType = intval($post['dIdDocumentType']);
+
+			if ($dIdDocumentType) {
+				if ($dIdDocumentType !== $Doc->_id_document_type) {
+					$updated['inr_id_document_type'] = $dIdDocumentType;
+				}
+			}
+
 			$dIdTitle = intval($post['dIdTitle']);
 
 			if ($dIdTitle) {
 				if ($dIdTitle !== $Doc->_id_title) $updated['inr_id_title'] = $dIdTitle;
 			}
 
-			$dDescription = intval($post['dDescription']);
+			$dDescription = intval($post['dIdDescription']);
 
 			if ($dDescription) {
 				if ($dDescription !== $Doc->_id_description) $updated['inr_id_description'] = $dDescription;
@@ -247,9 +259,11 @@ class DocumentsInternalModel extends MainModel {
 				$updated['inr_id_document_location'] = $dIdDocumentLocation;
 			}
 
-			$dIdSender = intval($post['dIdSender']);
+			$dIdInitiator = intval($post['dIdInitiator']);
 
-			if ($dIdSender && ($dIdSender !== $Doc->_id_sender)) $updated['inr_id_sender'] = $dIdSender;
+			if ($dIdInitiator && ($dIdInitiator !== $Doc->_id_initiator)) {
+				$updated['inr_id_initiator'] = $dIdInitiator;
+			}
 
 			$dIdRecipient = intval($post['dIdRecipient']);
 
@@ -273,13 +287,6 @@ class DocumentsInternalModel extends MainModel {
 
 			if ($dIdControlType && ($dIdControlType !== $Doc->_id_execution_control)) {
 				$updated['inr_id_execution_control'] = $dIdControlType;
-			}
-
-			$dIdRresolution = intval($post['dIdRresolution']);
-
-			if ($dIdRresolution && ($dIdRresolution !== $Doc->_id_resolution)) {
-				$updated['inr_id_resolution'] = $dIdRresolution;
-				$updated['inr_resolution_date'] = tm_getDatetime()->format('Y-m-d H:i:s');
 			}
 		}
 

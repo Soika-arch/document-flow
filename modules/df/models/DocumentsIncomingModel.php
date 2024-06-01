@@ -68,6 +68,8 @@ class DocumentsIncomingModel extends MainModel {
 
 		$Doc = new incoming_documents_registry($dbRow['idr_id'], $dbRow);
 
+		if ($Obj = $this->checkCardOpenedByExecutor($Doc)) $Doc = $Obj;
+
 		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
 		$d['isRegistrarRights'] = (
 			($Us->_id === $Doc->_id_user) ||
@@ -77,6 +79,7 @@ class DocumentsIncomingModel extends MainModel {
 		/** @var bool якщо true, то користувач має права адміна на редагування. */
 		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
 
+		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
 		$d['descriptions'] = $this->selectRowsByCol(DbPrefix .'document_descriptions');
 		$d['carrierTypes'] = $this->selectRowsByCol(DbPrefix .'document_carrier_types');
@@ -116,16 +119,26 @@ class DocumentsIncomingModel extends MainModel {
 		$isSuperAdminRights = ($Us->Status->_access_level === 1);
 
 		if ($isRegistrarRights) {
+			$dIdDocumentType = intval($post['dIdDocumentType']);
+
+			if ($dIdDocumentType) {
+				if ($dIdDocumentType !== $Doc->_id_document_type) {
+					$updated['idr_id_document_type'] = $dIdDocumentType;
+				}
+			}
+
 			$dIdTitle = intval($post['dIdTitle']);
 
 			if ($dIdTitle) {
 				if ($dIdTitle !== $Doc->_id_title) $updated['idr_id_title'] = $dIdTitle;
 			}
 
-			$dDescription = intval($post['dDescription']);
+			$dIdDescription = intval($post['dIdDescription']);
 
-			if ($dDescription) {
-				if ($dDescription !== $Doc->_id_description) $updated['idr_id_description'] = $dDescription;
+			if ($dIdDescription) {
+				if ($dIdDescription !== $Doc->_id_description) {
+					$updated['idr_id_description'] = $dIdDescription;
+				}
 			}
 
 			$dIdCarrierType = intval($post['dIdCarrierType']);
@@ -147,6 +160,13 @@ class DocumentsIncomingModel extends MainModel {
 
 			if ($dIdResponsibleUser && ($dIdResponsibleUser !== $Doc->_id_responsible_user)) {
 				$updated['idr_id_responsible_user'] = $dIdResponsibleUser;
+			}
+
+			$dIdResponsibleDepartament = intval($post['dIdResponsibleDepartament']);
+
+			if ($dIdResponsibleDepartament &&
+					($dIdResponsibleDepartament !== $Doc->_id_assigned_departament)) {
+				$updated['idr_id_assigned_departament'] = $dIdResponsibleDepartament;
 			}
 
 			if ($post['dOutNumber']) {

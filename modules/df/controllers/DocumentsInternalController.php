@@ -3,7 +3,7 @@
 namespace modules\df\controllers;
 
 use \core\Get;
-use core\Post;
+use \core\Post;
 use \modules\df\controllers\MainController as MC;
 use \modules\df\models\DocumentsInternalModel;
 
@@ -109,6 +109,11 @@ class DocumentsInternalController extends MC {
 		$regexp = require DirConfig .'/regexp.php';
 
 		$Post = new Post('int_card_action', [
+			'dIdDocumentType' => [
+				'type' => 'varchar',
+				'isRequired' => true,
+				'pattern' => '^(\d{1,4})?$'
+			],
 			'dIdTitle' => [
 				'type' => 'varchar',
 				'isRequired' => false,
@@ -154,7 +159,7 @@ class DocumentsInternalController extends MC {
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
 			],
-			'dIdSender' => [
+			'dIdInitiator' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
