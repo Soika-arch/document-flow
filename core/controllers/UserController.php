@@ -2,6 +2,7 @@
 
 namespace core\controllers;
 
+use core\Get;
 use \core\Post;
 
 /**
@@ -26,15 +27,18 @@ class UserController extends MainController {
 		$Post = new Post('bt_loging', [
 			'login' => [
 				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
+				'pattern' => '^[a-zA-Z0-9_]{5,32}$',
+				'isRequired' => true
 			],
 			'password' => [
 				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9!@#$%^&*()_+=_-]{5,32}$'
+				'pattern' => '^[a-zA-Z0-9!@#$%^&*()_+=_-]{5,32}$',
+				'isRequired' => true
 			],
 			'bt_loging' => [
 				'type' => 'varchar',
-				'pattern' => '^$'
+				'pattern' => '^$',
+				'isRequired' => true
 			]
 		]);
 
@@ -52,5 +56,29 @@ class UserController extends MainController {
 	 */
 	public function logoutPage () {
 		if ($this->Model->logout()) hd_sendHeader('Location: '. url('/'), __FILE__, __LINE__);
+	}
+
+	/**
+	 * Сторінка профіля користувача.
+	 */
+	public function profilePage () {
+		$Us = rg_Rg()->get('Us');
+
+		$Get = new Get([
+			'l' => [
+				'type' => 'varchar',
+				'pattern' => '^[a-zA-Z0-9_]{5,32}$',
+				'isRequired' => true
+			]
+		]);
+
+		if (! $this->checkPageAccess($Us->Status->_name, ['Viewer', 'User', 'Admin', 'SuperAdmin'])) {
+
+			return;
+		}
+
+		$d = $this->Model->profilePage();
+
+		require $this->getViewFile('/user/profile');
 	}
 }

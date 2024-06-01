@@ -24,6 +24,20 @@ h2 {
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Сторінка профіля користувача. */
+
+.user-profile {
+	padding: 20px 10px 0px 20px;
+}
+
+.user-profile .header-field {
+	display: inline-block;
+	width: 200px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Спливаюче повідомлення для користувача. */
 
 .notification {

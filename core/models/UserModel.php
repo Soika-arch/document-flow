@@ -58,4 +58,17 @@ class UserModel extends MainModel {
 
 		return new User($idUser);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function profilePage () {
+		$get = rg_Rg()->get('Get')->get;
+
+		$d['title'] = 'Профіль користувача';
+		$userRow = $this->selectRowByCol(DbPrefix .'users', 'us_login', $get['l']);
+		$d['User'] = new User($userRow['us_id'], $userRow);
+
+		return $d;
+	}
 }

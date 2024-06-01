@@ -13,7 +13,7 @@ const MainCssName = 'main';
 /** @var bool Чи треба контролювати максимальний час сесії користувача. */
 const SessionTimeoutEnabled = false;
 /** @var int Максимальний час сесії користувача в секундах після авторизації. */
-const SessionTimeout = 900;
+const SessionTimeout = 3600;
 /** @var bool Чи треба відстежувати час бездіяльності користувача. */
 const TrackUserActivity = true;
 /** @var int Час максимальної бездіяльності користувача. */

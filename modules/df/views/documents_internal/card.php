@@ -272,12 +272,13 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 
 	if (isset($d['users']) && $d['users']) {
 		e('<div class="label_block">');
+
+			$Initiator = $Doc->InitiatorUser;
+
 			// Права на редагування у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
 				e('<label for="dIdInitiator">Ініціатор</label>');
 				e('<select id="dIdInitiator" name="dIdInitiator">');
-
-					$Initiator = $Doc->InitiatorUser;
 
 					foreach ($d['users'] as $row) {
 						if ($Initiator && ($row['us_id'] === $Initiator->_id)) {

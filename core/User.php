@@ -145,4 +145,22 @@ class User extends users {
 			setcookie(session_name(), $_COOKIE[session_name()], time() + SessionTimeout, "/");
     }
 	}
+
+	/**
+	 * @return visitor_routes
+	 */
+	public function getLastVisitTime (int $idUser, string $format='d.m.Y H:i') {
+		$SQL = db_getSelect();
+
+		$SQL
+			->columns(['vr_add_date'])
+			->from(DbPrefix .'visitor_routes')
+			->where('vr_id_user', '=', $idUser)
+			->orderBy('vr_add_date desc')
+			->limit(1);
+
+		if ($vrAddDate = db_selectCell($SQL)) return tm_getDatetime($vrAddDate)->format($format);
+
+		return false;
+	}
 }
