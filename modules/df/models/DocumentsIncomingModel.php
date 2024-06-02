@@ -3,6 +3,7 @@
 namespace modules\df\models;
 
 use \core\db_record\incoming_documents_registry;
+use core\db_record\user_messages;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
 use \modules\df\models\MainModel;
@@ -70,14 +71,8 @@ class DocumentsIncomingModel extends MainModel {
 
 		if ($Obj = $this->checkCardOpenedByExecutor($Doc)) $Doc = $Obj;
 
-		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
-		$d['isRegistrarRights'] = (
-			($Us->_id === $Doc->_id_user) ||
-			($Us->_id === (($Doc->ExecutorUser) && $Doc->ExecutorUser->_id))
-		);
-
-		/** @var bool якщо true, то користувач має права адміна на редагування. */
-		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
+		$d['isRegistrarRights'] = $this->isRegistrarRights($Us, $Doc);
+		$d['isAdminRights'] = $this->isAdminRights($Us);
 
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');
@@ -265,6 +260,12 @@ class DocumentsIncomingModel extends MainModel {
 
 		if ($updated) {
 			if (! $Doc->update($updated)) return false;
+
+			if (isset($updated['idr_id_assigned_user'])) {
+				if ($this->informAboutAppointmentAsExecutor($updated['idr_id_assigned_user'], $Doc)) {
+					sess_addSysMessage('Виконавцю відправлено повідомлення про призначення документа');
+				}
+			}
 		}
 
 		return $Doc;

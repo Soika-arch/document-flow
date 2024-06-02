@@ -190,10 +190,33 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Сторінка повідомлень користувача. */
+
+.user-messages {
+	padding: 20px 10px 0px 10px;
+}
+
+.user-messages .message {
+	margin-bottom: 15px;
+}
+
+.user-messages .message a {
+	text-decoration: none;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Сторінка повідомлення користувача. */
+
+.user-message {
+	padding: 20px 10px 0px 10px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Блок меню користувача. */
 
 .user-menu-1 {
 	display: flex;
+	text-align: center;
 	flex-direction: row-reverse;
 	margin: 0 0;
 	padding: 0px 10px 0px 0px;
@@ -203,6 +226,13 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 .user-menu-1 div {
 	display: inline-block;
 	width: 100px;
+}
+
+.user-menu-1 .img-button {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	border-radius: 10px;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

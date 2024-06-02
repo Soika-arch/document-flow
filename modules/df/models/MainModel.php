@@ -2,8 +2,10 @@
 
 namespace modules\df\models;
 
+use \core\db_record\user_messages;
 use \core\models\MainModel as MM;
 use \core\RecordSliceRetriever;
+use \core\User;
 use \libs\Paginator;
 use \libs\query_builder\SelectQuery;
 
@@ -203,5 +205,49 @@ class MainModel extends MM {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Вираховує чи має поточний користувач права реєстратора на картку документа.
+	 * @return bool
+	 */
+	protected function isRegistrarRights (User $Us, object $Doc) {
+		$isRegistrar = ($Us->_id === $Doc->_id_user);
+
+		$isExecutor = $Doc->ExecutorUser ?
+			$Doc->ExecutorUser->_id === $Us->_id : false;
+
+		return ($isRegistrar || $isExecutor);
+	}
+
+	/**
+	 * Вираховує чи має поточний користувач права адміна на картку документа.
+	 * @return bool
+	 */
+	protected function isAdminRights (User $Us) {
+
+		return ($Us->Status->_access_level < 3);
+	}
+
+	/**
+	 * Відправляє повідомлення користувачу про призначення виконавцем документа.
+	 * @return
+	 */
+	protected function informAboutAppointmentAsExecutor (int $idUser, object $Doc) {
+		$Msg = new user_messages(null);
+		$dt = tm_getDatetime()->format('Y-m-d H:i:s');
+
+		$docLink = '<a href="'. $Doc->cardURL .'">'. $Doc->DocumentTitle->_title .'</a>';
+
+		return $Msg->set([
+			'usm_id_user' => $idUser,
+			'usm_id_sender' => 1,
+			'usm_header' => 'Призначено новий документ на виконання',
+			'usm_msg' => 'Вам призначено новий документ на виконання: '. $docLink,
+			'usm_read' => 'n',
+			'usm_trash_bin' => 'n',
+			'usm_add_date' => $dt,
+			'usm_change_date' => $dt,
+		]);
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace core\controllers;
 
-use core\Get;
+use \core\Get;
 use \core\Post;
 
 /**

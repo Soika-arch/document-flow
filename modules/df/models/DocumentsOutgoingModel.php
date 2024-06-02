@@ -74,14 +74,8 @@ class DocumentsOutgoingModel extends MainModel {
 
 		$Doc = new outgoing_documents_registry($dbRow['odr_id'], $dbRow);
 
-		/** @var bool якщо true, то користувач має права реєстратора на редагування. */
-		$d['isRegistrarRights'] = (
-			($Us->_id === $Doc->_id_user) ||
-			($Us->_id === (($Doc->ExecutorUser) && $Doc->ExecutorUser->_id))
-		);
-
-		/** @var bool якщо true, то користувач має права адміна на редагування. */
-		$d['isAdminRights'] = ($Us->Status->_access_level < 3);
+		$d['isRegistrarRights'] = $this->isRegistrarRights($Us, $Doc);
+		$d['isAdminRights'] = $this->isAdminRights($Us);
 
 		$d['documentTypes'] = $this->selectRowsByCol(DbPrefix .'document_types');
 		$d['dTitles'] = $this->selectRowsByCol(DbPrefix .'document_titles');

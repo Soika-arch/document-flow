@@ -163,4 +163,20 @@ class User extends users {
 
 		return false;
 	}
+
+	/**
+	 * Повертає true, якщо користувач має непрочитані повідомлення.
+	 * @return bool
+	 */
+	public function getUnreadMessagesCount () {
+		$SQL = db_getSelect();
+
+		$SQL
+			->columns([$SQL->raw('count(usm_id) as c')])
+			->from(DbPrefix .'user_messages')
+			->where('usm_id_user', '=', $this->_id)
+			->where('usm_read', '=', 'n');
+
+		return db_selectCell($SQL);
+	}
 }
