@@ -35,7 +35,7 @@ class CronController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		// $this->Model->notifyAboutUnreadMessages();
+		$this->Model->notifyAboutUnreadMessages();
 		$this->Model->notifyAboutControlDate();
 	}
 }

@@ -97,4 +97,19 @@ class MainController {
 
 		return true;
 	}
+
+	/**
+	 * Підключення наявних модулів.
+	 */
+	public function loadModules () {
+		$dr = scandir(DirModules);
+
+		foreach ($dr as $dName) {
+			if (($dName === '.') || $dName === '..') continue;
+
+			$moduleFile = DirModules .'/'. $dName .'/'. $dName .'.php';
+
+			if (is_file($moduleFile)) require_once $moduleFile;
+		}
+	}
 }

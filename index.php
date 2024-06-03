@@ -27,10 +27,12 @@ try {
 
 	/** @var \core\controllers\MainController поточний об'єкт контролера. */
 	$Controller = new $controllerClass();
+	$Controller->loadModules();
+
 	// Виклик метода сторінки контролера.
 
-	// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
 	if (rt_Rt()->isExtraLineInURLPath) {
+		// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
 		$Controller->notFoundPage();
 	}
 	else {

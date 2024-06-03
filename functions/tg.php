@@ -18,9 +18,7 @@ function tg_sendMsg (int $chatId, string $text, string $parseMode='markdown') {
 		$text = mb_substr($text, 0, 4096);
 	}
 
-	$token = '6211668299:AAFHLm_fveQbLeJDKIVNdXsJvGhCmlgIt6k';
-
-	$url = 'https://api.telegram.org/bot'. $token .'/sendMessage';
+	$url = 'https://api.telegram.org/bot'. TgBotToken .'/sendMessage';
 
 	$ch = curl_init($url);
 

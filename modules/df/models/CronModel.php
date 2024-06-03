@@ -58,13 +58,12 @@ class CronModel extends MainModel {
 			if ($controlDate === tm_getDatetime()->format('Y-m-d')) {
 				$UsTemp = new users($rowData['us_id']);
 
-				// if ($UsTemp->_id_tg) {
-				// 	tg_sendMsg(
-				// 		$UsTemp->_id_tg,
-				// 		"❇ Сьогодні контрольна дата документа [". $Doc->displayedNumber ."](". $Doc->cardURL .")."
-				// 	);
-				// }
-
+				if ($UsTemp->_id_tg) {
+					tg_sendMsg(
+						$UsTemp->_id_tg,
+						"❇ Сьогодні контрольна дата документа [". $Doc->displayedNumber ."](". $Doc->cardURL .")."
+					);
+				}
 
 				$msg = 'Сьогодні контрольна дата документа <a href="'. $Doc->cardURL .'">'.
 					$Doc->displayedNumber .'</a>';

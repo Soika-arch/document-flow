@@ -1,3 +1,4 @@
 .vscode/
 configs/db.php
+configs/secrets.php
 modules/df/storage/
