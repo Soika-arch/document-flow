@@ -13,16 +13,16 @@ class DfDocument extends DbRecord {
 	protected string|null $displayedNumber;
 	protected string $displayedNumberPrefix;
 	protected document_titles $DocumentTitle;
-	protected document_descriptions|null $Description;
+	protected document_descriptions $Description;
 	protected document_carrier_types $CarrierType;
-	protected departments|null $DocumentLocation;
+	protected departments $DocumentLocation;
 	// Користувач, який зареєстрував документ.
 	protected users $Registrar;
 	// Виконавець користувач.
-	protected users|null $ExecutorUser;
+	protected users $ExecutorUser;
 	// Тип контроллю за виконанням.
-	protected document_control_types|null $ControlType;
-	protected document_resolutions|null $Resolution;
+	protected document_control_types $ControlType;
+	protected document_resolutions $Resolution;
 	protected string $cardURL;
 	// Ім'я файла документа.
 	protected string $fileName;
@@ -76,11 +76,10 @@ class DfDocument extends DbRecord {
 	 * @return document_descriptions
 	 */
 	protected function get_Description () {
-		if (! isset($this->Description) && $this->_id_description) {
-			$this->Description = new document_descriptions($this->_id_description);
-		}
-		else {
-			$this->Description = null;
+		if (! isset($this->Description)) {
+			$idDescription = $this->_id_description ? $this->_id_description : null;
+
+			$this->Description = new document_descriptions($idDescription);
 		}
 
 		return $this->Description;
@@ -90,11 +89,10 @@ class DfDocument extends DbRecord {
 	 * @return document_carrier_types
 	 */
 	protected function get_CarrierType () {
-		if (! isset($this->CarrierType) && $this->_id_carrier_type) {
-			$this->CarrierType = new document_carrier_types($this->_id_carrier_type);
-		}
-		else {
-			$this->CarrierType = null;
+		if (! isset($this->CarrierType)) {
+			$idCarrierType = $this->_id_carrier_type ? $this->_id_carrier_type : null;
+
+			$this->CarrierType = new document_carrier_types($idCarrierType);
 		}
 
 		return $this->CarrierType;
@@ -104,11 +102,10 @@ class DfDocument extends DbRecord {
 	 * @return departments|null
 	 */
 	protected function get_DocumentLocation () {
-		if (! isset($this->DocumentLocation) && $this->_id_document_location) {
-			$this->DocumentLocation = new departments($this->_id_document_location);
-		}
-		else {
-			$this->DocumentLocation = null;
+		if (! isset($this->DocumentLocation)) {
+			$idDocumentLocation = $this->_id_document_location ? $this->_id_document_location : null;
+
+			$this->DocumentLocation = new departments($idDocumentLocation);
 		}
 
 		return $this->DocumentLocation;
@@ -130,28 +127,22 @@ class DfDocument extends DbRecord {
 	 */
 	protected function get_ExecutorUser () {
 		if (! isset($this->ExecutorUser)) {
-			if ($this->_id_assigned_user) {
-				$this->ExecutorUser = new users($this->_id_assigned_user);
-			}
-			else {
-				$this->ExecutorUser = null;
-			}
+			$idAssignedUser = $this->_id_assigned_user ? $this->_id_assigned_user : null;
+
+			$this->ExecutorUser = new users($idAssignedUser);
 		}
 
 		return $this->ExecutorUser;
 	}
 
 	/**
-	 * @return outgoing_documents_registry|null
+	 * @return outgoing_documents_registry
 	 */
 	protected function get_OutgoingDocument () {
 		if (! isset($this->OutgoingDocument)) {
-			if ($this->_id_outgoing_number) {
-				$this->OutgoingDocument = new outgoing_documents_registry($this->_id_outgoing_number);
-			}
-			else {
-				$this->OutgoingDocument = null;
-			}
+			$idOutgoingNumber = $this->_id_outgoing_number ? $this->_id_outgoing_number : null;
+
+			$this->OutgoingDocument = new outgoing_documents_registry($idOutgoingNumber);
 		}
 
 		return $this->OutgoingDocument;
@@ -161,25 +152,23 @@ class DfDocument extends DbRecord {
 	 * @return document_control_types
 	 */
 	protected function get_ControlType () {
-		if (! isset($this->ControlType) && $this->_id_execution_control) {
-			$this->ControlType = new document_control_types($this->_id_execution_control);
-		}
-		else {
-			$this->ControlType = null;
+		if (! isset($this->ControlType)) {
+			$idExecutionControl = $this->_id_execution_control ? $this->_id_execution_control : null;
+
+			$this->ControlType = new document_control_types($$idExecutionControl);
 		}
 
 		return $this->ControlType;
 	}
 
 	/**
-	 * @return document_resolutions|null
+	 * @return document_resolutions
 	 */
 	protected function get_Resolution () {
-		if (! isset($this->Resolution) && $this->_id_resolution) {
-			$this->Resolution = new document_resolutions($this->_id_resolution);
-		}
-		else {
-			$this->Resolution = null;
+		if (! isset($this->Resolution)) {
+			$idResolution = $this->_id_resolution ? $this->_id_resolution : null;
+
+			$this->Resolution = new document_resolutions($idResolution);
 		}
 
 		return $this->Resolution;
@@ -189,7 +178,7 @@ class DfDocument extends DbRecord {
 	 * @return string
 	 */
 	protected function get_cardURL () {
-		if (! isset($this->cardURL) && $this->_number) {
+		if (! isset($this->cardURL) && $this->get_dbRow()) {
 			$str = str_replace(DbPrefix, '', $this->tName);
 			$str = substr($str, 0, strpos($str, '_'));
 

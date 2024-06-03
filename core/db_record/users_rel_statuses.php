@@ -21,7 +21,7 @@ class users_rel_statuses extends DbRecord {
 	/**
 	 * @return user_statuses
 	 */
-	protected function get_UserStatus () {
+	public function get_UserStatus () {
 		if (! isset($this->UserStatus)) {
 			$SQL = db_getSelect();
 			$tName = DbPrefix .'user_statuses';
@@ -34,7 +34,9 @@ class users_rel_statuses extends DbRecord {
 
 			$row = db_selectRow($SQL);
 
-			$this->UserStatus = new user_statuses($row['uss_id'], $row);
+			$ussId = isset($row['uss_id']) ? $row['uss_id'] : null;
+
+			$this->UserStatus = new user_statuses($ussId, $row);
 		}
 
 		return $this->UserStatus;

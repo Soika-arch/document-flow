@@ -62,8 +62,6 @@ class DocumentsIncomingController extends MC {
 			],
 		]);
 
-		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
-
 		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
 
 		$d = $this->Model->listPage($pageNum);

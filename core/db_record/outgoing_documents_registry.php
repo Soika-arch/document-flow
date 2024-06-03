@@ -8,10 +8,10 @@ namespace core\db_record;
 class outgoing_documents_registry extends DfDocument {
 
 	// Відправник користувач.
-	protected users|null $Sender;
+	protected users $Sender;
 	// Отримувач зовнішній.
-	protected document_senders|null $Recipient;
-	protected incoming_documents_registry|null $IncomingDocument;
+	protected document_senders $Recipient;
+	protected incoming_documents_registry $IncomingDocument;
 
 	/**
 	 *
@@ -39,16 +39,13 @@ class outgoing_documents_registry extends DfDocument {
 	}
 
 	/**
-	 * @return incoming_documents_registry|null
+	 * @return incoming_documents_registry
 	 */
 	protected function get_IncomingDocument () {
 		if (! isset($this->IncomingDocument)) {
-			if ($this->_id_incoming_number) {
-				$this->IncomingDocument = new incoming_documents_registry($this->_id_incoming_number);
-			}
-			else {
-				$this->IncomingDocument = null;
-			}
+			$idIncomingNumber = $this->_id_incoming_number ? $this->_id_incoming_number : null;
+
+			$this->IncomingDocument = new incoming_documents_registry($idIncomingNumber);
 		}
 
 		return $this->IncomingDocument;
@@ -58,11 +55,10 @@ class outgoing_documents_registry extends DfDocument {
 	 * @return users
 	 */
 	protected function get_Sender () {
-		if (! isset($this->Sender) && $this->_id_sender) {
-			$this->Sender = new users($this->_id_sender);
-		}
-		else {
-			$this->Sender = null;
+		if (! isset($this->Sender)) {
+			$idSender = $this->_id_sender ? $this->_id_sender : null;
+
+			$this->Sender = new users($idSender);
 		}
 
 		return $this->Sender;
@@ -73,12 +69,9 @@ class outgoing_documents_registry extends DfDocument {
 	 */
 	protected function get_Recipient () {
 		if (! isset($this->Recipient)) {
-			if ($this->_id_recipient) {
-				$this->Recipient = new document_senders($this->_id_recipient);
-			}
-			else {
-				$this->Recipient = null;
-			}
+			$idRecipient = $this->_id_recipient ? $this->_id_recipient : null;
+
+			$this->Recipient = new document_senders($this->_id_recipient);
 		}
 
 		return $this->Recipient;

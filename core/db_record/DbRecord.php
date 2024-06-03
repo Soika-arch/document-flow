@@ -111,7 +111,7 @@ class DbRecord {
 			}
 			else {
 				// Поточний клас не має метода $method.
-				dd([$method, $this], __FILE__, __LINE__,1);
+				dd([$method, $this, debug_backtrace()], __FILE__, __LINE__,1);
 			}
 		}
 		else {

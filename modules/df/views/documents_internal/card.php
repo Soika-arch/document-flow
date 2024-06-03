@@ -443,6 +443,16 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 		e('</div>');
 	}
 
+	// Якщо існує тип контролю, то виводити дату контролю.
+	if ($Doc->NextControlDate) {
+		e('<div class="label_block">');
+
+			e('<h3>Наступна дата контролю</h3>');
+			e('<div>'. $Doc->NextControlDate->format('d.m.Y') .'</div>');
+
+		e('</div>');
+	}
+
 	e('<div class="label_block">');
 
 		if ($Doc->_control_date) {

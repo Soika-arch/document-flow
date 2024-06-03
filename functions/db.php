@@ -4,8 +4,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-use core\Db;
-use core\exceptions\DbException;
+use \core\Db;
+use \core\exceptions\DbException;
 
 /**
  * @return \core\Db

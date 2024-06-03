@@ -9,7 +9,6 @@ class User extends users {
 
 	protected string $ip;
 	protected string $userAgent;
-	protected visitor_routes $VR;
 
 	/**
 	 *
@@ -34,13 +33,6 @@ class User extends users {
 		if (! isset($this->userAgent)) $this->userAgent = getUserAgent();
 
 		return $this->userAgent;
-	}
-
-	/**
-	 * @return visitor_routes
-	 */
-	protected function get_VR () {
-		if (isset($this->VR)) return $this->VR;
 	}
 
 	/**

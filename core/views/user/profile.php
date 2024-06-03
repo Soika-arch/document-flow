@@ -25,6 +25,11 @@ e('<div class="user-profile">');
 		e('<span>'. $d['User']->getLastVisitTime($d['User']->_id) .'<span>');
 	e('</div>');
 
+	e('<div>');
+		e('<span class="header-field">Вхідні документи на виконанні</span>');
+		e('<span>'. count($d['User']->notExecutionIncomingDocuments) .'<span>');
+	e('</div>');
+
 e('</div>');
 
 require $this->getViewFile('/inc/footer');

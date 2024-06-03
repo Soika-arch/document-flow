@@ -130,6 +130,8 @@ $dName = str_replace([DirRoot, '/'], ['', '\\'], DirControllers);
 /** @var string namespace контролерів за замовчуванням. */
 define('DefaultControllerNamespace', $dName);
 
+define('TgAdmin', 794375162);
+
 // Підключення загальних файлів застосунку.
 
 require_once 'db.php';
@@ -140,3 +142,6 @@ require_once DirFunc .'/rt.php';
 require_once DirFunc .'/hd.php';
 require_once DirFunc .'/sess.php';
 require_once DirFunc .'/tm.php';
+require_once DirFunc .'/msg.php';
+require_once DirFunc .'/tg.php';
+require_once DirFunc .'/db_users.php';

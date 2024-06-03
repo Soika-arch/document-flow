@@ -8,9 +8,12 @@ namespace core\db_record;
 class users extends DbRecord {
 
 	// Зв'язок користувача з його статусом.
-	protected users_rel_statuses|null $UserRelStatus;
+	protected users_rel_statuses $UserRelStatus;
 	// Статус користувача.
 	protected user_statuses $Status;
+	// Масив id невиконаних вхідніх документів користувача.
+	protected array $notExecutionIncomingDocuments;
+	protected visitor_routes $VR;
 
 	/**
 	 *
@@ -61,13 +64,9 @@ class users extends DbRecord {
 				->where('us_id', '=', $this->_id);
 
 			$row = db_selectRow($SQL);
+			$usrId = isset($row['usr_id']) ? $row['usr_id'] : null;
 
-			if ($row) {
-				$this->UserRelStatus = new users_rel_statuses($row['usr_id'], $row);
-			}
-			else {
-				$this->UserRelStatus = null;
-			}
+			$this->UserRelStatus = new users_rel_statuses($usrId, $row);
 		}
 
 		return $this->UserRelStatus;
@@ -77,8 +76,41 @@ class users extends DbRecord {
 	 * @return user_statuses
 	 */
 	protected function get_Status () {
-		if ($this->get_UserRelStatus()) $this->Status = $this->get_UserRelStatus()->UserStatus;
+		if (! isset($this->Status)) {
+			$this->Status = $this->get_UserRelStatus()->get_UserStatus();
+		}
 
 		return $this->Status;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_notExecutionIncomingDocuments () {
+		if (! isset($this->notExecutionIncomingDocuments)) {
+			$SQL = db_getSelect()
+				->columns(['idr_id'])
+				->from(DbPrefix .'incoming_documents_registry')
+				->where('idr_id_assigned_user', '=', $this->_id)
+				->where('idr_execution_date', '=', null);
+
+			$this->notExecutionIncomingDocuments = db_selectCol($SQL);
+		}
+
+		return $this->notExecutionIncomingDocuments;
+	}
+
+	/**
+	 * @return visitor_routes
+	 */
+	protected function get_VR () {
+		if (isset($this->VR)) return $this->VR;
+	}
+
+	/**
+	 *
+	 */
+	protected function set_Status (user_statuses $Status) {
+		$this->Status = $Status;
 	}
 }

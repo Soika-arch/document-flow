@@ -3,7 +3,6 @@
 namespace modules\df\models;
 
 use \core\db_record\incoming_documents_registry;
-use core\db_record\user_messages;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
 use \modules\df\models\MainModel;

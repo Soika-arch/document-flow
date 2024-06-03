@@ -1,10 +1,10 @@
 <?php
 
-// Вид сторінки списка пагінації вхідних документів.
+// Звіт по невиконаним документам.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-use \core\db_record\incoming_documents_registry;
+use core\db_record\incoming_documents_registry;
 
 $Us = rg_Rg()->get('Us');
 
@@ -15,8 +15,6 @@ require $this->getViewFile('inc/menu/main');
 
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
-
-require $this->getViewFile('inc/menu/menu_journal_1');
 
 if (isset($d['documents']) && $d['documents']) {
 	if ($d['Pagin']->getNumPages() > 1) e($d['Pagin']->toHtml());
@@ -52,15 +50,7 @@ if (isset($d['documents']) && $d['documents']) {
 
 				e('<span class="doc-number">'. strtoupper($Doc->displayedNumber) .'</span>');
 
-				if ($Doc->ExecutorUser) {
-					$executorLogin = $Doc->ExecutorUser->_login;
-
-					$executorLogin = '<a href="'. url('/user/profile?l='. $executorLogin) .'">'.
-						$executorLogin .'</a>';
-				}
-				else {
-					$executorLogin = '';
-				}
+				$executorLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : '';
 
 				if ($Doc->_date_of_receipt_by_executor) {
 					$isReceivedStyle = ' style="border:solid 1px green;"';

@@ -225,7 +225,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
-	if ($Doc->OutgoingDocument) {
+	if ($Doc->OutgoingDocument->_id) {
 		$docOutURL = $Doc->OutgoingDocument->cardURL;
 		$docOutTitle = $Doc->OutgoingDocument->DocumentTitle->_title;
 		$displayedNumberOut = $Doc->OutgoingDocument->displayedNumber;
@@ -422,6 +422,16 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('<h3>Тип контролю за виконанням</h3>');
 				e('<div>'. $controlType .'</div>');
 			}
+
+		e('</div>');
+	}
+
+	// Якщо існує тип контролю, то виводити дату контролю.
+	if ($Doc->NextControlDate) {
+		e('<div class="label_block">');
+
+			e('<h3>Наступна дата контролю</h3>');
+			e('<div>'. $Doc->NextControlDate->format('d.m.Y') .'</div>');
 
 		e('</div>');
 	}

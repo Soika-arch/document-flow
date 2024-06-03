@@ -8,13 +8,16 @@ namespace core\db_record;
 class internal_documents_registry extends DfDocument {
 
 	// Ініціатор користувач.
-	protected users|null $InitiatorUser;
+	protected users $InitiatorUser;
 	// Отримувач користувач.
-	protected users|null $Recipient;
+	protected users $Recipient;
 	// Відповідальний за виконання.
-	protected users|null $ResponsibleUser;
+	protected users $ResponsibleUser;
 	// Відділ який відповідає за виконання.
-	protected departments|null $ResponsibleDepartament;
+	protected departments $ResponsibleDepartament;
+	// Чергова дата контролю, яка вираховується на основі поля idr_add_date.
+	protected \DateTime|null $NextControlDate;
+	protected document_control_types $ControlType;
 
 	/**
 	 *
@@ -45,11 +48,10 @@ class internal_documents_registry extends DfDocument {
 	 * @return users
 	 */
 	protected function get_InitiatorUser () {
-		if (! isset($this->InitiatorUser) && $this->_id_initiator) {
-			$this->InitiatorUser = new users($this->_id_initiator);
-		}
-		else {
-			$this->InitiatorUser = null;
+		if (! isset($this->InitiatorUser)) {
+			$idInitiator = $this->_id_initiator ? $this->_id_initiator : null;
+
+			$this->InitiatorUser = new users($idInitiator);
 		}
 
 		return $this->InitiatorUser;
@@ -60,12 +62,9 @@ class internal_documents_registry extends DfDocument {
 	 */
 	protected function get_Recipient () {
 		if (! isset($this->Recipient)) {
-			if ($this->_id_recipient) {
-				$this->Recipient = new users($this->_id_recipient);
-			}
-			else {
-				$this->Recipient = null;
-			}
+			$idRecipient = $this->_id_recipient ? $this->_id_recipient : null;
+
+			$this->Recipient = new users($idRecipient);
 		}
 
 		return $this->Recipient;
@@ -76,12 +75,9 @@ class internal_documents_registry extends DfDocument {
 	 */
 	protected function get_ResponsibleUser () {
 		if (! isset($this->ResponsibleUser)) {
-			if ($this->_id_responsible_user) {
-				$this->ResponsibleUser = new users($this->_id_responsible_user);
-			}
-			else {
-				$this->ResponsibleUser = null;
-			}
+			$idResponsibleUser = $this->_id_responsible_user ? $this->_id_responsible_user : null;
+
+			$this->ResponsibleUser = new users($idResponsibleUser);
 		}
 
 		return $this->ResponsibleUser;
@@ -92,14 +88,45 @@ class internal_documents_registry extends DfDocument {
 	 */
 	protected function get_ResponsibleDepartament () {
 		if (! isset($this->ResponsibleDepartament)) {
-			if ($this->_id_assigned_departament) {
-				$this->ResponsibleDepartament = new departments($this->_id_assigned_departament);
-			}
-			else {
-				$this->ResponsibleDepartament = null;
-			}
+			$idAssignedDepartament = $this->_id_assigned_departament ?
+				$this->_id_assigned_departament : null;
+
+			$this->ResponsibleDepartament = new departments($idAssignedDepartament);
 		}
 
 		return $this->ResponsibleDepartament;
+	}
+
+	/**
+	 * @return document_control_types
+	 */
+	protected function get_ControlType () {
+		if (! isset($this->ControlType)) {
+			$idExecutionControl = $this->_id_execution_control ? $this->_id_execution_control : null;
+
+			$this->ControlType = new document_control_types($idExecutionControl);
+		}
+
+		return $this->ControlType;
+	}
+
+	/**
+	 * // Ініціалізує та повертає об'єкт \DateTime наступної дати контролю.
+	 * @return \DateTime|null
+	 */
+	protected function get_NextControlDate () {
+		if (! isset($this->NextControlDate)) {
+			if ($this->_id_execution_control && ! $this->_execution_date) {
+				$this->get_ControlType();
+
+				$this->NextControlDate = (new \DateTime($this->_date_of_receipt_by_executor))
+					->modify('+ '. $this->ControlType->_seconds .' seconds');
+			}
+			else {
+				$this->NextControlDate = null;
+			}
+		}
+
+		return $this->NextControlDate;
 	}
 }
