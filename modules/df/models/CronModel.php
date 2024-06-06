@@ -2,9 +2,10 @@
 
 namespace modules\df\models;
 
-use core\db_record\incoming_documents_registry;
-use core\db_record\users;
 use \core\User;
+use \core\db_record\cron_tasks;
+use \core\db_record\users;
+use \libs\cron\CronExpression;
 use \modules\df\models\MainModel;
 
 /**
@@ -20,10 +21,42 @@ class CronModel extends MainModel {
 	}
 
 	/**
+	 *
+	 */
+	public function mainPage () {
+
+		require_once DirFunc .'/cron.php';
+
+		$cronTasks = cron_getTasks();
+
+		foreach ($cronTasks as $task) {
+			$Cron = CronExpression::factory($task['crt_schedule']);
+			$LastRunDate = new \DateTime($task['crt_last_run']);
+			$CurrentDate = new \DateTime();
+
+			if ($Cron->getNextRunDate($LastRunDate) <= $CurrentDate) {
+				// Час виконання крон задачі.
+
+				$method = $task['crt_task_name'];
+				// Виконання відповідної cron задачі.
+				$this->$method();
+
+				$CronRow = new cron_tasks($task['crt_id'], $task);
+
+				// Оновлення часу останнього і часу наступного виконання cron задачі.
+				$CronRow->update([
+					'crt_last_run' => $CurrentDate->format('Y-m-d H:i:s'),
+					'crt_next_run' => $Cron->getNextRunDate()->format('Y-m-d H:i:s')
+				]);
+			}
+		}
+	}
+
+	/**
 	 * Повідомлення користувачів про непрочитані повідомлення.
 	 */
 	public function notifyAboutUnreadMessages () {
-		$users = db_users_getTelegramData(5);
+		$users = users_getTelegramData(5);
 
 		foreach ($users as $rowUser) {
 			$UsTemp = new User($rowUser['us_id']);
@@ -41,18 +74,22 @@ class CronModel extends MainModel {
 	 * Повідомлення користувачів про дати контроля.
 	 */
 	public function notifyAboutControlDate () {
-		$SQL = db_getSelect()
-			->columns(['idr_id', 'us_id'])
-			->from(DbPrefix .'incoming_documents_registry')
-			->join(DbPrefix .'users', 'us_id', '=', 'idr_id_assigned_user')
-			->where('idr_execution_date', '=', null)
-			->where('idr_date_of_receipt_by_executor', '!=', null)
-			->where('idr_id_execution_control', '!=', null);
+		$documents = doc_receiveDocumentsAtControl('incoming_documents_registry', ['idr_id', 'us_id']);
+		$this->sendMessagesAboutControlDate('incoming_documents_registry', $documents);
+		$documents = doc_receiveDocumentsAtControl('internal_documents_registry', ['inr_id', 'us_id']);
+		$this->sendMessagesAboutControlDate('internal_documents_registry', $documents);
+	}
 
-		$documents = db_select($SQL);
+	/**
+	 * Відправлення повідомлень користувачам про дати контроля.
+	 */
+	protected function sendMessagesAboutControlDate (string $documentType, array $documents) {
+		$px = db_Db()->getColPxByTableName(DbPrefix . $documentType);
+		$documentType = DirCore .'/db_record/'. $documentType;
+		$documentType = trim(str_replace([DirRoot, '/'], '\\', $documentType), '\\');
 
 		foreach ($documents as $rowData) {
-			$Doc = new incoming_documents_registry($rowData['idr_id']);
+			$Doc = new $documentType($rowData[$px .'id']);
 			$controlDate = $Doc->NextControlDate->format('Y-m-d');
 
 			if ($controlDate === tm_getDatetime()->format('Y-m-d')) {

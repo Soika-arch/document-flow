@@ -317,3 +317,42 @@ function formatWithLeadingZeros (int $number, int $length) {
 
 	return sprintf('%0'. $length .'d', $number);
 }
+
+/**
+ * Перевірка автентичності Cron поточного хостинга.
+ * @return bool
+ */
+function isCron () {
+	$Us = rg_Rg()->get('Us');
+
+	if (strpos($Us->VR->_user_agent, 'python-requests') === 0) {
+		$msg = "‼️ Cron демон не пройшов перевірку: ";
+
+		if ($Us->VR->_user_agent !== 'python-requests/2.25.1') {
+			tg_sendMsg(TgAdmin, $msg ." !== 'python-requests/2.25.1'");
+		}
+
+		if ($Us->VR->_uri === 'public/index.php') {
+			if ($Us->VR->_ip === '37.48.72.4') {
+				// Отримання поточних хвилин.
+				$minutes = (int)(new DateTime())->format('i');
+
+				// Переврка кратності 15 хвилинам (Cron виконується кожні 15 хвилин).
+				if (($minutes % 15) === 0) {
+
+					return true;
+				} else {
+					tg_sendMsg(TgAdmin, $msg ."час виконання не кратний 15 хвилинам");
+				}
+			}
+			else {
+				tg_sendMsg(TgAdmin, $msg ."ip !== '37.48.72.4'");
+			}
+		}
+		else {
+			tg_sendMsg(TgAdmin, $msg ."uri !== 'public/index.php'");
+		}
+	}
+
+	return false;
+}

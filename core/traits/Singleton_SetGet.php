@@ -40,7 +40,7 @@ trait Singleton_SetGet {
 						return $this::$_instance->$method();
 					}
 
-					throw new SingletonException(3999, ['calledClass' => get_called_class(), 'value' => $name]);
+					throw new ClassException(6002, ['calledClass' => get_called_class(), 'value' => $name]);
 				}
 
 				throw new ClassException(6001, ['calledClass' => get_called_class(), 'value' => $name]);

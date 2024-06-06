@@ -116,11 +116,33 @@ class internal_documents_registry extends DfDocument {
 	 */
 	protected function get_NextControlDate () {
 		if (! isset($this->NextControlDate)) {
-			if ($this->_id_execution_control && ! $this->_execution_date) {
+			if ($this->_id_execution_control && ! $this->_execution_date &&
+					$this->_date_of_receipt_by_executor) {
 				$this->get_ControlType();
 
-				$this->NextControlDate = (new \DateTime($this->_date_of_receipt_by_executor))
-					->modify('+ '. $this->ControlType->_seconds .' seconds');
+				$period = $this->ControlType->_seconds;
+
+				// DateTime отримання документа виконавцем.
+				$StartDate = new \DateTime($this->_date_of_receipt_by_executor);
+
+				// Різниця в секундах між поточною датою та початковою датою.
+				$diffSeconds = (new \DateTime())->getTimestamp() - $StartDate->getTimestamp();
+
+				// Кількість повних періодів, що пройшли з початкової дати.
+				$periodsPassed = floor($diffSeconds / $period);
+
+				// Вирахування часу наступної контрольної дати.
+				// Якщо чергова контрольна дата сьогодні - встановлюється сьогоднішня дата,
+				// інакше - додається ще один відповідний період і встановлюється наступна дата.
+				if (((86400 - ($diffSeconds % $period)) > 0)) {
+					$nextExecutionTime = $StartDate->getTimestamp() + $periodsPassed * $period;
+				}
+				else {
+					$nextExecutionTime = $StartDate->getTimestamp() + ($periodsPassed + 1) * $period;
+				}
+
+				// Преобразуем время следующего выполнения обратно в объект DateTime.
+				$this->NextControlDate = (new \DateTime())->setTimestamp($nextExecutionTime);
 			}
 			else {
 				$this->NextControlDate = null;

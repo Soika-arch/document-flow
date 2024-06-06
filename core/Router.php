@@ -75,6 +75,16 @@ class Router {
 	}
 
 	/**
+	 * Ініціалізує та повертає властивість $this->controllerName.
+	 * @return string
+	 */
+	protected function get_controllerName () {
+		if (! isset($this->controllerName)) $this->setControllerData();
+
+		return $this->controllerName;
+	}
+
+	/**
 	 * Ініціалізує та повертає властивість $this->controllerClass.
 	 * @return string
 	 */

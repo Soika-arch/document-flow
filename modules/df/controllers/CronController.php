@@ -13,7 +13,7 @@ class CronController extends MC {
 	private CronModel $Model;
 
 	public function __construct () {
-		$this->Model = $this->get_Model();
+		$this->Model = new CronModel();
 	}
 
 	/**
@@ -28,14 +28,21 @@ class CronController extends MC {
 	}
 
 	/**
-	 * Cron завдання, яке виконується кожний день у 07:00.
+	 *
 	 */
-	public function t0001Page () {
+	public function mainPage () {
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$this->Model->notifyAboutUnreadMessages();
+		$this->Model->mainPage();
+	}
+
+	public function t0001 () {
 		$this->Model->notifyAboutControlDate();
+	}
+
+	public function t0002 () {
+		$this->Model->notifyAboutUnreadMessages();
 	}
 }

@@ -97,6 +97,8 @@ else {
 define('URIAdmin', 'ap');
 /** @var string URI модуля cron-задач. */
 define('URICron', 'cron');
+/** @var bool Якщо true - перевіряти користувача cron на автентичність. */
+define('CheckUserCron', true);
 
 // Визначення URI поточного модуля.
 
@@ -143,4 +145,4 @@ require_once DirFunc .'/sess.php';
 require_once DirFunc .'/tm.php';
 require_once DirFunc .'/msg.php';
 require_once DirFunc .'/tg.php';
-require_once DirFunc .'/db_users.php';
+require_once DirFunc .'/users.php';

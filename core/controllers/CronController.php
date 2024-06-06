@@ -17,6 +17,6 @@ class CronController extends MainController {
 	 *
 	 */
 	public function mainPage () {
-		dd('Автоматична очистка таблиць БД', __FILE__, __LINE__,1);
+
 	}
 }

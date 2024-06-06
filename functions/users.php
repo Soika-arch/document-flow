@@ -8,7 +8,7 @@
  * Отримання записів усіх користувачів, які вказали свої us_id_tg.
  * @return array
  */
-function db_users_getTelegramData (int|null $accessLevel=null) {
+function users_getTelegramData (int|null $accessLevel=null) {
 	$SQL = db_getSelect()
 		->columns(['us_id'])
 		->from(DbPrefix .'users')
