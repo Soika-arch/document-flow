@@ -196,8 +196,31 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 	padding: 20px 10px 0px 10px;
 }
 
+.user-messages .fm-menu {
+	display: inline-block;
+	width: 99%;
+	padding: 20px 0px 20px 10px;
+}
+
+.user-messages .fm-menu .fm-menu-elem {
+	border: 0px;
+	border-radius: 15px;
+	cursor: pointer;
+}
+
+.user-messages .fm-menu .img-button {
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+}
+
 .user-messages .message {
 	margin-bottom: 15px;
+}
+
+.user-messages .message .header-num {
+	display: inline-block;
+	width: 20px;
 }
 
 .user-messages .message a {

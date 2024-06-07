@@ -41,6 +41,7 @@ try {
 		$Controller->loadModules();
 
 		if (rt_Rt()->isExtraLineInURLPath) {
+			dd(rt_Rt(), __FILE__, __LINE__,1);
 			// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
 			$Controller->notFoundPage();
 		}

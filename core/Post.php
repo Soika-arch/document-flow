@@ -17,7 +17,7 @@ class Post {
 
 	// Дозволені типи даних
 	private array $allowedTypes = [
-		'int', 'float', 'varchar', 'text', 'email', 'dateTime', 'date'
+		'int', 'float', 'varchar', 'text', 'email', 'dateTime', 'date', 'array'
 	];
 
 	private array $errors = [];
@@ -179,6 +179,19 @@ class Post {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function checkArray (string $name, array $typeData) {
+		foreach ($this->post[$name] as $k => $v) {
+			if (isset($typeData['pattern'])) {
+				if (! preg_match('/'. $typeData['pattern'] .'/', $v)) return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

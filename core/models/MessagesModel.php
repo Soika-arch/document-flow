@@ -27,9 +27,9 @@ class MessagesModel extends MainModel {
 			->where('usm_id_user', '=', $Us->_id);
 
 		$SQLDocs = new RecordSliceRetriever($SQLDocs);
-		$itemsPerPage = 5;
+		$itemsPerPage = 10;
 		$d['messages'] = $SQLDocs->select($itemsPerPage, $pageNum);
-		$url = url('/messages?pn=(:num)');
+		$url = url('/messages?pn=(:num)#pagin');
 		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
@@ -54,5 +54,21 @@ class MessagesModel extends MainModel {
 		}
 
 		return $d;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function deletePage () {
+		$Us = rg_Rg()->get('Us');
+		$post = rg_Rg()->get('Post')->post;
+		$sqlInList = array_map('intval', $post['msgsId']);
+
+		$SQL = db_getDelete()
+			->from(DbPrefix .'user_messages')
+			->where('usm_id_user', '=', $Us->_id)
+			->where('usm_id', 'in', array_map('intval', $sqlInList));
+
+		return db_delete($SQL);
 	}
 }

@@ -4,6 +4,7 @@ namespace core\controllers;
 
 use \core\controllers\MainController;
 use \core\Get;
+use core\Post;
 
 /**
  * Контроллер cron-завдань.
@@ -32,8 +33,6 @@ class MessagesController extends MainController {
 				'pattern' => '^\d{1,4}$'
 			]
 		]);
-
-		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
 
 		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
 
@@ -72,5 +71,30 @@ class MessagesController extends MainController {
 		if (! $d) hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 
 		require $this->getViewFile('/messages/viewing');
+	}
+
+	/**
+	 * Обробка запита користувача на видалення повідомлень.
+	 * @return
+	 */
+	public function deletePage () {
+		$Post = new Post('user_messages', [
+			'deleteMessages' => [
+				'type' => 'varchar',
+				'isRequired' => true,
+				'pattern' => '^$'
+			],
+			'msgsId' => [
+				'type' => 'array',
+				'pattern' => '^\d{1,5}$',
+				'isRequired' => false
+			]
+		]);
+
+		if ($Post->post['msgsId']) $d = $this->Model->deletePage();
+
+		if ($d['rowCount'] > 0) sess_addSysMessage('Повідомлення видалені');
+
+		hd_sendHeader('Location: '. url('/messages'), __FILE__, __LINE__);
 	}
 }
