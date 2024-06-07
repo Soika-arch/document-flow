@@ -2,7 +2,7 @@
 
 namespace modules\ap\controllers;
 
-use core\controllers\MainController as MC;
+use \core\controllers\MainController as MC;
 
 /**
  * Контроллер адмін-панелі.

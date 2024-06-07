@@ -12,4 +12,8 @@ e('<div class="secondary-menu">');
 		e('<a href="'. $url .'/users">Користувачі</a>');
 	e('</div>');
 
+	e('<div>');
+		e('<a href="'. $url .'/security">Безпека</a>');
+	e('</div>');
+
 e('</div>');

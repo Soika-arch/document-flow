@@ -1,4 +1,47 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Список відвідувачів сайта. */
+
+.visitors-list {
+	margin: 20px 10px 0px 10px;
+}
+
+.visitors-list table {
+	border-collapse: collapse;
+}
+
+.visitors-list th {
+	border: 1px solid silver;
+}
+
+.visitors-list td {
+	border: 1px solid silver;
+}
+
+.visitors-list table .num {
+	width: 20px;
+}
+
+.visitors-list table .num, .ip, .queries-count, .execution-time, .add-date {
+	text-align: center;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Головне меню адмін-панель - безпека. */
+
+.security-main-menu {
+	padding: 20px 10px 0px 20px;
+}
+
+.security-main-menu a {
+	display: inline-block;
+	padding: 2px 0px 2px 5px;
+	width: 99%;
+	font-size: 20px;
+	text-decoration: none;
+	background-color: #f0f0f0;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Головне меню адмін-панелі. */
 
 .admin-main-menu {

@@ -62,8 +62,6 @@ class MainController {
 		$d['title'] = 'Сторінка не знайдена';
 
 		require $this->getViewFile('/page_not_found');
-
-		return false;
 	}
 
 	/**

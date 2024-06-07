@@ -342,13 +342,13 @@ class Paginator
   	 * Відображає елемент керування розбивкою на сторінки HTML.
   	 * @return string HTML-представлення елемента керування розбивкою на сторінки.
   	 */
-    public function toHtml(string $sccClass='menu-pagin')
+    public function toHtml(string $sccClass='menu-pagin', string $id="pagin")
     {
         if ($this->numPages <= 1) {
             return '';
         }
 
-        $html = '<div class="'. $sccClass .'">';
+        $html = '<div id="'. $id .'" class="'. $sccClass .'">';
         if ($this->getPrevUrl()) {
             $html .= '<span><a href="' . htmlspecialchars($this->getPrevUrl()) . '">'.$this->previousText .'</a></span>';
         }

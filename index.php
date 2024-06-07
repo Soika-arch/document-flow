@@ -44,9 +44,10 @@ try {
 			// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
 			$Controller->notFoundPage();
 		}
-
-		// Виклик метода сторінки контролера.
-		$Controller->$controllerMethod();
+		else {
+			// Виклик метода сторінки контролера.
+			$Controller->$controllerMethod();
+		}
 	}
 
 	handleSessionExpiration();
