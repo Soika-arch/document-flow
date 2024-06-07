@@ -43,7 +43,7 @@ e('<div class="fm">');
 			e('</div>');
 
 			e('<div class="label_block">');
-				e('<label for="dMonth">Місяць документа<label>');
+				e('<label for="dMonth">Номер місяця документа<label>');
 				e('<input id="dMonth" type="text" name="dMonth">');
 			e('</div>');
 

@@ -8,7 +8,7 @@ use \core\RecordSliceRetriever;
 use \libs\Paginator;
 
 /**
- * Модель cron-задач.
+ * Модель cron-завдань.
  */
 class MessagesModel extends MainModel {
 

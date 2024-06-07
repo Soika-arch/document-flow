@@ -3,9 +3,7 @@
 namespace modules\df\models;
 
 use \core\User;
-use \core\db_record\cron_tasks;
 use \core\db_record\users;
-use \libs\cron\CronExpression;
 use \modules\df\models\MainModel;
 
 /**
@@ -25,31 +23,7 @@ class CronModel extends MainModel {
 	 */
 	public function mainPage () {
 
-		require_once DirFunc .'/cron.php';
 
-		$cronTasks = cron_getTasks();
-
-		foreach ($cronTasks as $task) {
-			$Cron = CronExpression::factory($task['crt_schedule']);
-			$LastRunDate = new \DateTime($task['crt_last_run']);
-			$CurrentDate = new \DateTime();
-
-			if ($Cron->getNextRunDate($LastRunDate) <= $CurrentDate) {
-				// Час виконання крон задачі.
-
-				$method = $task['crt_task_name'];
-				// Виконання відповідної cron задачі.
-				$this->$method();
-
-				$CronRow = new cron_tasks($task['crt_id'], $task);
-
-				// Оновлення часу останнього і часу наступного виконання cron задачі.
-				$CronRow->update([
-					'crt_last_run' => $CurrentDate->format('Y-m-d H:i:s'),
-					'crt_next_run' => $Cron->getNextRunDate()->format('Y-m-d H:i:s')
-				]);
-			}
-		}
 	}
 
 	/**

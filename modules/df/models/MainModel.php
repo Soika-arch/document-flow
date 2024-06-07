@@ -250,4 +250,23 @@ class MainModel extends MM {
 			'usm_change_date' => $dt,
 		]);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function printCardPage () {
+		$get = rg_Rg()->get('Get')->get;
+
+		$documentDirections = [
+			'inc' => 'incoming_documents_registry',
+			'int' => 'internal_documents_registry',
+			'out' => 'outgoing_documents_registry'
+		];
+
+		$d['cardData'] = explode('_', $get['n']);
+		$table = 'core\db_record\\'. $documentDirections[$d['cardData'][0]];
+		$d['Doc'] = new $table($d['cardData'][1]);
+
+		return $d;
+	}
 }

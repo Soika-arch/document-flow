@@ -133,4 +133,23 @@ class MainController extends MC {
 
 		exit;
 	}
+
+	/**
+	 * Друк картки документа.
+	 */
+	public function printCardPage () {
+		$Get = new Get([
+			'n' => [
+				'type' => 'varchar',
+				'isRequired' => true,
+				'pattern' => '^(inc|out|int)_\d{8}$'
+			]
+		]);
+
+		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
+
+		$d = $this->Model->printCardPage();
+
+		require $this->getViewFile('print_card');
+	}
 }

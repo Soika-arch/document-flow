@@ -2,6 +2,8 @@
 
 namespace modules\df\controllers;
 
+use \core\db_record\cron_tasks;
+use \libs\cron\CronExpression;
 use \modules\df\controllers\MainController as MC;
 use \modules\df\models\CronModel;
 
@@ -35,7 +37,31 @@ class CronController extends MC {
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
-		$this->Model->mainPage();
+		require_once DirFunc .'/cron.php';
+
+		$cronTasks = cron_getTasks();
+
+		foreach ($cronTasks as $task) {
+			$Cron = CronExpression::factory($task['crt_schedule']);
+			$LastRunDate = new \DateTime($task['crt_last_run']);
+			$CurrentDate = new \DateTime();
+
+			if ($Cron->getNextRunDate($LastRunDate) <= $CurrentDate) {
+				// Час виконання крон задачі.
+
+				$method = $task['crt_task_name'];
+				// Виконання відповідної cron задачі.
+				$this->$method();
+
+				$CronRow = new cron_tasks($task['crt_id'], $task);
+
+				// Оновлення часу останнього і часу наступного виконання cron задачі.
+				$CronRow->update([
+					'crt_last_run' => $CurrentDate->format('Y-m-d H:i:s'),
+					'crt_next_run' => $Cron->getNextRunDate()->format('Y-m-d H:i:s')
+				]);
+			}
+		}
 	}
 
 	public function t0001 () {

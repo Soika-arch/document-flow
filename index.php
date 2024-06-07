@@ -21,7 +21,7 @@ try {
 	/** @var string поточний HTML-код сторінки. */
 	$HTML = '';
 
-	if (CheckUserCron && isCron()) {
+	if (isCron()) {
 		// Cron.
 
 		$Controller = new CronController();

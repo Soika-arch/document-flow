@@ -95,10 +95,8 @@ else {
 
 /** @var string URI модуля адмін-панелі. */
 define('URIAdmin', 'ap');
-/** @var string URI модуля cron-задач. */
+/** @var string URI модуля cron-завдань. */
 define('URICron', 'cron');
-/** @var bool Якщо true - перевіряти користувача cron на автентичність. */
-define('CheckUserCron', true);
 
 // Визначення URI поточного модуля.
 

@@ -1,0 +1,17 @@
+.print-card {
+
+}
+
+.print-card h1 {
+	font-size: 24px;
+	margin: 0px 0px 5px 0px;
+}
+
+.print-card h2 {
+	font-size: 22px;
+	margin: 0px 0px 5px 0px;
+}
+
+.print-card .elem {
+	margin: 0px 0px 10px 0px;
+}

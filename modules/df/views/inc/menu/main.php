@@ -42,4 +42,13 @@ e('<div class="secondary-menu">');
 		e('</div>');
 	}
 
+	if (strpos(URL, '/df/documents-incoming/card?n=') ||
+			strpos(URL, '/df/documents-internal/card?n=')) {
+		e('<div>');
+			e('<a href="'. url('/df/print-card?n='. strtolower($d['Doc']->displayedNumber)) .
+				'" target="_blank"><img class="img-button" src="'.
+				url('/') .'/img/print.png" title="Друк картки"></a>');
+		e('</div>');
+	}
+
 e('</div>');

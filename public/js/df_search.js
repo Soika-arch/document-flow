@@ -115,7 +115,7 @@ document.getElementById('dAge').addEventListener('input', function() {
 	if (v !== '') {
 		hideElement(datePeriod, 'none');
 
-		if (! v.match(/^\d{1,4}$/)) showNotification('Увага! Некоректний формат року');
+		if (! v.match(/^(199\d|20\d\d|2100)$/)) showNotification('Увага! Некоректний формат року');
 	}
 	else {
 		hideElement(datePeriod, 'block');
@@ -128,7 +128,7 @@ document.getElementById('dMonth').addEventListener('input', function() {
 	if (v !== '') {
 		hideElement(datePeriod, 'none');
 
-		if (! v.match(/^\d{1,2}$/)) showNotification('Увага! Некоректний формат місяця');
+		if (! v.match(/^(1[0-2]|[1-9])$/)) showNotification('Увага! Некоректний формат місяця');
 	}
 	else {
 		hideElement(datePeriod, 'block');
@@ -141,28 +141,35 @@ document.getElementById('dDay').addEventListener('input', function() {
 	if (v !== '') {
 		hideElement(datePeriod, 'none');
 
-		if (! v.match(/^\d{1,2}$/)) showNotification('Увага! Некоректний формат числа місяця');
+		if (! v.match(/^([1-9]|[12][0-9]|3[01])$/)) {
+			showNotification('Увага! Некоректний формат числа місяця');
+		}
 	}
 	else {
 		hideElement(datePeriod, 'block');
 	}
 });
 
-document.getElementById('dDateFrom').addEventListener('input', function() {
+var dDateFrom = document.getElementById('dDateFrom');
+var dDateUntil = document.getElementById('dDateUntil');
+
+dDateFrom.addEventListener('input', function() {
 	if (this.value !== '') {
 		hideElement(dateApart, 'none');
 	}
 	else {
-		hideElement(dateApart, 'block');
-		dateApart.scrollIntoView({ behavior: 'smooth' });
-		// Используем setTimeout для корректировки позиции прокрутки после scrollIntoView
-		setTimeout(function() {
-			window.scrollBy({ top: 70, left: 0, behavior: 'smooth' });
-		}, 500); // Задержка 500 мс для завершения scrollIntoView
+		if ((this.value === '') && (dDateUntil.value === '')) {
+			hideElement(dateApart, 'block');
+			dateApart.scrollIntoView({ behavior: 'smooth' });
+			// Используем setTimeout для корректировки позиции прокрутки после scrollIntoView
+			setTimeout(function() {
+				window.scrollBy({ top: 70, left: 0, behavior: 'smooth' });
+			}, 500); // Задержка 500 мс для завершения scrollIntoView
+		}
 	}
 });
 
-document.getElementById('dDateUntil').addEventListener('input', function() {
+dDateUntil.addEventListener('input', function() {
 	if (this.value !== '') {
 		hideElement(dateApart, 'none');
 	}

@@ -6,7 +6,7 @@ use \core\controllers\MainController;
 use \core\Get;
 
 /**
- * Контроллер cron-задач.
+ * Контроллер cron-завдань.
  */
 class MessagesController extends MainController {
 

@@ -2,10 +2,10 @@
 
 namespace core\controllers;
 
-use core\controllers\MainController;
+use \core\controllers\MainController;
 
 /**
- * Контроллер cron-задач.
+ * Контроллер cron-завдань.
  */
 class CronController extends MainController {
 

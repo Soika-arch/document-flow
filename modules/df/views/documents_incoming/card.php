@@ -4,7 +4,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+/** @var \core\User */
 $Us = rg_Rg()->get('Us');
+/** @var incoming_documents_registry */
+$Doc = $d['Doc'];
+$docNumber = $Doc->_number;
+$displayedNumber = $Doc->displayedNumber;
 
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
@@ -13,11 +18,6 @@ require $this->getViewFile('inc/menu/main');
 
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
-
-/** @var incoming_documents_registry */
-$Doc = $d['Doc'];
-$docNumber = $Doc->_number;
-$displayedNumber = $Doc->displayedNumber;
 
 e('<form name="inc_card_action" class="fm document-card" action="'.
 	url('/df/documents-incoming/card-action?n='. $docNumber) .'" method="POST">');
@@ -351,7 +351,9 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('<label for="dIdExecutorUser">Виконавець користувач</label>');
 				e('<select id="dIdExecutorUser" name="dIdExecutorUser">');
 
-					if (! ($ExecutorUser = $Doc->ExecutorUser)) e('<option></option>');
+					$ExecutorUser = $Doc->ExecutorUser;
+
+					e('<option></option>');
 
 					foreach ($d['users'] as $row) {
 						if ($ExecutorUser && ($row['us_id'] === $Doc->ExecutorUser->_id)) {

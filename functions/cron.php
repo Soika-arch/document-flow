@@ -1,13 +1,13 @@
 <?php
 
-// Функції пов'язані з cron задачами.
+// Функції, пов'язані з cron задачами.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 /**
  * @return array
  */
-function cron_getTasks (bool $isActive=true) {
+function cron_getTasks (string $isActive='y') {
 	$table = DbPrefix .'cron_tasks';
 
 	$SQL = db_getSelect()
