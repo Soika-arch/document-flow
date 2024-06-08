@@ -25,7 +25,7 @@ try {
 		// Cron.
 
 		$Controller = new CronController();
-		$Controller->loadModules();
+		$Controller->loadModule();
 		$Controller->mainPage();
 	}
 	else {
@@ -38,10 +38,9 @@ try {
 
 		/** @var \core\controllers\MainController поточний об'єкт контролера. */
 		$Controller = new $controllerClass();
-		$Controller->loadModules();
+		$Controller->loadModule();
 
 		if (rt_Rt()->isExtraLineInURLPath) {
-			dd(rt_Rt(), __FILE__, __LINE__,1);
 			// Якщо URLPath має зайвий текст - викликається $Controller->notFoundPage().
 			$Controller->notFoundPage();
 		}

@@ -23,7 +23,7 @@ class DfDocument extends DbRecord {
 	// Тип контроллю за виконанням.
 	protected document_control_types $ControlType;
 	protected document_resolutions $Resolution;
-	protected string $cardURL;
+	protected string|null $cardURL;
 	// Ім'я файла документа.
 	protected string $fileName;
 	protected string $filePath;
@@ -155,7 +155,7 @@ class DfDocument extends DbRecord {
 		if (! isset($this->ControlType)) {
 			$idExecutionControl = $this->_id_execution_control ? $this->_id_execution_control : null;
 
-			$this->ControlType = new document_control_types($$idExecutionControl);
+			$this->ControlType = new document_control_types($idExecutionControl);
 		}
 
 		return $this->ControlType;
@@ -175,15 +175,20 @@ class DfDocument extends DbRecord {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	protected function get_cardURL () {
-		if (! isset($this->cardURL) && $this->get_dbRow()) {
-			$str = str_replace(DbPrefix, '', $this->tName);
-			$str = substr($str, 0, strpos($str, '_'));
+		if (! isset($this->cardURL)) {
+			if ($this->_number) {
+				$str = str_replace(DbPrefix, '', $this->tName);
+				$str = substr($str, 0, strpos($str, '_'));
 
-			$this->cardURL = url('/'. URIModule .'/documents-'. $str .'/card?n='.
-				str_replace('inc_', '', $this->_number));
+				$this->cardURL = url('/'. URIModule .'/documents-'. $str .'/card?n='.
+					str_replace('inc_', '', $this->_number));
+			}
+			else {
+				$this->cardURL = null;
+			}
 		}
 
 		return $this->cardURL;

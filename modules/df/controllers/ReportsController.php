@@ -85,6 +85,52 @@ class ReportsController extends MC {
 	}
 
 	/**
+	 * Звіт по виконаним вхідним документам.
+	 */
+	public function r0004Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0004Page($pageNum);
+
+		require $this->getViewFile('reports/r0004');
+	}
+
+	/**
+	 * Звіт по виконаним внутрішнім документам.
+	 */
+	public function r0005Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0005Page($pageNum);
+
+		require $this->getViewFile('reports/r0005');
+	}
+
+	/**
 	 * Звіт по виконавцім, які не виконали документи.
 	 */
 	public function r0003Page () {
@@ -105,5 +151,51 @@ class ReportsController extends MC {
 		$d = $this->Model->r0003Page($pageNum);
 
 		require $this->getViewFile('reports/r0003');
+	}
+
+	/**
+	 * Звіт по вхідним документам на контролі.
+	 */
+	public function r0006Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0006Page($pageNum);
+
+		require $this->getViewFile('reports/r0006');
+	}
+
+	/**
+	 * Звіт по внутрішнім документам на контролі.
+	 */
+	public function r0007Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0007Page($pageNum);
+
+		require $this->getViewFile('reports/r0007');
 	}
 }

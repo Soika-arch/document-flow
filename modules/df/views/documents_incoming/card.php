@@ -409,6 +409,8 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('<label for="dIdControlType">Тип контролю за виконанням</label>');
 				e('<select id="dIdControlType" name="dIdControlType">');
 
+					e('<option></option>');
+
 					foreach ($d['controlTypes'] as $row) {
 						if ($Doc->ControlType && ($row['dct_id'] === $Doc->ControlType->_id)) {
 							e('<option value="'. $row['dct_id'] .'" selected>'. $row['dct_name'] .'</option>');

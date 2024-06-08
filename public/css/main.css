@@ -30,11 +30,23 @@ h2 {
 	padding: 20px 10px 0px 20px;
 }
 
+.user-profile .item {
+	padding: 10px 0px 10px 0px;
+	border-bottom: 1px solid silver;
+}
+
 .user-profile .header-field {
 	display: inline-block;
 	width: 200px;
 	font-size: 18px;
 	font-weight: bold;
+}
+
+.user-profile .profile-data {
+	display: inline-block;
+	width: 150px;
+	text-align: center;
+	height: 100%;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

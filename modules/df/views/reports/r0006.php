@@ -1,10 +1,10 @@
 <?php
 
-// Звіт по невиконаним вхідним документам.
+// Звіт по вхідним документам на контролі.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-use core\db_record\incoming_documents_registry;
+use \core\db_record\incoming_documents_registry;
 
 $Us = rg_Rg()->get('Us');
 
@@ -28,7 +28,7 @@ if (isset($d['documents']) && $d['documents']) {
 			e('<span class="header-number">№ документа</span>');
 			e('<span class="header-executor">Призначений виконавець</span>');
 			e('<span class="header-executor">Резолюція</span>');
-			e('<span class="header-location">Місцезнаходження оригінала</span>');
+			e('<span class="header-executor">Тип контролю</span>');
 		e('</div>');
 
 		$num = $d['Pagin']->getCurrentPageFirstItem();
@@ -36,9 +36,7 @@ if (isset($d['documents']) && $d['documents']) {
 		foreach ($d['documents'] as $docRow) {
 			$Doc = new incoming_documents_registry(null, $docRow);
 
-			$docCardURL = url('/df/documents-incoming/card', ['n' => $Doc->_number]);
-
-			$docTitle = '<a href="'. $docCardURL .'" target="_blank" title="Картка документа">'.
+			$docTitle = '<a href="'. $Doc->cardURL .'" target="_blank" title="Картка документа">'.
 				$Doc->DocumentTitle->_title .'</a>';
 
 			e('<div class="doc-block">');
@@ -75,9 +73,9 @@ if (isset($d['documents']) && $d['documents']) {
 
 				unset($resolStyle);
 
-				$docLocation = $Doc->DocumentLocation ? $Doc->DocumentLocation->_name : '';
+				$docControlType = $Doc->ControlType->_id ? $Doc->ControlType->_name : '';
 
-				e('<span class="doc-location" title="Місцезнаходження документа">'. $docLocation .'</span>');
+				e('<span class="doc-resolution" title="Тип контролю">'. $docControlType .'</span>');
 			e('</div>');
 		}
 

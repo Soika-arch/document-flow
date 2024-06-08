@@ -1,13 +1,13 @@
 <?php
 
-// Функції маніпуляції документами.
+// Функції, пов'язані з обробкою документів модуля df.
 
-/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 /**
  * @return array
  */
-function doc_receiveDocumentsAtControl (string $table, array $columns) {
+function df_receiveDocumentsAtControl (string $table, array $columns) {
 	$table = DbPrefix . $table;
 	$px = db_Db()->getColPxByTableName($table);
 

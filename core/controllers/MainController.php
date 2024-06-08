@@ -97,15 +97,11 @@ class MainController {
 	}
 
 	/**
-	 * Підключення наявних модулів.
+	 * Підключення поточного модуля.
 	 */
-	public function loadModules () {
-		$dr = scandir(DirModules);
-
-		foreach ($dr as $dName) {
-			if (($dName === '.') || $dName === '..') continue;
-
-			$moduleFile = DirModules .'/'. $dName .'/'. $dName .'.php';
+	public function loadModule () {
+		if (URIModule) {
+			$moduleFile = DirModules .'/'. URIModule .'/'. URIModule .'.php';
 
 			if (is_file($moduleFile)) require_once $moduleFile;
 		}

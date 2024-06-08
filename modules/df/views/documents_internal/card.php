@@ -368,7 +368,9 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 				e('<label for="dIdExecutorUser">Виконавець користувач</label>');
 				e('<select id="dIdExecutorUser" name="dIdExecutorUser">');
 
-					if (! ($ExecutorUser = $Doc->ExecutorUser)) e('<option></option>');
+					$ExecutorUser = $Doc->ExecutorUser;
+
+					e('<option></option>');
 
 					foreach ($d['users'] as $row) {
 						if ($ExecutorUser && ($row['us_id'] === $Doc->ExecutorUser->_id)) {
@@ -423,6 +425,8 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
 				e('<label for="dIdControlType">Тип контролю за виконанням</label>');
 				e('<select id="dIdControlType" name="dIdControlType">');
+
+					e('<option></option>');
 
 					foreach ($d['controlTypes'] as $row) {
 						if ($Doc->ControlType && ($row['dct_id'] === $Doc->ControlType->_id)) {

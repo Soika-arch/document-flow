@@ -13,6 +13,12 @@ class users extends DbRecord {
 	protected user_statuses $Status;
 	// Масив id невиконаних вхідніх документів користувача.
 	protected array $notExecutionIncomingDocuments;
+	// Масив id невиконаних внутрішніх документів користувача.
+	protected array $notExecutionInternalDocuments;
+	// Масив id виконаних вхідніх документів користувача.
+	protected array $executionIncomingDocuments;
+	// Масив id виконаних внутрішніх документів користувача.
+	protected array $executionInternalDocuments;
 	protected visitor_routes $VR;
 
 	/**
@@ -98,6 +104,57 @@ class users extends DbRecord {
 		}
 
 		return $this->notExecutionIncomingDocuments;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_executionIncomingDocuments () {
+		if (! isset($this->executionIncomingDocuments)) {
+			$SQL = db_getSelect()
+				->columns(['idr_id'])
+				->from(DbPrefix .'incoming_documents_registry')
+				->where('idr_id_assigned_user', '=', $this->_id)
+				->where('idr_execution_date', '!=', null);
+
+			$this->executionIncomingDocuments = db_selectCol($SQL);
+		}
+
+		return $this->executionIncomingDocuments;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_notExecutionInternalDocuments () {
+		if (! isset($this->notExecutionInternalDocuments)) {
+			$SQL = db_getSelect()
+				->columns(['inr_id'])
+				->from(DbPrefix .'internal_documents_registry')
+				->where('inr_id_assigned_user', '=', $this->_id)
+				->where('inr_execution_date', '=', null);
+
+			$this->notExecutionInternalDocuments = db_selectCol($SQL);
+		}
+
+		return $this->notExecutionInternalDocuments;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_executionInternalDocuments () {
+		if (! isset($this->executionInternalDocuments)) {
+			$SQL = db_getSelect()
+				->columns(['inr_id'])
+				->from(DbPrefix .'internal_documents_registry')
+				->where('inr_id_assigned_user', '=', $this->_id)
+				->where('inr_execution_date', '!=', null);
+
+			$this->executionInternalDocuments = db_selectCol($SQL);
+		}
+
+		return $this->executionInternalDocuments;
 	}
 
 	/**

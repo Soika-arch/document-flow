@@ -4,7 +4,7 @@ namespace core\controllers;
 
 use \core\controllers\MainController;
 use \core\Get;
-use core\Post;
+use \core\Post;
 
 /**
  * Контроллер cron-завдань.

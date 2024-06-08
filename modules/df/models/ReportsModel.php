@@ -53,6 +53,29 @@ class ReportsModel extends MainModel {
 	/**
 	 * @return array
 	 */
+	public function r0004Page (int $pageNum=1) {
+		$d['title'] = 'Виконані вхідні документи';
+
+		$SQLDocs = db_getSelect()
+			->columns([DbPrefix .'incoming_documents_registry.*'])
+			->from(DbPrefix .'incoming_documents_registry')
+			->where('idr_execution_date', '!=', null)
+			->orderBy('idr_id');
+
+		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$itemsPerPage = 5;
+		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$url = url('/df/reports/r0004?pn=(:num)#pagin');
+		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin->setMaxPagesToShow(5);
+		$d['Pagin'] = $Pagin;
+
+		return $d;
+	}
+
+	/**
+	 * @return array
+	 */
 	public function r0002Page (int $pageNum=1) {
 		$d['title'] = 'Невиконані внутрішні документи';
 
@@ -66,6 +89,29 @@ class ReportsModel extends MainModel {
 		$itemsPerPage = 5;
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0001?pn=(:num)');
+		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin->setMaxPagesToShow(5);
+		$d['Pagin'] = $Pagin;
+
+		return $d;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function r0005Page (int $pageNum=1) {
+		$d['title'] = 'Виконані внутрішні документи';
+
+		$SQLDocs = db_getSelect()
+			->columns([DbPrefix .'internal_documents_registry.*'])
+			->from(DbPrefix .'internal_documents_registry')
+			->where('inr_execution_date', '!=', null)
+			->orderBy('inr_id');
+
+		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$itemsPerPage = 5;
+		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$url = url('/df/reports/r0005?pn=(:num)#pagin');
 		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
@@ -95,6 +141,54 @@ class ReportsModel extends MainModel {
 		$d['users'] = $SQLUs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0003?pn=(:num)');
 		$Pagin = new Paginator($SQLUs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin->setMaxPagesToShow(5);
+		$d['Pagin'] = $Pagin;
+
+		return $d;
+	}
+
+	/**
+	 * Звіт по вхідним документам на контролі.
+	 * @return array
+	 */
+	public function r0006Page (int $pageNum=1) {
+		$d['title'] = 'Вхідні документи на контролі';
+
+		$SQLDocs = db_getSelect()
+			->columns([DbPrefix .'incoming_documents_registry.*'])
+			->from(DbPrefix .'incoming_documents_registry')
+			->where('idr_id_execution_control', '!=', null)
+			->orderBy('idr_id');
+
+		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$itemsPerPage = 5;
+		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$url = url('/df/reports/r0006?pn=(:num)#pagin');
+		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin->setMaxPagesToShow(5);
+		$d['Pagin'] = $Pagin;
+
+		return $d;
+	}
+
+	/**
+	 * Звіт по внутрішнім документам на контролі.
+	 * @return array
+	 */
+	public function r0007Page (int $pageNum=1) {
+		$d['title'] = 'Внутрішні документи на контролі';
+
+		$SQLDocs = db_getSelect()
+			->columns([DbPrefix .'internal_documents_registry.*'])
+			->from(DbPrefix .'internal_documents_registry')
+			->where('inr_id_execution_control', '!=', null)
+			->orderBy('inr_id');
+
+		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$itemsPerPage = 5;
+		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$url = url('/df/reports/r0007?pn=(:num)#pagin');
+		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 

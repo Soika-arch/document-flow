@@ -31,6 +31,8 @@ e('<div class="fm df-selecting_source_document">');
 	e('</form>');
 
 	e('<div id="incomingDocuments">');
+		e('<a href="'. $url .'/reports/r0006">Документи на контролі</a><br><br>');
+		e('<a href="'. $url .'/reports/r0004">Виконані документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0001">Невиконані документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0003">Виконавці, які не виконали документи</a><br><br>');
 	e('</div>');
@@ -40,8 +42,9 @@ e('<div class="fm df-selecting_source_document">');
 	e('</div>');
 
 	e('<div id="internalDocuments">');
+		e('<a href="'. $url .'/reports/r0007">Документи на контролі</a><br><br>');
+		e('<a href="'. $url .'/reports/r0005">Виконані документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0002">Невиконані документи</a><br><br>');
-		e('<a href="'. $url .'/reports/r0003">Документи на конткролі</a><br><br>');
 	e('</div>');
 
 e('</div>');

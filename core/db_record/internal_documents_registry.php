@@ -129,12 +129,13 @@ class internal_documents_registry extends DfDocument {
 				$diffSeconds = (new \DateTime())->getTimestamp() - $StartDate->getTimestamp();
 
 				// Кількість повних періодів, що пройшли з початкової дати.
-				$periodsPassed = floor($diffSeconds / $period);
+				if ($period) $periodsPassed = floor($diffSeconds / $period);
+				else $periodsPassed = 0;
 
 				// Вирахування часу наступної контрольної дати.
 				// Якщо чергова контрольна дата сьогодні - встановлюється сьогоднішня дата,
 				// інакше - додається ще один відповідний період і встановлюється наступна дата.
-				if (((86400 - ($diffSeconds % $period)) > 0)) {
+				if ($period && ((86400 - ($diffSeconds % $period)) > 0)) {
 					$nextExecutionTime = $StartDate->getTimestamp() + $periodsPassed * $period;
 				}
 				else {
