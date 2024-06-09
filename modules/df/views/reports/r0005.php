@@ -29,7 +29,7 @@ if (isset($d['documents']) && $d['documents']) {
 			e('<span class="header-date">Дата документа</span>');
 			e('<span class="header-number">№ документа</span>');
 			e('<span class="header-executor">Призначений виконавець</span>');
-			e('<span class="header-executor">Резолюція</span>');
+			e('<span class="header-date">Дата виконання</span>');
 			e('<span class="header-location">Місцезнаходження оригінала</span>');
 		e('</div>');
 
@@ -64,9 +64,16 @@ if (isset($d['documents']) && $d['documents']) {
 				e('<span class="doc-executor" title="Виконавець"'. $isReceivedStyle .'>'.
 					$executorLogin .'</span>');
 
-				$docLocation = $Doc->DocumentLocation ? $Doc->DocumentLocation->_name : '';
+				$executionDate = $Doc->_execution_date ?
+					date('d.m.Y', strtotime($Doc->_execution_date)) : '';
 
-				e('<span class="doc-location" title="Місцезнаходження документа">'. $docLocation .'</span>');
+				e('<span class="doc-date" title="Дата виконання">'. $executionDate .'</span>');
+
+				$documentLocation = $Doc->_id_document_location ?
+					$Doc->DocumentLocation->_name : '';
+
+				e('<span class="doc-location" title="Місцезнаходження оригінала">'.
+					$documentLocation .'</span>');
 			e('</div>');
 		}
 

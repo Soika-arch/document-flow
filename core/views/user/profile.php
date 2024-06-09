@@ -42,7 +42,7 @@ e('<div class="user-profile">');
 
 	e('<div class="item">');
 		e('<span class="header-field">Внутрішні виконані документи</span>');
-		e('<span class="profile-data">'. count($d['User']->executionIncomingDocuments) .'<span>');
+		e('<span class="profile-data">'. count($d['User']->executionInternalDocuments) .'<span>');
 	e('</div>');
 
 e('</div>');

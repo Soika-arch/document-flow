@@ -19,6 +19,8 @@ class incoming_documents_registry extends DfDocument {
 	// Чергова дата контролю, яка вираховується на основі поля idr_add_date.
 	protected \DateTime|null $NextControlDate;
 	protected document_control_types $ControlType;
+	// Кількість днів до встановленої дати виконання.
+	protected int|null $numberDaysUntilExecutionDate;
 
 	/**
 	 *

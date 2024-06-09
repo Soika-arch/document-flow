@@ -45,6 +45,11 @@ e('<div class="fm">');
 		e('</div>');
 
 		e('<div>');
+			e('<label for="tgId">Telegram ID<label>');
+			e('<input type="number" name="tgId" value="'. $d['User']->_id_tg .'">');
+		e('</div>');
+
+		e('<div>');
 			e('<button type="submit" name="bt_editUser">Змінити</button>');
 		e('</div>');
 

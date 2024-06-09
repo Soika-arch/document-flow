@@ -44,41 +44,23 @@ class UsersModel extends MainModel {
 	 * @return bool
 	 */
 	public function addUser () {
-		$Post = new Post('fm_userAdd', [
-			'login' => [
-				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9_]{5,32}$'
-			],
-			'password' => [
-				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9!@#$%^&*()_+=_-]{5,32}$'
-			],
-			'email' => [
-				'type' => 'varchar',
-				'pattern' => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-			],
-			'status' => [
-				'type' => 'int'
-			],
-			'bt_addUser' => [
-				'type' => 'varchar',
-				'pattern' => '^$'
-			]
-		]);
-
-		if ($Post->errors) dd($Post, __FILE__, __LINE__,1);
+		$Post = rg_Rg()->get('Post');
 
 		$login = $Post->sanitizeValue('login');
+		$tgId = (isset($Post->post['tgId']) && $Post->post['tgId']) ? $Post->post['tgId'] : null;
 
 		$UserNew = (new User(null))->set([
 			'us_login' => $login,
 			'us_password_hash' => password_hash($Post->post['password'], PASSWORD_DEFAULT),
 			'us_email' => $Post->post['email'],
+			'us_id_tg' => $tgId,
 			'us_add_date' => date('Y-m-d H:i:s')
 		]);
 
 		if ($UserNew->_id) {
-			sess_addSysMessage('Створено нового користувача <b>'. $login .'</b>.');
+			$profileURL = url('/user/profile?l='. $login);
+			$profileLink = '<a href="'. $profileURL .'">'. $login .'</a>';
+			sess_addSysMessage('Створено нового користувача <b>'. $profileLink .'</b>.');
 
 			if ($UserNew->setStatus($Post->sanitizeValue('status'))) {
 				sess_addSysMessage('Користувачу <b>'. $login .'</b> призначено статус <b>'.
@@ -109,7 +91,8 @@ class UsersModel extends MainModel {
 
 		$UsEdit->update([
 			'us_login' => getArrayValue($post, 'login'),
-			'us_email' => getArrayValue($post, 'email')
+			'us_email' => getArrayValue($post, 'email'),
+			'us_id_tg' => getArrayValue($post, 'tgId')
 		]);
 
 		$UsEdit->setStatus(getArrayValue($post, 'status', 4));

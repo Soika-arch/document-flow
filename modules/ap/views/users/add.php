@@ -19,28 +19,35 @@ e('<div class="fm">');
 
 		e('<div>');
 			e('<label for="login">Логін<label>');
-			e('<input type="text" name="login">');
+			e('<input type="text" name="login" required>');
 		e('</div>');
 
 		e('<div>');
 			e('<label for="password">Пароль<label>');
-			e('<input type="text" name="password">');
+			e('<input type="text" name="password" required>');
 		e('</div>');
 
 		e('<div>');
 			e('<label for="email">E-mail<label>');
-			e('<input type="text" name="email">');
+			e('<input type="text" name="email" required>');
 		e('</div>');
 
 		e('<div>');
 			e('<label for="status">Статус<label>');
-			e('<select name="status">');
+			e('<select name="status" required>');
 
-			foreach ($d['statuses'] as $stData) {
-				e('<option value="'. $stData['uss_id'] .'">'. $stData['uss_description'] .'</option>');
-			}
+				e('<option></option>');
+
+				foreach ($d['statuses'] as $stData) {
+					e('<option value="'. $stData['uss_id'] .'">'. $stData['uss_description'] .'</option>');
+				}
 
 			e('</select>');
+		e('</div>');
+
+		e('<div>');
+			e('<label for="tgId">Telegram ID<label>');
+			e('<input type="number" name="tgId">');
 		e('</div>');
 
 		e('<div>');

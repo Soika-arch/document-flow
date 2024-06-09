@@ -105,7 +105,7 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
   font-weight: bold;
 }
 
-.fm input[type="text"],
+.fm input[type="text"], .fm input[type="number"],
 .fm select {
   width: 100%;
   padding: 0.5em;

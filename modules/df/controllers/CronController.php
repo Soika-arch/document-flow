@@ -15,6 +15,7 @@ class CronController extends MC {
 	private CronModel $Model;
 
 	public function __construct () {
+		require_once DirModules .'/df/functions/df.php';
 		$this->Model = new CronModel();
 	}
 
@@ -46,7 +47,7 @@ class CronController extends MC {
 			$LastRunDate = new \DateTime($task['crt_last_run']);
 			$CurrentDate = new \DateTime();
 
-			if ($Cron->getNextRunDate($LastRunDate) <= $CurrentDate) {
+			if (! $task['crt_last_run'] || ($Cron->getNextRunDate($LastRunDate) <= $CurrentDate)) {
 				// Час виконання крон задачі.
 
 				$method = $task['crt_task_name'];

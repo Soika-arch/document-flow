@@ -46,6 +46,38 @@ class UsersController extends MainController {
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
 
 		if (isset($_POST['bt_addUser'])) {
+			$Post = new Post('fm_userAdd', [
+				'login' => [
+					'type' => 'varchar',
+					'pattern' => '^[a-zA-Z0-9_]{5,32}$',
+					'isRequired' => true,
+				],
+				'password' => [
+					'type' => 'varchar',
+					'pattern' => '^[a-zA-Z0-9!@#$%^&*()_+=_-]{5,32}$',
+					'isRequired' => true,
+				],
+				'email' => [
+					'type' => 'varchar',
+					'pattern' => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+					'isRequired' => true,
+				],
+				'status' => [
+					'type' => 'varchar',
+					'pattern' => '^(\d{1,2})?$',
+					'isRequired' => true,
+				],
+				'tgId' => [
+					'type' => 'varchar',
+					'pattern' => '^(\d{1,16})?$',
+					'isRequired' => false,
+				],
+				'bt_addUser' => [
+					'type' => 'varchar',
+					'pattern' => '^$'
+				]
+			]);
+
 			if ($this->Model->addUser()) {
 				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
 			}
@@ -87,14 +119,17 @@ class UsersController extends MainController {
 					'isRequired' => true,
 					'pattern' => '^\d{1,2}$'
 				],
+				'tgId' => [
+					'type' => 'varchar',
+					'pattern' => '^(\d{1,16})?$',
+					'isRequired' => false,
+				],
 				'bt_editUser' => [
 					'type' => 'varchar',
 					'isRequired' => true,
 					'pattern' => '^$'
 				]
 			]);
-
-			if ($Post->errors) dd($Post->errors, __FILE__, __LINE__,1);
 
 			$UsEdit = $this->Model->editUser($Get, $Post);
 
