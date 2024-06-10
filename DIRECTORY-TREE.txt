@@ -1,4 +1,3 @@
-.
 ├── configs
 │   ├── db.php
 │   ├── main.php
@@ -244,64 +243,6 @@
 │   │   └── main.js
 │   ├── favicon.ico
 │   └── index.php
-├── service
-│   ├── apache2
-│   │   ├── document-flow.loc.conf
-│   │   └── php.ini
-│   ├── db_loc_backup
-│   │   ├── 2024-05-06.sql
-│   │   ├── 2024-05-11.sql
-│   │   ├── 2024_05_23.sql.zip
-│   │   ├── 2024-05-25.sql
-│   │   └── 2024_05_27.sql.zip
-│   ├── db_prod_backup
-│   ├── php
-│   │   └── mods-available
-│   │       ├── calendar.ini
-│   │       ├── ctype.ini
-│   │       ├── curl.ini
-│   │       ├── dom.ini
-│   │       ├── exif.ini
-│   │       ├── ffi.ini
-│   │       ├── fileinfo.ini
-│   │       ├── ftp.ini
-│   │       ├── gd.ini
-│   │       ├── gettext.ini
-│   │       ├── iconv.ini
-│   │       ├── intl.ini
-│   │       ├── mbstring.ini
-│   │       ├── mysqli.ini
-│   │       ├── mysqlnd.ini
-│   │       ├── opcache.ini
-│   │       ├── pdo.ini
-│   │       ├── pdo_mysql.ini
-│   │       ├── pdo_sqlite.ini
-│   │       ├── phar.ini
-│   │       ├── posix.ini
-│   │       ├── readline.ini
-│   │       ├── shmop.ini
-│   │       ├── simplexml.ini
-│   │       ├── sockets.ini
-│   │       ├── sqlite3.ini
-│   │       ├── sysvmsg.ini
-│   │       ├── sysvsem.ini
-│   │       ├── sysvshm.ini
-│   │       ├── tokenizer.ini
-│   │       ├── xdebug.ini
-│   │       ├── xml.ini
-│   │       ├── xmlreader.ini
-│   │       ├── xmlwriter.ini
-│   │       └── xsl.ini
-│   ├── access.log
-│   ├── back_info.txt
-│   ├── change_access
-│   ├── error.log
-│   ├── site_backup
-│   └── sync_ftp.sh
-├── DIRECTORY-TREE.md
-├── index.php
-├── README.md
-├── test.php
-└── test.sql
+└── index.php
 
 54 directories, 250 files
