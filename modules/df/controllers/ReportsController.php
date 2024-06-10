@@ -198,4 +198,27 @@ class ReportsController extends MC {
 
 		require $this->getViewFile('reports/r0007');
 	}
+
+	/**
+	 * Звіт по виконавцім, які не виконали документи.
+	 */
+	public function r0008Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0008Page($pageNum);
+
+		require $this->getViewFile('reports/r0008');
+	}
 }

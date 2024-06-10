@@ -45,6 +45,7 @@ e('<div class="fm df-selecting_source_document">');
 		e('<a href="'. $url .'/reports/r0007">Документи на контролі</a><br><br>');
 		e('<a href="'. $url .'/reports/r0005">Виконані документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0002">Невиконані документи</a><br><br>');
+		e('<a href="'. $url .'/reports/r0008">Виконавці, які не виконали документи</a><br><br>');
 	e('</div>');
 
 e('</div>');

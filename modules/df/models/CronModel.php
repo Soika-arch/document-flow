@@ -5,6 +5,7 @@ namespace modules\df\models;
 use \core\User;
 use \core\db_record\users;
 use \modules\df\models\MainModel;
+use \ZipArchive;
 
 /**
  * Модель пошуку документів.
@@ -110,5 +111,109 @@ class CronModel extends MainModel {
 				msg_add($UsTemp->_id, 1, $msg, 'Контрольна дата документа', 'Warning');
 			}
 		}
+	}
+
+	/**
+	 * Бекап таблиць бази даних
+	 */
+	public function backupOfDatabaseTables () {
+		$backDir = DirRoot .'/db_backup';
+		$newDirName = $backDir .'/'. date('Y_m_d__H_i');
+
+		if (! is_dir($newDirName)) mkdir($newDirName);
+
+		// Функция для добавления файлов и директорий в архив
+		function addFilesToZip($dir, $zipArchive, $zipDir = '') {
+			if (is_dir($dir)) {
+				if ($dh = opendir($dir)) {
+					// Добавляем пустую директорию в архив
+					if (!empty($zipDir)) {
+						$zipArchive->addEmptyDir($zipDir);
+					}
+					while (($file = readdir($dh)) !== false) {
+						if ($file != '.' && $file != '..') {
+							$fullPath = $dir .'/'. $file;
+							if (is_dir($fullPath)) {
+								// Рекурсивно добавляем директории
+								addFilesToZip($fullPath . '/', $zipArchive, $zipDir . $file . '/');
+							} else {
+								// Добавляем файлы в архив
+								$zipArchive->addFile($fullPath, $zipDir . $file);
+							}
+						}
+					}
+
+					closedir($dh);
+				}
+			}
+		}
+
+		$tables = db_Db()->tables;
+
+		foreach ($tables as $tName => $tData) {
+			$tableBackFileName = $newDirName .'/'. $tName .'.sql';
+			$handle = fopen($tableBackFileName, 'w');
+			$PDO = db_Db()->PDO;
+			// Отримання структури таблиці.
+			$createTableQuery = $PDO->query("SHOW CREATE TABLE `$tName`")->fetch(\PDO::FETCH_ASSOC);
+			fwrite($handle, $createTableQuery['Create Table'] . ";\n\n");
+			// Отримання даних із таблиці.
+			$rows = $PDO->query("SELECT * FROM `$tName`", \PDO::FETCH_ASSOC);
+
+			foreach ($rows as $row) {
+				$rowValues = array_map([$PDO, 'quote'], $row);
+				fwrite($handle, "INSERT INTO `$tName` VALUES (" . implode(", ", $rowValues) . ");\n");
+			}
+
+			fclose($handle);
+		}
+
+		$zipFile = $newDirName .'.zip';
+		$zip = new ZipArchive();
+		$dt = date('d.m.Y H:i:s');
+
+		if ($zip->open($zipFile, ZipArchive::CREATE) === TRUE) {
+			addFilesToZip($newDirName, $zip);
+			$zip->close();
+			chmod($zipFile, 666);
+
+			sendEmailWithAttachment(
+				'vladimirovichser@gmail.com',
+				'Виконано автобекап бази даних',
+				'Cron завдання: створено повний бекап бази даних. Час створення: '. $dt .'.',
+				$zipFile, basename($zipFile)
+			);
+
+			tg_sendMsg(
+				TgAdmin,
+				"❇️ Cron завдання: створено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
+					"Лист з архівом БД відправлено на email: vladimirovichser@gmail.com."
+			);
+
+			sendEmailWithAttachment(
+				'ek.soiku@gmail.com',
+				'Виконано автобекап бази даних',
+				'Cron завдання: створено повний бекап бази даних. Час створення: '. $dt .'.',
+				$zipFile, basename($zipFile)
+			);
+
+			tg_sendMsg(
+				602635770,
+				"❇️ Cron завдання: створено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
+					"Лист з архівом БД відправлено на email: ek.soiku@gmail.com."
+			);
+		}
+
+		// $d = scandir($backDir);
+
+		// foreach ($d as $dName) {
+		// 	if ($dName === '.' || $dName === '..') continue;
+
+		// 	$dirPath = $backDir .'/'. $dName;
+		// 	chmodRecursive($dirPath, 0777);
+		// 	dd([$dName, is_dir($dirPath), decoct(fileperms($dirPath)), deleteDirectory($dirPath)], __FILE__, __LINE__,1);
+		// }
+
+		deleteDirectory($newDirName .'/2024_06_10__06_47');
 	}
 }

@@ -136,13 +136,13 @@ class ReportsModel extends MainModel {
 			->where('idr_execution_date', '=', null)
 			->orderBy('us_id');
 
+
 		$SQLUs = new RecordSliceRetriever($SQLUs);
 		$itemsPerPage = 5;
 		$d['users'] = $SQLUs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0003?pn=(:num)');
-		$Pagin = new Paginator($SQLUs->getRowsCount(), $itemsPerPage, $pageNum, $url);
-		$Pagin->setMaxPagesToShow(5);
-		$d['Pagin'] = $Pagin;
+		$d['Pagin'] = new Paginator($SQLUs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$d['Pagin']->setMaxPagesToShow(5);
 
 		return $d;
 	}
@@ -189,6 +189,35 @@ class ReportsModel extends MainModel {
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0007?pn=(:num)#pagin');
 		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin->setMaxPagesToShow(5);
+		$d['Pagin'] = $Pagin;
+
+		return $d;
+	}
+
+	/**
+	 * Виконавці, які не виконали внутрішні документи.
+	 * @return array
+	 */
+	public function r0008Page (int $pageNum=1) {
+		$d['title'] = 'Виконавці, які не виконали документи';
+
+		$SQLUs = db_getSelect();
+
+		$docTable = DbPrefix .'internal_documents_registry';
+
+		$SQLUs->distinct()
+			->columns([DbPrefix .'users.*'])
+			->from(DbPrefix .'users')
+			->join($docTable, 'inr_id_assigned_user', '=', 'us_id')
+			->where('inr_execution_date', '=', null)
+			->orderBy('us_id');
+
+		$SQLUs = new RecordSliceRetriever($SQLUs);
+		$itemsPerPage = 5;
+		$d['users'] = $SQLUs->select($itemsPerPage, $pageNum);
+		$url = url('/df/reports/r0008?pn=(:num)');
+		$Pagin = new Paginator($SQLUs->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 

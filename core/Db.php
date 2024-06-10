@@ -21,8 +21,6 @@ class Db {
 	private \PDO $PDO;
 	private Connection $Connection;
   // Если true, то будет сгенерировано исключение и выведен текущий sql-запрос.
-  // Для установки в true: Db::$d = true.
-  public bool $d = false;
 	// Массив данных `information_schema` таблиц текущей БД.
 	private array $tables;
 	// Масив згенерованих даних `information_schema` таблиць поточної БД.

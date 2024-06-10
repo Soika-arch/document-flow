@@ -356,3 +356,80 @@ function isCron () {
 
 	return false;
 }
+
+// Функция для отправки email с вложением
+function sendEmailWithAttachment ($to, $subject, $message, $filePath, $fileName) {
+	$headers = "From: \"DF-Admin\" <admin@petamicr.zzz.com.ua>";
+	$headers .= "\r\nReply-To: vladimirovichser@gmail.com";
+
+	// Читаем файл и кодируем его в base64
+	$fileContent = file_get_contents($filePath);
+	$fileContent = chunk_split(base64_encode($fileContent));
+
+	// Создаем границу для разделения частей письма
+	$separator = md5(time());
+
+	// Заголовки для письма с вложением
+	$headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"" . $separator . "\"";
+
+	// Тело письма
+	$body = "--" . $separator . "\r\n";
+	$body .= "Content-Type: text/plain; charset=\"utf-8\"\r\n";
+	$body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+	$body .= $message . "\r\n";
+
+	// Добавляем вложение
+	$body .= "--" . $separator . "\r\n";
+	$body .= "Content-Type: application/zip; name=\"" . $fileName . "\"\r\n";
+	$body .= "Content-Transfer-Encoding: base64\r\n";
+	$body .= "Content-Disposition: attachment; filename=\"" . $fileName . "\"\r\n\r\n";
+	$body .= $fileContent . "\r\n";
+	$body .= "--" . $separator . "--";
+
+	// Отправка письма
+	if (mail($to, $subject, $body, $headers)) return true;
+
+	return false;
+}
+
+// Функция для рекурсивной установки прав доступа
+function chmodRecursive ($dir, $mode) {
+	if (! is_dir($dir)) return false;
+
+	$contents = scandir($dir);
+
+	foreach ($contents as $item) {
+		if ($item != '.' && $item != '..') {
+			$path = $dir . '/' . $item;
+
+			if (is_dir($path)) {
+				chmod($path, $mode);
+				chmodRecursive($path, $mode);
+			} else {
+				chmod($path, $mode);
+			}
+		}
+	}
+
+	return true;
+}
+
+// Функция для удаления содержимого каталога
+function deleteDirectory (string $dir) {
+	if (! is_dir($dir)) return false;
+
+	$contents = scandir($dir);
+
+	foreach ($contents as $item) {
+		if ($item != '.' && $item != '..') {
+			$path = $dir . '/' . $item;
+			if (is_dir($path)) {
+				deleteDirectory($path);
+			} else {
+				unlink($path);
+			}
+		}
+	}
+
+	return rmdir($dir);
+}

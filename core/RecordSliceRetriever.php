@@ -2,7 +2,7 @@
 
 namespace core;
 
-use libs\query_builder\SelectQuery;
+use \libs\query_builder\SelectQuery;
 
 /**
  * Цей клас відповідає за отримання зрізів даних з бази даних на основі певних умов. Основні функції
@@ -72,13 +72,27 @@ class RecordSliceRetriever {
 	 */
 	protected function get_SQLRowsCount () {
 		if (! isset($this->SQLRowsCount)) {
-			$this->SQLRowsCount = clone $this->SQL;
+			if ($this->SQL->isDistinct()) {
+				$this->SQLRowsCount = db_getSelect();
+				$sql = $this->SQL->prepare()->queryString;
 
-			$this->SQLRowsCount
-				->clearColumns()
-				->columns([$this->SQLRowsCount->raw('COUNT(*) AS C')])
-				->clearOffset()
-				->clearLimit();
+				$this->SQLRowsCount
+					->columns(['C' => $this->SQLRowsCount->raw('count(*)')])
+					->from($this->SQLRowsCount->raw('('. trim($sql, ';') .') AS SUB_FROM'));
+
+				// throw new DbException(5003, [
+				// 	'SQL' => $this->SQL, 'queryString' => $this->SQL->prepare()->queryString
+				// ]);
+			}
+			else {
+				$this->SQLRowsCount = clone $this->SQL;
+
+				$this->SQLRowsCount
+					->clearColumns()
+					->clearOffset()
+					->clearLimit()
+					->columns([$this->SQLRowsCount->raw('COUNT(*) AS C')]);
+			}
 		}
 
 		return $this->SQLRowsCount;

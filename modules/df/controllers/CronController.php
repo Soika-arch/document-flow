@@ -72,4 +72,12 @@ class CronController extends MC {
 	public function t0002 () {
 		$this->Model->notifyAboutUnreadMessages();
 	}
+
+	public function t0003 () {
+		$this->Model->backupOfDatabaseTables();
+	}
+
+	public function t0003Page () {
+		$this->Model->backupOfDatabaseTables();
+	}
 }

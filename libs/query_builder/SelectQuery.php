@@ -706,8 +706,18 @@ final class SelectQuery implements QueryInterface
     }
 
 		/**
+		 * Очищення $this->distinct.
+		 * @return $this
+		 */
+		public function clearDistinct () {
+				$this->distinct = '';
+
+				return $this;
+		}
+
+		/**
 		 * Очищення масиву $this->columns.
-		 * @return self
+		 * @return $this
 		 */
 		public function clearColumns () {
 				$this->columns = [];
@@ -716,8 +726,28 @@ final class SelectQuery implements QueryInterface
 		}
 
 		/**
+		 * Очищення $this->distinct.
+		 * @return $this
+		 */
+		public function clearJoin () {
+				$this->join = [];
+
+				return $this;
+		}
+
+		/**
+		 * Очищення $this->distinct.
+		 * @return $this
+		 */
+		public function clearWhere () {
+				$this->condition = new Condition($this->connection, $this);
+
+				return $this;
+		}
+
+		/**
 		 * Очищення $this->offset.
-		 * @return self
+		 * @return $this
 		 */
 		public function clearOffset () {
 				if (isset($this->offset)) $this->offset = null;
@@ -727,11 +757,20 @@ final class SelectQuery implements QueryInterface
 
 		/**
 		 * Очищення $this->limit.
-		 * @return self
+		 * @return $this
 		 */
 		public function clearLimit () {
 				if (isset($this->limit)) $this->limit = null;
 
 				return $this;
 		}
+
+		/**
+		 * Очищення $this->limit.
+		 * @return true
+		 */
+		public function isDistinct () {
+
+				return $this->distinct ? true : false;
+	}
 }

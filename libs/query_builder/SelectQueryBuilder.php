@@ -92,7 +92,12 @@ final class SelectQueryBuilder implements QueryInterface
     public function getFromSql(array $sql, $from): array
     {
         if (!empty($from)) {
-            $sql[] = 'FROM ' . $this->quoter->quoteName($from);
+						if (! is_string($from) && (get_class($from) === 'libs\query_builder\RawExp')) {
+								$sql[] = 'FROM ' . $from->getValue();
+						}
+						else {
+								$sql[] = 'FROM ' . $this->quoter->quoteName($from);
+						}
         }
 
         return $sql;

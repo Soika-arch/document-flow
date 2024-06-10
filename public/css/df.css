@@ -106,7 +106,7 @@
 	border: silver 1px solid;
 }
 
-/* Адаптивный дизайн для мобильных устройств */
+/* Адаптивний дизайн для мобільних пристроїв. */
 @media (max-width: 1200px) {
   .document-list .doc-header {
 		display: none;
@@ -386,4 +386,78 @@
 	display: inline-block;
 	width: 250px;
 	font-weight: bold;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Список звіту користувачів, які не виконали документи. */
+
+.user-list {
+	padding: 10px 10px 0px 10px;
+	font-size: 18px;
+}
+
+.user-list .doc-header {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	font-size: 20px;
+	font-weight: bold;
+	background-color: #e8e8e8;
+}
+
+.user-list .header-num {
+	justify-content: center;
+	text-align: center;
+	width: 35px;
+}
+
+.user-list .header-login {
+	justify-content: center;
+	text-align: center;
+	width: 160px;
+	/* border: silver 1px solid; */
+}
+
+.user-list .header-count {
+	justify-content: center;
+	text-align: center;
+	width: 120px;
+	/* border: silver 1px solid; */
+}
+
+.user-block {
+	display: flex;
+	justify-content: flex-start;
+	padding: 5px 0px 5px 0px;
+	align-items: center;
+	font-size: 20px;
+	border-bottom: silver 1px solid;
+}
+
+.user-block .num {
+	justify-content: center;
+	text-align: center;
+	width: 35px;
+}
+
+.user-block .num {
+	justify-content: center;
+	width: 35px;
+}
+
+.user-block .login {
+	width: 160px;
+}
+
+.user-block .count {
+	justify-content: center;
+	text-align: center;
+	width: 120px;
+}
+
+/* Адаптивный дизайн для мобильных устройств. */
+@media (max-width: 1200px) {
+  .user-list .doc-header {
+		display: none;
+	}
 }

@@ -3,7 +3,7 @@
 use \core\exceptions\ClassException;
 use \core\exceptions\DbException;
 use \core\User;
-use \modules\df\controllers\CronController;
+use \modules\df\controllers\CronController as DfCronController;
 
 try {
 
@@ -24,7 +24,7 @@ try {
 	if (isCron()) {
 		// Cron.
 
-		$Controller = new CronController();
+		$Controller = new DfCronController();
 		$Controller->loadModule();
 		$Controller->mainPage();
 	}
