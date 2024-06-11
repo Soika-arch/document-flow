@@ -13,7 +13,6 @@ use \core\Header;
 function startApp () {
 	setlocale(LC_ALL, 'uk_UA');
 	session_start();
-	Header::getInstance()->addHeader('Content-type: text/html; charset=utf-8', __FILE__, __LINE__);
 	ob_start();
 }
 
@@ -118,23 +117,19 @@ function url (null|string $s=null, array $p=[]): string {
 	if (! is_null($s)) {
 		if ($s === '') {
 			// Вирізання GET-параметрів від існуючого URL.
-
 			$url = URLHome .'/'. URIPath;
 		}
 		else if (strpos($s, '/') === 0) {
 			// Рядок $s додається до URL корня сайта.
-
 			$url = trim(URLHome .'/'. trim($s, '/'), '/');
 		}
 		else {
 			// Рядок $s додається до поточного URL.
-
 			$url = url('') .'/'. trim($s, '/');
 		}
 	}
 	else {
 		// Повний поточний URL.
-
 		$url = URL;
 	}
 
@@ -185,8 +180,10 @@ function delURLParam (string $url, string $pName) {
 
 /**
  * Перетворює масив аргументів у асоціативний масив.
+ *
  * Кожен елемент вхідного масиву повинен мати формат `ключ:значення`.
  * Функція розбиває ці елементи на ключ та значення і повертає асоціативний масив.
+ *
  * @param array $args Масив аргументів, де кожен елемент у форматі `ключ:значення`.
  * @return array Асоціативний масив, де ключі - це частини до двокрапки, а значення - після.
  */
@@ -231,7 +228,7 @@ function getUserAgent () {
 }
 
 /**
- * Ця функція знаходить попередній клас об'єкта $obj до кінцевого класу $endClass.
+ * Функція знаходить попередній клас об'єкта $obj до кінцевого класу $endClass.
  */
 function getPreviousClass (object $Obj, string $endClass): string {
 	// Отримання назви класу поточного об'єкта $obj.
@@ -250,6 +247,7 @@ function getPreviousClass (object $Obj, string $endClass): string {
 
 /**
  * Генерує випадковий рядок заданої довжини з вказаного набору символів.
+ *
  * @param int $strLength Довжина випадкового рядка. За замовчуванням 5.
  * @param string $chars Набір символів, з яких генерується рядок. За замовчуванням
  * '0123456789abcdefghijklmnopqrstuvwxyz'.
@@ -357,81 +355,111 @@ function isCron () {
 	return false;
 }
 
-// Функция для отправки email с вложением
-function sendEmailWithAttachment ($to, $subject, $message, $filePath, $fileName) {
-	$headers = "From: \"DF-Admin\" <admin@petamicr.zzz.com.ua>";
-	$headers .= "\r\nReply-To: vladimirovichser@gmail.com";
+/**
+ * Відправляє електронний лист з вкладенням.
+ *
+ * Функція створює та відправляє електронний лист з текстовим повідомленням та файлом у вкладенні.
+ *
+ * @param string $to Адреса одержувача електронного листа.
+ * @param string $subject Тема електронного листа.
+ * @param string $message Текстове повідомлення електронного листа.
+ * @param string $filePath Шлях до файлу, який потрібно додати у вкладення.
+ * @param string $fileName Ім'я файлу, яке буде використане у вкладенні.
+ * @return bool Повертає true, якщо лист успішно відправлено, і false в іншому випадку.
+ */
+function sendEmailWithAttachment(string $to, string $subject, string $message, string $filePath, string $fileName) {
+  $headers = "From: \"DF-Admin\" <admin@petamicr.zzz.com.ua>";
+  $headers .= "\r\nReply-To: vladimirovichser@gmail.com";
 
-	// Читаем файл и кодируем его в base64
-	$fileContent = file_get_contents($filePath);
-	$fileContent = chunk_split(base64_encode($fileContent));
+  // Читаємо файл і кодуємо його в base64.
+  $fileContent = file_get_contents($filePath);
+  $fileContent = chunk_split(base64_encode($fileContent));
 
-	// Создаем границу для разделения частей письма
-	$separator = md5(time());
+  // Створюємо межу для розділення частин листа.
+  $separator = md5(time());
 
-	// Заголовки для письма с вложением
-	$headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"" . $separator . "\"";
+  // Заголовки для листа з вкладенням.
+  $headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"" .
+		$separator . "\"";
 
-	// Тело письма
-	$body = "--" . $separator . "\r\n";
-	$body .= "Content-Type: text/plain; charset=\"utf-8\"\r\n";
-	$body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-	$body .= $message . "\r\n";
+  // Тіло листа.
+  $body = "--" . $separator . "\r\n";
+  $body .= "Content-Type: text/plain; charset=\"utf-8\"\r\n";
+  $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+  $body .= $message . "\r\n";
 
-	// Добавляем вложение
-	$body .= "--" . $separator . "\r\n";
-	$body .= "Content-Type: application/zip; name=\"" . $fileName . "\"\r\n";
-	$body .= "Content-Transfer-Encoding: base64\r\n";
-	$body .= "Content-Disposition: attachment; filename=\"" . $fileName . "\"\r\n\r\n";
-	$body .= $fileContent . "\r\n";
-	$body .= "--" . $separator . "--";
+  // Додаємо вкладення.
+  $body .= "--" . $separator . "\r\n";
+  $body .= "Content-Type: application/zip; name=\"" . $fileName . "\"\r\n";
+  $body .= "Content-Transfer-Encoding: base64\r\n";
+  $body .= "Content-Disposition: attachment; filename=\"" . $fileName . "\"\r\n\r\n";
+  $body .= $fileContent . "\r\n";
+  $body .= "--" . $separator . "--";
 
-	// Отправка письма
-	if (mail($to, $subject, $body, $headers)) return true;
+  // Відправка листа
+  if (mail($to, $subject, $body, $headers)) return true;
 
-	return false;
+  return false;
 }
 
-// Функция для рекурсивной установки прав доступа
-function chmodRecursive ($dir, $mode) {
-	if (! is_dir($dir)) return false;
+/**
+ * Рекурсивно змінює права доступу для файлів та директорій.
+ *
+ * Функція проходить через всі файли та підкаталоги вказаного каталогу
+ * і змінює їх права доступу відповідно до вказаних режимів.
+ *
+ * @param string $dir Шлях до каталогу, права якого потрібно змінити.
+ * @param int $dirMode Права доступу для директорій.
+ * @param int $fileMode Права доступу для файлів.
+ * @return bool Повертає true, якщо права успішно змінено, і false, якщо це не каталог.
+ */
+function chmodRecursive(string $dir, string $dirMode, string $fileMode) {
+  if (!is_dir($dir)) return false;
 
-	$contents = scandir($dir);
+  $contents = scandir($dir);
 
-	foreach ($contents as $item) {
-		if ($item != '.' && $item != '..') {
-			$path = $dir . '/' . $item;
+  foreach ($contents as $item) {
+    if ($item != '.' && $item != '..') {
+      $path = $dir . '/' . $item;
 
-			if (is_dir($path)) {
-				chmod($path, $mode);
-				chmodRecursive($path, $mode);
-			} else {
-				chmod($path, $mode);
-			}
-		}
-	}
+      if (is_dir($path)) {
+        chmod($path, $dirMode);
+        chmodRecursive($path, $dirMode, $fileMode);
+      } else {
+        chmod($path, $fileMode);
+      }
+    }
+  }
 
-	return true;
+  return true;
 }
 
-// Функция для удаления содержимого каталога
-function deleteDirectory (string $dir) {
-	if (! is_dir($dir)) return false;
+/**
+ * Видаляє каталог разом з усіма його файлами та підкаталогами.
+ *
+ * Функція рекурсивно проходить через всі файли та підкаталоги вказаного каталогу
+ * і видаляє їх, а потім видаляє сам каталог.
+ *
+ * @param string $dir Шлях до каталогу, який потрібно видалити.
+ * @return bool Повертає true, якщо каталог успішно видалено, і false, якщо це не каталог.
+ */
+function deleteDirectory(string $dir) {
+  if (!is_dir($dir)) return false;
 
-	$contents = scandir($dir);
+  $contents = scandir($dir);
 
-	foreach ($contents as $item) {
-		if ($item != '.' && $item != '..') {
-			$path = $dir . '/' . $item;
-			if (is_dir($path)) {
-				deleteDirectory($path);
-			} else {
-				unlink($path);
-			}
-		}
-	}
+  foreach ($contents as $item) {
+    if ($item != '.' && $item != '..') {
+      $path = $dir . '/' . $item;
+      if (is_dir($path)) {
+        deleteDirectory($path);
+      } else {
+        unlink($path);
+      }
+    }
+  }
 
-	return rmdir($dir);
+  return rmdir($dir);
 }
 
 /**
