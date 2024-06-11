@@ -2,7 +2,7 @@
 
 namespace modules\ap\models;
 
-use core\models\MainModel as MM;
+use \core\models\MainModel as MM;
 
 /**
  * Модель адмін-панелі.

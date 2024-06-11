@@ -122,32 +122,6 @@ class CronModel extends MainModel {
 
 		if (! is_dir($newDirName)) mkdir($newDirName);
 
-		// Функция для добавления файлов и директорий в архив
-		function addFilesToZip($dir, $zipArchive, $zipDir = '') {
-			if (is_dir($dir)) {
-				if ($dh = opendir($dir)) {
-					// Добавляем пустую директорию в архив
-					if (!empty($zipDir)) {
-						$zipArchive->addEmptyDir($zipDir);
-					}
-					while (($file = readdir($dh)) !== false) {
-						if ($file != '.' && $file != '..') {
-							$fullPath = $dir .'/'. $file;
-							if (is_dir($fullPath)) {
-								// Рекурсивно добавляем директории
-								addFilesToZip($fullPath . '/', $zipArchive, $zipDir . $file . '/');
-							} else {
-								// Добавляем файлы в архив
-								$zipArchive->addFile($fullPath, $zipDir . $file);
-							}
-						}
-					}
-
-					closedir($dh);
-				}
-			}
-		}
-
 		$tables = db_Db()->tables;
 
 		foreach ($tables as $tName => $tData) {
@@ -204,16 +178,8 @@ class CronModel extends MainModel {
 			);
 		}
 
-		// $d = scandir($backDir);
-
-		// foreach ($d as $dName) {
-		// 	if ($dName === '.' || $dName === '..') continue;
-
-		// 	$dirPath = $backDir .'/'. $dName;
-		// 	chmodRecursive($dirPath, 0777);
-		// 	dd([$dName, is_dir($dirPath), decoct(fileperms($dirPath)), deleteDirectory($dirPath)], __FILE__, __LINE__,1);
-		// }
-
-		deleteDirectory($newDirName .'/2024_06_10__06_47');
+		chmod($newDirName, 0755);
+		deleteDirectory($newDirName);
+		// deleteDirectory($zipFile);
 	}
 }

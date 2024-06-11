@@ -433,3 +433,41 @@ function deleteDirectory (string $dir) {
 
 	return rmdir($dir);
 }
+
+/**
+ * Додає файли та директорії з вказаного каталогу до ZIP архіву.
+ *
+ * Функція рекурсивно проходить через всі файли та підкаталоги вказаного каталогу
+ * і додає їх до ZIP архіву, зберігаючи структуру директорій.
+ *
+ * @param string $dir Шлях до каталогу, файли якого потрібно додати до архіву.
+ * @param ZipArchive $ZA Об'єкт ZipArchive, до якого будуть додані файли.
+ * @param string $zipDir [optional] Шлях всередині архіву, куди будуть додані файли.
+ *
+ * @return void
+ */
+function addFilesToZip(string $dir, \ZipArchive $ZA, string $zipDir='') {
+	if (is_dir($dir)) {
+		if ($dh = opendir($dir)) {
+			// Додаємо порожню директорію в архів
+			if (!empty($zipDir)) $ZA->addEmptyDir($zipDir);
+
+			while (($file = readdir($dh)) !== false) {
+				if ($file != '.' && $file != '..') {
+					$fullPath = $dir . '/' . $file;
+
+					if (is_dir($fullPath)) {
+						// Рекурсивно додаємо директорії
+						addFilesToZip($fullPath . '/', $ZA, $zipDir . $file . '/');
+					} else {
+						// Додаємо файли в архів
+						$ZA->addFile($fullPath, $zipDir . $file);
+					}
+				}
+			}
+
+			closedir($dh);
+		}
+	}
+}
+
