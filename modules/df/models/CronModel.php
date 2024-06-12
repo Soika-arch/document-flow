@@ -149,36 +149,27 @@ class CronModel extends MainModel {
 		if ($zip->open($zipFile, ZipArchive::CREATE) === TRUE) {
 			addFilesToZip($newDirName, $zip);
 			$zip->close();
-			chmod($zipFile, 666);
+			chmod($zipFile, 0777);
 
-			sendEmailWithAttachment(
-				'vladimirovichser@gmail.com',
-				'Виконано автобекап бази даних',
-				'Cron завдання: створено повний бекап бази даних. Час створення: '. $dt .'.',
-				$zipFile, basename($zipFile)
-			);
+			$superAdmins = users_getByUserStatus('SuperAdmin');
 
-			tg_sendMsg(
-				TgAdmin,
-				"❇️ Cron завдання: створено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
-					"Лист з архівом БД відправлено на email: vladimirovichser@gmail.com."
-			);
+			foreach ($superAdmins as $usRow) {
+				sendEmailWithAttachment(
+					$usRow['us_email'],
+					'Виконано автобекап бази даних',
+					'Cron завдання: створено повний бекап бази даних. Час створення: '. $dt .'.',
+					$zipFile, basename($zipFile)
+				);
 
-			sendEmailWithAttachment(
-				'ek.soiku@gmail.com',
-				'Виконано автобекап бази даних',
-				'Cron завдання: створено повний бекап бази даних. Час створення: '. $dt .'.',
-				$zipFile, basename($zipFile)
-			);
-
-			tg_sendMsg(
-				602635770,
-				"❇️ Cron завдання: створено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
-					"Лист з архівом БД відправлено на email: ek.soiku@gmail.com."
-			);
+				tg_sendMsg(
+					$usRow['us_id_tg'],
+					"❇️ Cron завдання: створено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
+						"Лист з архівом БД відправлено на email: vladimirovichser@gmail.com."
+				);
+			}
 		}
 
-		chmod($newDirName, 0755);
+		chmod($newDirName, 0775);
 		deleteDirectory($newDirName);
 		// deleteDirectory($zipFile);
 	}

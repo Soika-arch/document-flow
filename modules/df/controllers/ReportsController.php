@@ -22,7 +22,7 @@ class ReportsController extends MC {
 	 */
 	private function get_allowedStatuses () {
 		if (! isset($this->allowedStatuses)) {
-			$this->allowedStatuses = ['Admin', 'SuperAdmin'];
+			$this->allowedStatuses = ['Viewer', 'User', 'Admin', 'SuperAdmin'];
 		}
 
 		return $this->allowedStatuses;

@@ -8,27 +8,39 @@ use \core\Debug;
 use \core\Header;
 
 /**
+ * Ініціалізує додаток.
  *
+ * Функція запускає сесію та включає буферизацію виводу.
+ *
+ * @return void
  */
-function startApp () {
-	setlocale(LC_ALL, 'uk_UA');
-	session_start();
-	ob_start();
+function startApp() {
+  session_start();
+  ob_start();
 }
 
-function classesAutoload () {
-	spl_autoload_register(
-		function($className) {
-			$fname = str_replace('\\', '/', DirRoot .'/'. $className . '.php');
 
-			if (is_file($fname)) {
-				require_once $fname;
-			}
-			else {
-				dd([$fname, is_file($fname)], __FILE__, __LINE__,1);
-			}
-		}
-	);
+/**
+ * Реєструє автозавантажувач класів.
+ *
+ * Функція використовує `spl_autoload_register` для реєстрації анонімної функції,
+ * яка автозавантажує класи, перетворюючи простір імен на шлях до файлу.
+ * Якщо файл класу не знайдено, викликається функція `dd` для відладки.
+ *
+ * @return void
+ */
+function classesAutoload() {
+  spl_autoload_register(
+    function($className) {
+      $fname = str_replace('\\', '/', DirRoot . '/' . $className . '.php');
+
+      if (is_file($fname)) {
+        require_once $fname;
+      } else {
+        dd([$fname, is_file($fname)], __FILE__, __LINE__, 1);
+      }
+    }
+  );
 }
 
 function dd (mixed $var, string $fname, string $line, bool $stop=false, bool $saveToFile=false) {

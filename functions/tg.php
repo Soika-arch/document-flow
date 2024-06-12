@@ -58,3 +58,14 @@ function tg_dd (mixed $data) {
 	// tg_sendMsg(TgAdmin, json_encode($data), 'text');
 	exit;
 }
+
+/**
+ * Відправлення повідомлень усім супер-адмінам.
+ */
+function tg_sendFromSuperAdmins (string $msg) {
+	$superAdmins = users_getByUserStatus('SuperAdmin');
+
+	foreach ($superAdmins as $row) {
+		if (isset($row['us_id_tg'])) tg_sendMsg($row['us_id_tg'], $msg);
+	}
+}

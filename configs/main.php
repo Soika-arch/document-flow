@@ -5,6 +5,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 date_default_timezone_set('Europe/Kiev');
+setlocale(LC_ALL, 'uk_UA');
 
 /** @var string Назва сайту. */
 const SiteName = 'Електронний документообіг';

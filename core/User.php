@@ -79,6 +79,13 @@ class User extends users {
 		$this->VR = new visitor_routes(null);
 		$this->get_dbRow();
 
+		if ($this->isUnusualActivity()) {
+			tg_sendFromSuperAdmins("‼️ Увага! Незвичайний відвідувач `". $this->_login ."`.\n\nIP: `".
+				$this->ip ."`\n\nUser agent: `". $this->userAgent .
+				"`\n\nЧас відвідування: `". date('d.m.Y H:i:s') .
+				"`\n\n[Відвідувачі](". url("/ap/security/visits-list") .")");
+		}
+
 		$this->VR->set([
 			'vr_id_user' => (! is_null($this->_id)) ? $this->_id : 0,
 			'vr_ip' => $this->get_ip(),
@@ -170,5 +177,22 @@ class User extends users {
 			->where('usm_read', '=', 'n');
 
 		return db_selectCell($SQL);
+	}
+
+	/**
+	 * Перевірка незвичайності даних відвідувача.
+	 * @return bool
+	 */
+	public function isUnusualActivity () {
+		$SQL = db_getSelect();
+
+		$SQL
+			->columns([$SQL->raw('count(vr_id) as C')])
+			->from(DbPrefix .'visitor_routes')
+			->where('vr_id_user', '=', $this->_id)
+			->whereRaw('(vr_ip = "'. $this->get_ip() .
+				'" OR vr_user_agent = "'. $this->get_userAgent() .'")');
+
+		return (db_selectCell($SQL) === 0);
 	}
 }

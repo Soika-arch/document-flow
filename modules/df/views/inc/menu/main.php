@@ -25,11 +25,11 @@ e('<div class="secondary-menu">');
 		e('<div>');
 			e('<a href="'. $url .'/document-registration/source-selection">Додати документ</a>');
 		e('</div>');
-
-		e('<div>');
-			e('<a href="'. $url .'/reports">Звіти</a>');
-		e('</div>');
 	}
+
+	e('<div>');
+		e('<a href="'. $url .'/reports">Звіти</a>');
+	e('</div>');
 
 	e('<div>');
 		e('<a href="'. $url .'/search">Пошук</a>');
