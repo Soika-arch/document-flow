@@ -49,6 +49,15 @@ function db_getDelete () {
 
 /**
  * Для отримання рядків.
+ * @return \Doctrine\DBAL\Query\QueryBuilder
+ */
+function db_DTSelect ($select=null) {
+
+	return db_Db()->DTConnection->createQueryBuilder()->select($select);
+}
+
+/**
+ * Для отримання рядків.
  * @return array
  */
 function db_select (libs\query_builder\SelectQuery $SQL, $mode=\PDO::FETCH_ASSOC) {

@@ -29,7 +29,6 @@ if (isset($d['documents']) && $d['documents']) {
 			e('<span class="header-date">Дата документа</span>');
 			e('<span class="header-number">№ документа</span>');
 			e('<span class="header-executor">Призначений виконавець</span>');
-			e('<span class="header-executor">Резолюція</span>');
 			e('<span class="header-location">Місцезнаходження оригінала</span>');
 		e('</div>');
 
@@ -54,12 +53,23 @@ if (isset($d['documents']) && $d['documents']) {
 
 				$executorLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : '';
 
+				$isReceivedStyle = '';
+
 				if ($Doc->_date_of_receipt_by_executor) {
-					$isReceivedStyle = ' style="border:solid 1px green;"';
+					$isReceivedStyle .= 'border:solid 2px #0eff0e;';
 				}
 				else {
-					$isReceivedStyle = ' style="border:solid 1px red;"';
+					$isReceivedStyle .= 'border:solid 2px red;';
 				}
+
+				if ($Doc->_control_date && (strtotime($Doc->_control_date) - time()) < 172800) {
+					$isReceivedStyle .= 'background-color:#ef5353;color:#ffffff;';
+				}
+				else {
+					$isReceivedStyle .= '';
+				}
+
+				if ($isReceivedStyle) $isReceivedStyle = ' style="'. $isReceivedStyle .'"';
 
 				e('<span class="doc-executor" title="Виконавець"'. $isReceivedStyle .'>'.
 					$executorLogin .'</span>');

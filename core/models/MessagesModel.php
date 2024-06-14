@@ -18,19 +18,21 @@ class MessagesModel extends MainModel {
 	public function mainPage (int $pageNum=1) {
 		$Us = rg_Rg()->get('Us');
 		$d['title'] = 'Повідомлення';
+		$tName = DbPrefix .'user_messages';
 
-		$SQLDocs = db_getSelect()
-			->from(DbPrefix .'user_messages')
-			->columns([DbPrefix .'user_messages.*'])
-			->orderBy('usm_id desc')
-			->where('usm_trash_bin', '=', 'n')
-			->where('usm_id_user', '=', $Us->_id);
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('usm_trash_bin = :trashBin')
+			->where('usm_id_user = :idUser')
+			->orderBy('usm_id', 'desc')
+			->setParameter('trashBin', 'n')
+			->setParameter('idUser', $Us->_id);
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 10;
-		$d['messages'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$d['messages'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/messages?pn=(:num)#pagin');
-		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 

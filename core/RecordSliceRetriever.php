@@ -2,7 +2,7 @@
 
 namespace core;
 
-use \libs\query_builder\SelectQuery;
+use \Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Цей клас відповідає за отримання зрізів даних з бази даних на основі певних умов. Основні функції
@@ -14,16 +14,16 @@ class RecordSliceRetriever {
 	use traits\SetGet;
 
 	/**
-	 * @var \libs\query_builder\SelectQuery об'єкт класу SelectQuery, який представляє основний
+	 * @var \Doctrine\DBAL\Query\QueryBuilder об'єкт класу QueryBuilder, який представляє основний
 	 * SQL-запит.
 	 */
-	protected \libs\query_builder\SelectQuery $SQL;
+	protected \Doctrine\DBAL\Query\QueryBuilder $QB;
 
 	/**
-	 * @var \libs\query_builder\SelectQuery об'єкт класу SelectQuery, який використовується для
+	 * @var \Doctrine\DBAL\Query\QueryBuilder об'єкт класу QueryBuilder, який використовується для
 	 * підрахунку загальної кількості рядків, що відповідають умовам запиту.
 	 */
-	protected \libs\query_builder\SelectQuery $SQLRowsCount;
+	protected \Doctrine\DBAL\Query\QueryBuilder $QBCount;
 
 	/**
 	 * @var int Порядковий номер першого елемента у поточному зрізі відносно загальної кількості
@@ -61,89 +61,39 @@ class RecordSliceRetriever {
 	/**
 	 *
 	 */
-	public function __construct (SelectQuery $SQL=null) {
-		if (! isset($SQL)) $this->SQL = db_getSelect();
-		else $this->SQL = $SQL;
+	public function __construct (QueryBuilder $QB=null) {
+		$this->QB = $QB;
+		$this->QBCount = clone $QB->setFirstResult(0)->setMaxResults(null);
 	}
 
 	/**
-	 * Ініціалізує та повертає властивість $this->SQLRowsCount.
-	 * @return \libs\query_builder\SelectQuery
+	 * Ініціалізує та повертає властивість $this->QBCount.
+	 * @return \Doctrine\DBAL\Query\QueryBuilder
 	 */
-	protected function get_SQLRowsCount () {
-		if (! isset($this->SQLRowsCount)) {
-			if ($this->SQL->isDistinct()) {
-				$this->SQLRowsCount = db_getSelect();
-				$sql = $this->SQL->prepare()->queryString;
-
-				$this->SQLRowsCount
-					->columns(['C' => $this->SQLRowsCount->raw('count(*)')])
-					->from($this->SQLRowsCount->raw('('. trim($sql, ';') .') AS SUB_FROM'));
-
-				// throw new DbException(5003, [
-				// 	'SQL' => $this->SQL, 'queryString' => $this->SQL->prepare()->queryString
-				// ]);
+	protected function get_QBCount () {
+		if (! isset($this->QBCount)) {
+			if ($this->QB->isDistinct()) {
+				dd($this->QBCount, __FILE__, __LINE__,1);
 			}
 			else {
-				$this->SQLRowsCount = clone $this->SQL;
+				$this->QBCount = clone $this->QB;
 
-				$this->SQLRowsCount
+				$this->QBCount
 					->clearColumns()
 					->clearOffset()
 					->clearLimit()
-					->columns([$this->SQLRowsCount->raw('COUNT(*) AS C')]);
+					->columns([$this->QBCount->raw('COUNT(*) AS C')]);
 			}
 		}
 
-		return $this->SQLRowsCount;
+		return $this->QBCount;
 	}
 
 	/**
 	 *
 	 */
-	protected function set_SQLRowsCount (\libs\query_builder\SelectQuery $SQLRowsCount) {
-		$this->SQLRowsCount = $SQLRowsCount;
-	}
-
-	/**
-	 * @param string|array $table Table name
-	 * @return self
-	 */
-	public function from ($table) {
-		$this->SQL->from($table);
-
-		return $this;
-	}
-
-	/**
-	 * This method will append any passed argument to the list of fields to be selected.
-	 * @param array $columns The columns as array
-	 * @return self
-	 */
-	public function columns (array $columns) {
-		$this->SQL->columns($columns);
-
-		return $this;
-	}
-
-	/**
-	 * Where AND condition.
-	 * @return self
-	 */
-	public function where (string $l, string $op, string $r) {
-		$this->SQL->where($l, $op, $r);
-
-		return $this;
-	}
-
-	/**
-	 * @param string $fields Column name(s)
-	 * @return self
-	 */
-	public function orderBy (string $fields) {
-		$this->SQL->orderBy($fields);
-
-		return $this;
+	protected function set_QBCount (\Doctrine\DBAL\Query\QueryBuilder $QBCount) {
+		$this->QBCount = $QBCount;
 	}
 
 	/**
@@ -151,10 +101,8 @@ class RecordSliceRetriever {
 	 * @return int
 	 */
 	public function getRowsCount () {
-		$c = db_selectCell($this->get_SQLRowsCount());
-		unset($this->SQLRowsCount);
 
-		return $c;
+		return $this->QBCount->executeQuery()->rowCount();
 	}
 
 	/**
@@ -162,7 +110,7 @@ class RecordSliceRetriever {
 	 * @param int $sliceSize максимальна кількість елементів в одному зрізі.
 	 * @return array
 	 */
-	public function select (int $sliceSize, int $sliceNum=1, $mode=\PDO::FETCH_ASSOC) {
+	public function select (int $sliceSize, int $sliceNum=1) {
 		$this->sliceSize = $sliceSize;
 		$this->sliceNum = $sliceNum;
 		$offset = ($this->sliceSize * $sliceNum) - $this->sliceSize;
@@ -170,11 +118,11 @@ class RecordSliceRetriever {
 		$this->numMatchingRecords = $this->getRowsCount();
 		$this->quantity = ceil($this->numMatchingRecords / $this->sliceSize);
 
-		$this->SQL
-			->limit($this->sliceSize)
-			->offset($offset);
+		$this->QB
+			->setFirstResult($offset)
+			->setMaxResults($this->sliceSize);
 
-		return db_select($this->SQL, $mode);
+		return $this->QB->executeQuery()->fetchAllAssociative();
 	}
 
 	/**

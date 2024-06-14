@@ -3,6 +3,9 @@
 namespace core;
 
 use \core\exceptions\DbException;
+use \Doctrine\DBAL\Configuration;
+use \Doctrine\DBAL\DriverManager;
+use \Doctrine\DBAL\ParameterType;
 use \libs\query_builder\Connection;
 use \libs\query_builder\DeleteQuery;
 use \libs\query_builder\InsertQuery;
@@ -19,7 +22,9 @@ class Db {
 	/** [1] Свойства и константы. */
 
 	private \PDO $PDO;
-	private Connection $Connection;
+	private \libs\query_builder\Connection $Connection;
+	private \Doctrine\DBAL\Connection $DTConnection;
+	private \Doctrine\DBAL\Configuration $DTConfig;
   // Если true, то будет сгенерировано исключение и выведен текущий sql-запрос.
 	// Массив данных `information_schema` таблиц текущей БД.
 	private array $tables;
@@ -38,7 +43,40 @@ class Db {
 	/** [1] Геттеры свойств. */
 
 	/**
-	 *
+	 * @return \Doctrine\DBAL\Configuration
+	 */
+	private function get_DTConfig () {
+		if (! isset($this->DTConfig)) {
+			$this->DTConfig = new Configuration();
+
+			if (LogSql) {
+				file_put_contents(DirRoot .'/service/sql_log.log', '');
+				$this->DTConfig->setSQLLogger(new DebugSQLLogger());
+			}
+		}
+
+		return $this->DTConfig;
+	}
+
+	/**
+	 * @return \Doctrine\DBAL\Connection
+	 */
+	private function get_DTConnection () {
+		if (! isset($this->DTConnection)) {
+			$this->DTConnection = DriverManager::getConnection([
+				'dbname' => DbName,
+				'user' => DbUser,
+				'password' => DbPass,
+				'host' => DbHost,
+				'driver' => 'pdo_mysql'
+			], $this->get_DTConfig());
+		}
+
+		return $this->DTConnection;
+	}
+
+	/**
+	 * @return \PDO
 	 */
 	private function get_PDO () {
 
@@ -104,15 +142,14 @@ class Db {
 		$this->Connection = new Connection($this->PDO);
 		$this->queriesCounter = 0;
 
-		$Select = db_getSelect();
-
-		$Select
-			->from('information_schema.TABLES')
-			->columns(['*'])
-			->where('TABLES.TABLE_SCHEMA', '=', DbName)
-			->where($Select->raw('LEFT(TABLES.TABLE_NAME, 3) = "'. DbPrefix .'"'));
-
-		$tblInfo = db_select($Select);
+		$tblInfo = db_DTSelect('*')
+			->from('information_schema.TABLES', 'T')
+			->where('T.TABLE_SCHEMA = :tableSchema')
+			->where('LEFT(T.TABLE_NAME, 3) = :prefix')
+			->setParameter('tableSchema', DbName, ParameterType::STRING)
+			->setParameter('prefix', DbPrefix, ParameterType::STRING)
+			->executeQuery()
+			->fetchAllAssociative();
 
 		for ($i = 0; $i < count($tblInfo); $i++) {
 			$tName = $tblInfo[$i]['TABLE_NAME'];
@@ -274,20 +311,17 @@ class Db {
 	 */
 	public function getTableColumns (string $tName) {
 		if (! isset($this->tblData[$tName]['columns'])) {
-			$SQL = db_getSelect();
+			$colsInfo = db_DTSelect('*')
+				->from('information_schema.COLUMNS', 'CS')
+				->where('CS.TABLE_SCHEMA = :dbName')
+				->andWhere('CS.TABLE_NAME = :tableName')
+				->orderBy('CS.ORDINAL_POSITION', 'ASC')
+				->setParameter('dbName', DbName, ParameterType::STRING)
+				->setParameter('tableName', $tName, ParameterType::STRING)
+				->executeQuery()
+				->fetchAllAssociative();
 
-			$SQL
-				->columns(['*'])
-				->from('information_schema.COLUMNS')
-				->where('COLUMNS.TABLE_SCHEMA', '=', DbName)
-				->where('COLUMNS.TABLE_NAME', '=', $tName)
-				->orderBy('COLUMNS.ORDINAL_POSITION');
-
-			$colsInfo = db_select($SQL);
-
-			if (! $colsInfo) {
-				throw new DbException(5002, ['sql' => $SQL->prepare()]);
-			}
+			if (! $colsInfo) throw new DbException(5002);
 
 			$this->tblData[$tName]['columns'] = [];
 
@@ -338,7 +372,7 @@ class Db {
 			$relatedColumn = ($relatedColumn === 'id') ? $px . $relatedColumn : $relatedColumn;
 
 			// Підготовляємо SQL-запит для отримання інформації про зв'язки.
-			$Sth = db_Db()->PDO->prepare('SELECT rc.CONSTRAINT_CATALOG AS RC_CONSTRAINT_CATALOG, rc.CONSTRAINT_SCHEMA AS RC_CONSTRAINT_SCHEMA, rc.CONSTRAINT_NAME AS RC_CONSTRAINT_NAME, rc.UNIQUE_CONSTRAINT_CATALOG AS RC_UNIQUE_CONSTRAINT_CATALOG, rc.UNIQUE_CONSTRAINT_SCHEMA AS RC_UNIQUE_CONSTRAINT_SCHEMA, rc.UNIQUE_CONSTRAINT_NAME AS RC_UNIQUE_CONSTRAINT_NAME, rc.MATCH_OPTION AS RC_MATCH_OPTION, rc.UPDATE_RULE AS RC_UPDATE_RULE, rc.DELETE_RULE AS RC_DELETE_RULE, rc.TABLE_NAME AS RC_TABLE_NAME, rc.REFERENCED_TABLE_NAME AS RC_REFERENCED_TABLE_NAME, kcu.CONSTRAINT_CATALOG AS KCU_CONSTRAINT_CATALOG, kcu.CONSTRAINT_SCHEMA AS KCU_CONSTRAINT_SCHEMA, kcu.CONSTRAINT_NAME AS KCU_CONSTRAINT_NAME, kcu.TABLE_CATALOG AS KCU_TABLE_CATALOG, kcu.TABLE_SCHEMA AS KCU_TABLE_SCHEMA, kcu.TABLE_NAME AS KCU_TABLE_NAME, kcu.COLUMN_NAME AS KCU_COLUMN_NAME, kcu.ORDINAL_POSITION AS KCU_ORDINAL_POSITION, kcu.POSITION_IN_UNIQUE_CONSTRAINT AS KCU_POSITION_IN_UNIQUE_CONSTRAINT, kcu.REFERENCED_TABLE_SCHEMA AS KCU_REFERENCED_TABLE_SCHEMA, kcu.REFERENCED_TABLE_NAME AS KCU_REFERENCED_TABLE_NAME, kcu.REFERENCED_COLUMN_NAME AS KCU_REFERENCED_COLUMN_NAME FROM information_schema.REFERENTIAL_CONSTRAINTS rc INNER JOIN information_schema.KEY_COLUMN_USAGE kcu ON rc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME WHERE rc.CONSTRAINT_SCHEMA = :dbName AND rc.REFERENCED_TABLE_NAME = :tName  AND kcu.REFERENCED_COLUMN_NAME = :relatedColumn;');
+			$Sth = db_Db()->PDO->prepare('SELECT rc.CONSTRAINT_CATALOG AS RC_CONSTRAINT_CATALOG, rc.CONSTRAINT_SCHEMA AS RC_CONSTRAINT_SCHEMA, rc.CONSTRAINT_NAME AS RC_CONSTRAINT_NAME, rc.UNIQUE_CONSTRAINT_CATALOG AS RC_UNIQUE_CONSTRAINT_CATALOG, rc.UNIQUE_CONSTRAINT_SCHEMA AS RC_UNIQUE_CONSTRAINT_SCHEMA, rc.UNIQUE_CONSTRAINT_NAME AS RC_UNIQUE_CONSTRAINT_NAME, rc.MATCH_OPTION AS RC_MATCH_OPTION, rc.UPDATE_RULE AS RC_UPDATE_RULE, rc.DELETE_RULE AS RC_DELETE_RULE, rc.TABLE_NAME AS RC_TABLE_NAME, rc.REFERENCED_TABLE_NAME AS RC_REFERENCED_TABLE_NAME, kcu.CONSTRAINT_CATALOG AS KCU_CONSTRAINT_CATALOG, kcu.CONSTRAINT_SCHEMA AS KCU_CONSTRAINT_SCHEMA, kcu.CONSTRAINT_NAME AS KCU_CONSTRAINT_NAME, kcu.TABLE_CATALOG AS KCU_TABLE_CATALOG, kcu.TABLE_SCHEMA AS KCU_TABLE_SCHEMA, kcu.TABLE_NAME AS KCU_TABLE_NAME, kcu.COLUMN_NAME AS KCU_COLUMN_NAME, kcu.ORDINAL_POSITION AS KCU_ORDINAL_POSITION, kcu.POSITION_IN_UNIQUE_CONSTRAINT AS KCU_POSITION_IN_UNIQUE_CONSTRAINT, kcu.REFERENCED_TABLE_SCHEMA AS KCU_REFERENCED_TABLE_SCHEMA, kcu.REFERENCED_TABLE_NAME AS KCU_REFERENCED_TABLE_NAME, kcu.REFERENCED_COLUMN_NAME AS KCU_REFERENCED_COLUMN_NAME FROM information_schema.REFERENTIAL_CONSTRAINTS rc INNER JOIN information_schema.KEY_COLUMN_USAGE kcu ON rc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME WHERE rc.CONSTRAINT_SCHEMA = :dbName AND rc.REFERENCED_TABLE_NAME = :tName AND kcu.REFERENCED_COLUMN_NAME = :relatedColumn;');
 
 			// Підставляємо значення параметрів та виконуємо запит.
 			$Sth->execute(['dbName' => $dbName, 'tName' => $tName, 'relatedColumn' => $relatedColumn]);

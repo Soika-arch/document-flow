@@ -8,6 +8,7 @@ use \modules\df\controllers\CronController as DfCronController;
 try {
 
 	require_once 'configs/main.php';
+	require_once DirRoot .'/libs/autoload.php';
 
 	classesAutoload();
 	startApp();

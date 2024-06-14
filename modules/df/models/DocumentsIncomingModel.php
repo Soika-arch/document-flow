@@ -33,21 +33,22 @@ class DocumentsIncomingModel extends MainModel {
 	 */
 	public function listPage (int $pageNum=1) {
 		$d['title'] = 'Вхідні документи - Список';
+		$tName = DbPrefix .'incoming_documents_registry';
+		$colPx = db_Db()->getColPxByTableName($tName);
 
-		$SQLDocs = db_getSelect()
-			->from(DbPrefix .'incoming_documents_registry')
-			->columns([DbPrefix .'incoming_documents_registry.*'])
+		$QB = db_DTSelect(DbPrefix .'incoming_documents_registry.*')
+			->from($tName)
 			->orderBy('idr_id');
 
 		if (isset($_SESSION['getParameters'])) {
-			if (! ($SQLDocs = $this->documentsSearchSQLHendler($SQLDocs))) return false;
+			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
 		}
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
-		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$d['documents'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/df/documents-incoming/list?pg=(:num)');
-		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 

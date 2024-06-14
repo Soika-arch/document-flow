@@ -78,18 +78,19 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0002Page (int $pageNum=1) {
 		$d['title'] = 'Невиконані внутрішні документи';
+		$tName = DbPrefix .'internal_documents_registry';
 
-		$SQLDocs = db_getSelect()
-			->columns([DbPrefix .'internal_documents_registry.*'])
-			->from(DbPrefix .'internal_documents_registry')
-			->where('inr_execution_date', '=', null)
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('inr_execution_date = :executionDate')
+			->setParameter('executionDate', null)
 			->orderBy('inr_id');
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
-		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$d['documents'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0001?pn=(:num)');
-		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 
@@ -125,23 +126,23 @@ class ReportsModel extends MainModel {
 	public function r0003Page (int $pageNum=1) {
 		$d['title'] = 'Виконавці, які не виконали документи';
 
-		$SQLUs = db_getSelect();
-
 		$docTable = DbPrefix .'incoming_documents_registry';
-
-		$SQLUs->distinct()
-			->columns([DbPrefix .'users.*'])
-			->from(DbPrefix .'users')
-			->join($docTable, 'idr_id_assigned_user', '=', 'us_id')
-			->where('idr_execution_date', '=', null)
-			->orderBy('us_id');
-
-
-		$SQLUs = new RecordSliceRetriever($SQLUs);
 		$itemsPerPage = 5;
-		$d['users'] = $SQLUs->select($itemsPerPage, $pageNum);
+		$offset = ($itemsPerPage * 2) - $itemsPerPage;
+
+		$QB = db_DTSelect(DbPrefix .'users.*')
+			->from(DbPrefix .'users')
+			->innerJoin(DbPrefix .'users', $docTable, 'idr', 'idr_id_assigned_user = us_id')
+			->where('idr_execution_date is null')
+			->orderBy('us_id')
+			->setFirstResult($offset)
+			->setMaxResults($itemsPerPage);
+
+		$QBSlice = new RecordSliceRetriever($QB);
+
+		$d['users'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0003?pn=(:num)');
-		$d['Pagin'] = new Paginator($SQLUs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$d['Pagin'] = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$d['Pagin']->setMaxPagesToShow(5);
 
 		return $d;
@@ -153,18 +154,19 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0006Page (int $pageNum=1) {
 		$d['title'] = 'Вхідні документи на контролі';
+		$tName = DbPrefix .'incoming_documents_registry';
 
-		$SQLDocs = db_getSelect()
-			->columns([DbPrefix .'incoming_documents_registry.*'])
-			->from(DbPrefix .'incoming_documents_registry')
-			->where('idr_id_execution_control', '!=', null)
-			->orderBy('idr_id');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('idr_id_execution_control is not :idExecutionControl')
+			->orderBy('idr_id')
+			->setParameter('idExecutionControl', null);
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
-		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$d['documents'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0006?pn=(:num)#pagin');
-		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 
@@ -201,23 +203,22 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0008Page (int $pageNum=1) {
 		$d['title'] = 'Виконавці, які не виконали документи';
-
-		$SQLUs = db_getSelect();
+		$tName = DbPrefix .'users';
 
 		$docTable = DbPrefix .'internal_documents_registry';
 
-		$SQLUs->distinct()
-			->columns([DbPrefix .'users.*'])
-			->from(DbPrefix .'users')
-			->join($docTable, 'inr_id_assigned_user', '=', 'us_id')
-			->where('inr_execution_date', '=', null)
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->join($tName, $docTable, 'inr', 'inr_id_assigned_user = us_id')
+			->where('inr_execution_date = :executionDate')
+			->setParameter('executionDate', null)
 			->orderBy('us_id');
 
-		$SQLUs = new RecordSliceRetriever($SQLUs);
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
-		$d['users'] = $SQLUs->select($itemsPerPage, $pageNum);
+		$d['users'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0008?pn=(:num)');
-		$Pagin = new Paginator($SQLUs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 

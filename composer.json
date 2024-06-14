@@ -1,0 +1,9 @@
+{
+	"config": {
+		"vendor-dir": "libs"
+	},
+	"require": {
+		"doctrine/dbal": "^3.0",
+		"mtdowling/cron-expression": "^1.2"
+	}
+}

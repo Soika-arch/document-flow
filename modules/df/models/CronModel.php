@@ -38,7 +38,7 @@ class CronModel extends MainModel {
 
 			if ($countMsgs = $UsTemp->getUnreadMessagesCount()) {
 				if ($UsTemp->_id_tg) {
-					$msg = "❇️ Ви маєте ". $countMsgs ." непрочитаних [повідомлень](". url('/messages') .")";
+					$msg = "📌 Ви маєте ". $countMsgs ." непрочитаних [повідомлень](". url('/messages') .")";
 					tg_sendMsg($UsTemp->_id_tg, $msg);
 				}
 
@@ -85,8 +85,8 @@ class CronModel extends MainModel {
 				$UsTemp = new users($rowData['us_id']);
 
 				if ($UsTemp->_id_tg) {
-					$msg = "❇ Сьогодні контрольна дата документа [". $Doc->displayedNumber ."](".
-						$Doc->cardURL .").";
+					$msg = "📌 Сьогодні контрольна дата документа [". $Doc->displayedNumber .
+						"](". $Doc->cardURL .").";
 
 					tg_sendMsg($UsTemp->_id_tg, $msg);
 				}
@@ -154,16 +154,17 @@ class CronModel extends MainModel {
 			$superAdmins = users_getByUserStatus('SuperAdmin');
 
 			foreach ($superAdmins as $usRow) {
+				if ($usRow['us_id'] !== 1) continue;
 				sendEmailWithAttachment(
 					$usRow['us_email'],
 					'Виконано автобекап бази даних',
-					'Cron завдання: створено повний бекап бази даних. Час створення: '. $dt .'.',
+					'⏰ *Cron завдання*\n\nСтворено повний бекап бази даних. Час створення: '. $dt .'.',
 					$zipFile, basename($zipFile)
 				);
 
 				tg_sendMsg(
 					$usRow['us_id_tg'],
-					"❇️ Cron завдання: створено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
+					"⏰ *Cron завдання*\n\nСтворено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
 						"Лист з архівом БД відправлено на email: vladimirovichser@gmail.com."
 				);
 			}

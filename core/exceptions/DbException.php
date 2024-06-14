@@ -11,6 +11,8 @@ class DbException extends MainException {
 	 */
 	public function __construct(int $code, array $p=[], \Throwable $previous=null) {
 		// Викликаємо конструктор батьківського класу Exception.
+		$dump = file_get_contents(DirRoot .'/service/sql_log.log');
+		echo str_replace(["  ", "\n"], ["&nbsp;&nbsp;&nbsp;&nbsp;", "<br>"], $dump);
 		parent::__construct($code, $p, $previous);
 	}
 

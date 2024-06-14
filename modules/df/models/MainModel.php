@@ -7,7 +7,6 @@ use \core\models\MainModel as MM;
 use \core\RecordSliceRetriever;
 use \core\User;
 use \libs\Paginator;
-use \libs\query_builder\SelectQuery;
 
 /**
  * Модель типів документів.
@@ -41,26 +40,27 @@ class MainModel extends MM {
 		$args = funcGetArgs(func_get_args());
 		$pageNum = isset($args['pageNum']) ? $args['pageNum'] : 1;
 		$d['title'] = 'ЕД';
+		$tName = DbPrefix . 'incoming_documents_registry';
+		$colPx = db_Db()->getColPxByTableName($tName);
 
-		$SQLDocs = db_getSelect()
-			->from(DbPrefix . 'incoming_documents_registry')
-			->columns([DbPrefix .'incoming_documents_registry.*'])
-			->orderBy('idr_add_date');
+		$QB = db_DTSelect(DbPrefix .'incoming_documents_registry.*')
+			->from($tName)
+			->orderBy('idr_add_date', 'ASC');
 
 		if (isset($_SESSION['getParameters'])) {
-			if (! ($SQLDocs = $this->documentsSearchSQLHendler($SQLDocs))) return false;
-			// dd($SQLDocs->prepare(), __FILE__, __LINE__,1);
+			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
+			// dd($QB->prepare(), __FILE__, __LINE__,1);
 		}
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$QBSlice = new RecordSliceRetriever($QB);
 
 		$itemsPerPage = 5;
 
-		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$d['documents'] = $QBSlice->select($itemsPerPage, $pageNum);
 
 		$url = url('/df/documents-incoming/list?pg=(:num)');
 
-		$d['Pagin'] = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$d['Pagin'] = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 
 		return $d;
 	}
@@ -85,9 +85,9 @@ class MainModel extends MM {
 	}
 
 	/**
-	 * @return SelectQuery|false $SQL
+	 * @return \Doctrine\DBAL\Query\QueryBuilder|false
 	 */
-	protected function documentsSearchSQLHendler (SelectQuery $SQL) {
+	protected function documentsSearchSQLHendler (\Doctrine\DBAL\Query\QueryBuilder $QB, string $tName, string $colPx) {
 		if (isset(rg_Rg()->get('Get')->get['clear'])) {
 			sess_delGetParameters();
 
@@ -98,58 +98,76 @@ class MainModel extends MM {
 		$orJoin = [];
 
 		if (isset($params['d_number'])) {
-			$SQL->where('idr_number', 'like', '%'. $params['d_number'] .'%');
+			$QB
+				->where($colPx .'number like %:dNumber%')
+				->setParameter('dNumber', $params['d_number']);
 		}
 
 		if (isset($params['d_age']) || isset($params['d_month']) || isset($params['d_day'])) {
 			if (isset($params['d_age'])) {
-				$SQL->whereRaw($SQL->raw('year(idr_document_date)') .' = "'.
-					$params['d_age'] .'"');
+				$QB
+					->where('year('. $colPx .'document_date) = :dAge')
+					->setParameter('dAge', $params['d_age']);
 			}
 
 			if (isset($params['d_month'])) {
-				$SQL->whereRaw($SQL->raw('month(idr_document_date)') .' = "'.
-					$params['d_month'] .'"');
+				$QB
+					->where('month('. $colPx .'document_date) = :dMonth')
+					->setParameter('dMonth', $params['d_month']);
 			}
 
 			if (isset($params['d_day'])) {
-				$SQL->whereRaw($SQL->raw('day(idr_document_date)') .' = "'.
-					$params['d_day'] .'"');
+				$QB
+					->where('day('. $colPx .'document_date) = :dDay')
+					->setParameter('dDay', $params['d_day']);
 			}
 		}
 		else if (isset($params['d_date_from']) || isset($params['d_date_until'])) {
 			if (isset($params['d_date_from']) && isset($params['d_date_until'])) {
-				$SQL->whereRaw('idr_document_date >= "'. $params['d_date_from'] .'"'.
-					' and idr_document_date <= "'. $params['d_date_until'] .'"');
+				$QB->where($colPx .'document_date >= :dDateFrom and '. $colPx .'document_date <= :dDateUntil')
+					->setParameter('dDateFrom', $params['d_date_from'])
+					->setParameter('dDateUntil', $params['d_date_until']);
 			}
 			else if (isset($params['d_date_from'])) {
-				$SQL->whereRaw('idr_document_date >= "'. $params['d_date_from'] .'"');
+				$QB
+					->where($colPx .'document_date >= :dDateFrom')
+					->setParameter('dDateFrom', $params['d_date_from']);
 			}
 			else if (isset($params['d_date_until'])) {
-				$SQL->whereRaw('idr_document_date <= "'. $params['d_date_until'] .'"');
+				$QB
+					->where($colPx .'document_date <= :dDateUntil')
+					->setParameter('dDateUntil', $params['d_date_until']);
 			}
 		}
 
 		if (isset($params['d_location'])) {
-			$SQL
-				->join(DbPrefix .'departments', 'dp_id', '=', 'idr_id_document_location')
-				->where('idr_id_document_location', '=', $params['d_location']);
+			$QB
+				->join($tName, DbPrefix .'departments', 'dep', 'dp_id = '. $colPx .'id_document_location')
+				->where($colPx .'id_document_location = :dLocation')
+				->setParameter('dLocation', $params['d_location']);
 		}
 
 		if (isset($params['d_sender_external'])) {
-			$SQL
-				->join(DbPrefix .'document_senders', 'dss_id', '=', 'idr_id_sender')
-				->where('idr_id_sender', '=', $params['d_sender_external']);
+			$QB
+				->join($tName, DbPrefix .'document_senders', 'ds', 'dss_id = '. $colPx .'id_sender')
+				->where($colPx .'id_sender = :dSenderExternal')
+				->setParameter('dSenderExternal', $params['d_sender_external']);
 		}
 
 		if (isset($params['d_recipient_user'])) {
-			$orJoin['users'][] = 'us_id = idr_id_recipient';
-			$SQL->where('idr_id_recipient', '=', $params['d_recipient_user']);
+			$orJoin['users'][] = 'us_id = '. $colPx .'id_recipient';
+
+			$QB
+				->where($colPx .'id_recipient = :dRecipientUser')
+				->setParameter('dRecipientUser', $params['d_recipient_user']);
 		}
 
 		if (isset($params['d_registrar_user'])) {
-			$orJoin['users'][] = 'us_id = idr_id_user';
-			$SQL->where('idr_id_user', '=', $params['d_registrar_user']);
+			$orJoin['users'][] = 'us_id = '. $colPx .'id_user';
+
+			$QB
+				->where($colPx .'id_user = :dRegistrarUser')
+				->setParameter('dRegistrarUser', $params['d_registrar_user']);
 		}
 
 		if ($orJoin) {
@@ -162,11 +180,11 @@ class MainModel extends MM {
 
 				if (strpos($strJoin, ' or ') === 0) $strJoin = substr($strJoin, 4);
 
-				$SQL->joinRaw(DbPrefix . $table, $strJoin);
+				$QB->join($tName, DbPrefix . $table, $table, $strJoin);
 			}
 		}
 
-		return $SQL;
+		return $QB;
 	}
 
 	/**
