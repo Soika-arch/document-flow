@@ -19,7 +19,7 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-e('<form name="inc_card_action" class="fm document-card" action="'.
+e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document-card" action="'.
 	url('/df/documents-incoming/card-action?n='. $docNumber) .'" method="POST">');
 
 	if (isset($d['documentTypes']) && $d['documentTypes']) {
@@ -200,6 +200,8 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 			e('<input type="date" id="dDate" name="dDate" value="'.
 				($DocumentDate ? $DocumentDate->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox" name="dDateDel" title="Видалити">');
 		}
 		else {
 			e('<h3>Дата документа</h3>');
@@ -390,6 +392,9 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 			e('<input type="date" id="dIsReceivedExecutorUser" name="dIsReceivedExecutorUser" value="'.
 				($ReceivedExecutorUserDate ? $ReceivedExecutorUserDate->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox"'.
+				' name="dIsReceivedExecutorUserDel" title="Видалити">');
 		}
 		else {
 			e('<h3>Отримано виконавцем користувачем</h3>');
@@ -434,7 +439,7 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 	if ($Doc->NextControlDate) {
 		e('<div class="label_block">');
 
-			e('<h3>Наступна дата контролю</h3>');
+			e('<h3>Поточна дата контролю</h3>');
 			e('<div>'. $Doc->NextControlDate->format('d.m.Y') .'</div>');
 
 		e('</div>');
@@ -454,6 +459,9 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 			e('<input type="date" id="dDueDateBefore" name="dDueDateBefore" value="'.
 				($DueDateBefore ? $DueDateBefore->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox"'.
+				' name="dDueDateBeforeDel" title="Видалити">');
 		}
 		else {
 			e('<h3>Отримано виконавцем користувачем</h3>');
@@ -472,13 +480,16 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 		}
 
 		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-			e('<label for="dExecutionDate">Дата виконання</label>');
+			e('<label id="dExecutionDateAnchor" for="dExecutionDate">Дата виконання</label>');
 
 			e('<input type="date" id="dExecutionDate" name="dExecutionDate" value="'.
 				($ExecutionDate ? $ExecutionDate->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox"'.
+				' name="dExecutionDateDel" title="Видалити">');
 		}
 		else {
-			e('<h3>Дата виконання</h3>');
+			e('<h3 id="dExecutionDateAnchor">Дата виконання</h3>');
 			e('<div>'. ($ExecutionDate ? $ExecutionDate->format('d.m.Y') : 'Не встановлено') .'</div>');
 		}
 
@@ -548,7 +559,8 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 				e('<label for="dIdRresolution">Резолюція</label>');
 				e('<select id="dIdRresolution" name="dIdRresolution">');
 
-					if (! ($Resolution = $Doc->Resolution)) e('<option></option>');
+					$Resolution = $Doc->Resolution;
+					e('<option></option>');
 
 					foreach ($d['resolutions'] as $row) {
 						if ($Resolution && ($row['drs_id'] === $Resolution->_id)) {
@@ -609,6 +621,13 @@ e('<form name="inc_card_action" class="fm document-card" action="'.
 
 		e('<div>'. $downloadLink .'.</div>');
 	e('</div>');
+
+	if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+		e('<div class="label_block">');
+			e('<label for="dFile">Замінити файл документу</label>');
+			e('<input type="file" name="dFile">');
+		e('</div>');
+	}
 
 	if ($Us->Status->_access_level < 4) {
 		e('<div>');

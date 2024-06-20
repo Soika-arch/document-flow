@@ -55,18 +55,19 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0004Page (int $pageNum=1) {
 		$d['title'] = 'Виконані вхідні документи';
+		$tName = DbPrefix .'incoming_documents_registry';
 
-		$SQLDocs = db_getSelect()
-			->columns([DbPrefix .'incoming_documents_registry.*'])
-			->from(DbPrefix .'incoming_documents_registry')
-			->where('idr_execution_date', '!=', null)
-			->orderBy('idr_id');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('idr_execution_date is not :executionDate')
+			->orderBy('idr_id')
+			->setParameter('executionDate', null);
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
-		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
+		$d['documents'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0004?pn=(:num)#pagin');
-		$Pagin = new Paginator($SQLDocs->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$Pagin->setMaxPagesToShow(5);
 		$d['Pagin'] = $Pagin;
 

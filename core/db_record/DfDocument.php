@@ -183,7 +183,7 @@ class DfDocument extends DbRecord {
 				$str = str_replace(DbPrefix, '', $this->tName);
 				$str = substr($str, 0, strpos($str, '_'));
 
-				$this->cardURL = url('/'. URIModule .'/documents-'. $str .'/card?n='.
+				$this->cardURL = url('/df/documents-'. $str .'/card?n='.
 					str_replace('inc_', '', $this->_number));
 			}
 			else {

@@ -11,6 +11,7 @@ e('<html lang="uk">');
 	e('<head>');
 		e('<meta charset="UTF-8">');
 		e('<meta name="viewport" content="width=device-width, initial-scale=1">');
+		e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/bootstrap.css">');
 		e('<link rel="stylesheet" type="text/css" href="'. url('/css') .'/'. MainCssName .'.css">');
 
 		if (URIModule) {

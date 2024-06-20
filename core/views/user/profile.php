@@ -21,6 +21,11 @@ e('<div class="user-profile">');
 	e('</div>');
 
 	e('<div class="item">');
+		e('<span class="header-field">Статус</span>');
+		e('<span class="profile-data">'. $d['User']->Status->_description .'</span>');
+	e('</div>');
+
+	e('<div class="item">');
 		e('<span class="header-field">Останнє відвідування</span>');
 		e('<span class="profile-data">'. $d['User']->getLastVisitTime($d['User']->_id) .'<span>');
 	e('</div>');

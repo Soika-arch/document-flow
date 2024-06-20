@@ -38,7 +38,7 @@ class MainController {
 	}
 
 	/**
-	 * Сторінка ''.
+	 * Сторінка '/'.
 	 */
 	public function mainPage () {
 		$d = $this->Model->mainPage();
@@ -101,7 +101,7 @@ class MainController {
 	 */
 	public function loadModule () {
 		if (URIModule) {
-			$moduleFile = DirModules .'/'. URIModule .'/'. URIModule .'.php';
+			$moduleFile = DirModules .'/'. URIModule .'/load.php';
 
 			if (is_file($moduleFile)) require_once $moduleFile;
 		}

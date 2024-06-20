@@ -42,6 +42,120 @@
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Головне меню адмін-панель - бібліотека. */
+
+.lib-main-menu {
+	padding: 20px 10px 0px 20px;
+}
+
+.lib-main-menu .menu-elem {
+	padding: 0px 0px 10px 0px;
+}
+
+.lib-main-menu a {
+	display: inline-block;
+	padding: 2px 0px 2px 5px;
+	width: 99%;
+	font-size: 20px;
+	text-decoration: none;
+	background-color: #f0f0f0;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Головне меню головної сторінки управління cron задачами. */
+
+.cron-main-menu {
+	padding: 20px 10px 0px 20px;
+}
+
+.cron-main-menu .menu-elem {
+	padding: 0px 0px 10px 0px;
+}
+
+.cron-main-menu a {
+	display: inline-block;
+	padding: 2px 0px 2px 5px;
+	width: 99%;
+	font-size: 20px;
+	text-decoration: none;
+	background-color: #f0f0f0;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Список cron задач. */
+
+.cron-list {
+	padding: 10px 10px 0px 10px;
+}
+
+.cron-block {
+	display: flex;
+	justify-content: flex-start;
+	padding-bottom: 5px;
+	/* border: silver 1px solid; */
+}
+
+.cron-block .cron-num, .cron-block .cron-method, .cron-block .cron-description,
+.cron-block .cron-schedule, .cron-block .cron-is_active, .cron-block .cron-last_run,
+.cron-block .cron-next_run, .cron-block .cron-task_menu {
+	display: flex;
+	border: silver 1px solid;
+}
+
+.cron-num {
+	justify-content: center;
+	align-items: center;
+	width: 25px;
+}
+
+.cron-method {
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+}
+
+.cron-description {
+	align-items: center;
+	width: 600px;
+}
+
+.cron-schedule {
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+}
+
+.cron-is_active {
+	justify-content: center;
+	align-items: center;
+	width: 20px;
+}
+
+.cron-last_run {
+	justify-content: center;
+	align-items: center;
+	width: 130px;
+}
+
+.cron-next_run {
+	justify-content: center;
+	align-items: center;
+	width: 130px;
+}
+
+.cron-task_menu {
+	justify-content: center;
+	align-items: center;
+	padding: 0 3px;
+}
+
+.cron-task_menu .img-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Головне меню адмін-панелі. */
 
 .admin-main-menu {

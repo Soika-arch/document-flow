@@ -16,8 +16,13 @@ class internal_documents_registry extends DfDocument {
 	// Відділ який відповідає за виконання.
 	protected departments $ResponsibleDepartament;
 	// Чергова дата контролю, яка вираховується на основі поля idr_add_date.
-	protected \DateTime|null $NextControlDate;
+	protected \DateTime|false $NextControlDate;
 	protected document_control_types $ControlType;
+	// Якщо дата до якої треба виконати в минулому. Якщо дата до якої треба виконати не встановлена -
+	// 0, якщо дата у майбутньому - 1, якщо дата до якої треба виконати у минулому - 2.
+	protected int $isOverdue;
+	// Чи настав час нагадування про дату до якої треба виконати.
+	protected bool $remindAboutDueDate;
 
 	/**
 	 *
@@ -111,7 +116,8 @@ class internal_documents_registry extends DfDocument {
 	}
 
 	/**
-	 * // Ініціалізує та повертає об'єкт \DateTime наступної дати контролю.
+	 * Ініціалізує та повертає об'єкт \DateTime наступної дати контролю.
+	 * Дата контролю починає обчислюватись тільки після отримання документа призначеним виконавцем.
 	 * @return \DateTime|null
 	 */
 	protected function get_NextControlDate () {
@@ -129,8 +135,7 @@ class internal_documents_registry extends DfDocument {
 				$diffSeconds = (new \DateTime())->getTimestamp() - $StartDate->getTimestamp();
 
 				// Кількість повних періодів, що пройшли з початкової дати.
-				if ($period) $periodsPassed = floor($diffSeconds / $period);
-				else $periodsPassed = 0;
+				$periodsPassed = $period ? floor($diffSeconds / $period) : 0;
 
 				// Вирахування часу наступної контрольної дати.
 				// Якщо чергова контрольна дата сьогодні - встановлюється сьогоднішня дата,
@@ -146,10 +151,37 @@ class internal_documents_registry extends DfDocument {
 				$this->NextControlDate = (new \DateTime())->setTimestamp($nextExecutionTime);
 			}
 			else {
-				$this->NextControlDate = null;
+				$this->NextControlDate = false;
 			}
 		}
 
 		return $this->NextControlDate;
+	}
+
+	/**
+	 * @return int (0|1|2)
+	 */
+	protected function get_isOverdue () {
+		if (! isset($this->isOverdue)) {
+			if ($this->_control_date) {
+				$this->isOverdue = (time() > strtotime($this->_control_date)) ? 2 : 1;
+			}
+			else {
+				$this->isOverdue = 0;
+			}
+		}
+
+		return $this->isOverdue;
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function get_remindAboutDueDate () {
+		if (! isset($this->remindAboutDueDate)) {
+			$this->remindAboutDueDate = time() >= (strtotime($this->_control_date) - 172800);
+		}
+
+		return $this->remindAboutDueDate;
 	}
 }

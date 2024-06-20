@@ -23,6 +23,90 @@ h2 {
 	padding: 10px 20px 10px 20px;
 }
 
+.checkbox-date-removing {
+	transform: scale(2);
+  opacity: 0.5;
+	margin-left: 20px;
+  cursor: pointer;
+	accent-color: red;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Стиль для стандартного img-btn. */
+
+/* Клас для тега a */
+.img-btn {
+	display: inline-block;
+	vertical-align: baseline;
+	width: 20px;
+	height: 20px;
+}
+
+.img-btn img {
+	display: inline-block;
+	/* padding: 3px 3px 0px 3px; */
+	vertical-align: baseline;
+	width: 20px;
+	height: 20px;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Стандартна div адаптивна таблиця. */
+
+.tbl {
+
+}
+
+.tbl-menu {
+	display: flex;
+	border: silver 1px solid;
+}
+
+.tbl-menu button {
+	border-radius: 5px;
+	border-color: #e2e5e9;
+}
+
+.tbl-menu button:hover {
+	background-color: #ccc;
+}
+
+.tbl .tbl-header {
+	display: flex;
+	border: silver 1px solid;
+	border-radius: 5px;
+}
+
+.tbl .tbl-header .tbl-th {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-weight: bold;
+	/* border: silver 1px solid; */
+}
+
+/* Клас для тега div рядка таблиці. */
+.tbl .tbl-body .tbl-tr {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	border-radius: 7px;
+	/* border: silver 1px solid; */
+}
+
+/* Клас для тега span клітинки таблиці. */
+.tbl .tbl-body .tbl-td {
+	display: flex;
+	/* border: silver 1px solid; */
+}
+
+@media (max-width: 1200px) {
+	.tbl .tbl-header {
+		display: none;
+	}
+}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Сторінка профіля користувача. */
 
@@ -116,7 +200,7 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 }
 
 .fm input[type="date"] {
-  width: 100%;
+  width: 90%;
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -208,22 +292,28 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 	padding: 20px 10px 0px 10px;
 }
 
-.user-messages .fm-menu {
+.fm-menu {
 	display: inline-block;
 	width: 99%;
-	padding: 20px 0px 20px 10px;
+	padding: 10px 0px 10px 10px;
 }
 
-.user-messages .fm-menu .fm-menu-elem {
+.fm-menu .fm-menu-elem {
 	border: 0px;
-	border-radius: 15px;
 	cursor: pointer;
+	border: silver 1px solid;
+	border-radius: 7px;
 }
 
-.user-messages .fm-menu .img-button {
+.fm-menu .img-button {
 	display: inline-block;
-	width: 25px;
-	height: 25px;
+	padding: 3px 3px 0px 3px;
+	width: 20px;
+	height: 20px;
+}
+
+.fm-menu .fm-menu-elem:hover {
+	background-color: #dddcdc;
 }
 
 .user-messages .message {

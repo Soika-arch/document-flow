@@ -1,9 +1,9 @@
 <?php
 
+use \core\controllers\CronController;
 use \core\exceptions\ClassException;
 use \core\exceptions\DbException;
 use \core\User;
-use \modules\df\controllers\CronController as DfCronController;
 
 try {
 
@@ -25,9 +25,7 @@ try {
 	if (isCron()) {
 		// Cron.
 
-		$Controller = new DfCronController();
-		$Controller->loadModule();
-		$Controller->mainPage();
+		(new CronController())->run();
 	}
 	else {
 		// Інший користувач.

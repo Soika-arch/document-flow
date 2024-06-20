@@ -92,131 +92,141 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Журнал документів. */
 
-.document-list {
-	padding: 10px 10px 0px 10px;
-	font-size: 18px;
-	/* border: silver 1px solid; */
+.doc_list {
+	font-size: 20px;
+	padding: 5px 10px 0px 15px;
 }
 
-.document-list .doc-header {
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	margin: 0px 0px 10px 0px;
-	border: silver 1px solid;
-}
-
-/* Адаптивний дизайн для мобільних пристроїв. */
-@media (max-width: 1200px) {
-  .document-list .doc-header {
-		display: none;
-	}
-}
-
-.document-list .header-num, .header-title, .header-date, .header-number, .header-executor,
-.header-resolution, .header-location {
-	display: flex;
-	justify-content: center;
-	text-align: center;
-	height: 100%;
-	font-weight: bolder;
-	/* border: silver 1px solid; */
-}
-
-.document-list .header-num {
+.doc_list .h-num {
 	width: 40px;
 }
 
-.document-list .header-title {
-	width: 280px;
+.doc_list .h-title {
+	width: 400px;
 }
 
-.document-list .header-date {
-	width: 100px;
-}
-
-.document-list .header-number {
+.doc_list .h-date {
 	width: 140px;
 }
 
-.document-list .header-executor {
+.doc_list .h-d_num {
 	width: 160px;
 }
 
-.document-list .header-resolution {
-	width: 160px;
+.doc_list .h-executon_user {
+	width: 210px;
 }
 
-.document-list .header-location {
-	width: 270px;
+.doc_list .h-resolution {
+	width: 230px;
 }
 
-.document-list .doc-block {
-	display: flex;
-	flex-wrap: wrap;
-	margin: 0px 0px 10px 0px;
-	font-size: 18px;
+.doc_list .tbl-header {
+	margin-bottom: 7px;
 	background-color: #f0f0f0;
-	/* border: silver 1px solid; */
 }
 
-.document-list .doc-block:hover {
-	background-color: #f4f3ed;
+.doc_list .tbl-tr {
+	margin-bottom: 7px;
 }
 
-.document-list .doc-num, .doc-title, .doc-title a, .doc-date, .doc-number, .doc-executor,
-.doc-resolution, .doc-location {
+.doc_list .tbl-tr:nth-child(odd) {
+	background-color: #f6f3f3;/* фон нечетных строк */
+}
+
+/* .img-btn для тега a */
+.doc_list .img-btn {
 	display: flex;
 	align-items: center;
-	height: auto;
+	justify-content: center;
+}
+
+.doc_list .d_title {
+	display: flex;
+	align-items: center;
+	width: 440px;
 	/* border: silver 1px solid; */
 }
 
-.document-list .doc-num {
+.doc_list .num {
+	display: flex;
+	align-items: center;
 	justify-content: center;
+	width: 45px;
+	/* border: silver 1px solid; */
+}
+
+.doc_list .del-checkbox {
+	display: flex;
+  cursor: pointer;
+	accent-color: red;
+	cursor: pointer;
+	margin: 0px 5px 0px 5px;
+	/* border: silver 1px solid; */
+}
+
+.doc_list .d_title a {
+	display: flex;
+	padding: 3px 3px 3px 3px;
+	text-decoration: none;
+	/* border: silver 1px solid; */
+}
+
+.doc_list .d_date {
+	display: flex;
+	align-items: center;
 	text-align: center;
-	width: 40px;
+	justify-content: center;
+	width: 140px;
+	/* border: silver 1px solid; */
 }
 
-.document-list .doc-title {
-	padding-left: 5px;
-	width: 280px;
+.doc_list .doc_num {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 2px;
+	width: 160px;
 }
 
-.document-list .doc-title a {
-	width: 100%;
-	color: rgb(3, 0, 198);
+.doc_list .d_executor {
+	align-items: center;
+	justify-content: center;
+	margin-left: 2px;
+	width: 210px;
+}
+
+.doc_list .d_executor a {
 	text-decoration: none;
 }
 
-.document-list .doc-title a:hover {
-	color: #9c0683;
-	background-color: #fffef8;
-}
-
-.document-list .doc-date {
+.doc_list .d_resolution {
+	align-items: center;
 	justify-content: center;
-	width: 100px;
+	width: 230px;
 }
 
-.document-list .doc-number {
-	justify-content: center;
-	width: 140px;
-}
+@media (max-width: 1200px) {
+	.doc_list .tbl-tr {
+		flex-wrap: wrap;
+		margin-bottom: 15px;
+		border-radius: 15px;
+		background-color: #f0f0f0;
+		box-shadow: 5px 5px 5px #dce3e5;
+	}
 
-.document-list .doc-executor {
-	justify-content: center;
-	width: 160px;
-}
+	.doc_list .d_title, .doc_list .d_date, .doc_list .doc_num, .doc_list .d_executor,
+	.doc_list .d_resolution {
+		width: 100%;
+	}
 
-.document-list .doc-resolution {
-	padding-left: 5px;
-	width: 160px;
-}
+	.doc_list .doc_num {
+		margin: 0px 4px 3px 4px;
+	}
 
-.document-list .doc-location {
-	padding-left: 5px;
-	width: 270px;
+	.doc_list .d_executor {
+		margin: 0px 4px 0px 4px;
+	}
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

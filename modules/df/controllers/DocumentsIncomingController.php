@@ -62,6 +62,33 @@ class DocumentsIncomingController extends MC {
 			],
 		]);
 
+		if ($_POST) {
+			$Post = new Post('doc_list', [
+				'docsId' => [
+					'type' => 'array',
+					'isRequired' => false,
+					'pattern' => '^\d{1,5}$',
+				],
+				'deleteDocuments' => [
+					'type' => 'varchar',
+					'isRequired' => true,
+					'pattern' => '^$'
+				],
+			]);
+
+			if (isset($_POST['deleteDocuments']) && ($Us->Status->_access_level < 3)) {
+				if (isset($_POST['docsId'])) {
+					$affectedRows = $this->Model->toTrashBinDocuments();
+
+					if ($affectedRows > 0) {
+						sess_addSysMessage('Документи переміщені в корзину');
+					}
+				}
+			}
+
+			hd_sendHeader('Location: '. url('/df/documents-incoming/list'), __FILE__, __LINE__);
+		}
+
 		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
 
 		$d = $this->Model->listPage($pageNum);
@@ -240,6 +267,26 @@ class DocumentsIncomingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^('. $regexp['date'] .')?$'
 			],
+			'dDateDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
+			],
+			'dIsReceivedExecutorUserDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
+			],
+			'dDueDateBeforeDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
+			],
+			'dExecutionDateDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
+			],
 			'bt_edit' => [
 				'type' => 'varchar',
 				'isRequired' => true,
@@ -249,6 +296,12 @@ class DocumentsIncomingController extends MC {
 
 		/** @var incoming_documents_registry|false */
 		$Doc = $this->Model->cardActionPage();
+
+		if (isset($_FILES['dFile']) && $_FILES['dFile']['name']) {
+			$replRes = $this->Model->replaceDocumentFile($Doc);
+
+			if ($replRes) sess_addSysMessage('Файл документу замінено');
+		}
 
 		$num = $Doc ? $Doc->_number : $Get->get['n'];
 

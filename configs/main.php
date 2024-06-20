@@ -8,7 +8,7 @@ date_default_timezone_set('Europe/Kiev');
 setlocale(LC_ALL, 'uk_UA');
 
 /** @var string Назва сайту. */
-const SiteName = 'Електронний документообіг';
+const SiteName = 'Реєстрація документів';
 /** @var string Назва головного файлу css стилей. */
 const MainCssName = 'main';
 /** @var bool Чи треба контролювати максимальний час сесії користувача. */

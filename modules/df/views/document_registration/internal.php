@@ -28,7 +28,7 @@ e('<div class="fm">');
 		e('<div class="label_block">');
 			e('<label for="dAdditionalNumber">Додатковий номер документа</label>');
 			e('<div>');
-				e('<input type="text" name="dAdditionalNumber">');
+				e('<input type="text" name="dAdditionalNumber" pattern="^(.{0,8})?$">');
 			e('</div>');
 		e('</div>');
 

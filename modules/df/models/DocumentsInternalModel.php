@@ -33,7 +33,7 @@ class DocumentsInternalModel extends MainModel {
 	 * @return array
 	 */
 	public function listPage (int $pageNum=1) {
-		$d['title'] = 'Внутрішні документи - Список';
+		$d['title'] = 'Журнал внутрішніх документів';
 		$tName = DbPrefix .'internal_documents_registry';
 		$colPx = db_Db()->getColPxByTableName($tName);
 

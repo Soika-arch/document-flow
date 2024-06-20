@@ -489,13 +489,13 @@ e('<form name="int_card_action" class="fm document-card" action="'.
 		}
 
 		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-			e('<label for="dExecutionDate">Дата виконання</label>');
+			e('<label id="dExecutionDateAnchor" for="dExecutionDate">Дата виконання</label>');
 
 			e('<input type="date" id="dExecutionDate" name="dExecutionDate" value="'.
 				($ExecutionDate ? $ExecutionDate->format('Y-m-d') : '') .'">');
 		}
 		else {
-			e('<h3>Дата виконання</h3>');
+			e('<h3 id="dExecutionDateAnchor">Дата виконання</h3>');
 			e('<div>'. ($ExecutionDate ? $ExecutionDate->format('d.m.Y') : 'Не встановлено') .'</div>');
 		}
 

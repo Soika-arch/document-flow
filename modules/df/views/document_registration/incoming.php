@@ -113,7 +113,7 @@ e('<div class="fm">');
 		e('<div class="label_block">');
 			e('<label for="dOutgoingNumber">Номер відповідного вихідного документа</label>');
 			e('<div>');
-				e('<input type="text" name="dOutgoingNumber">');
+				e('<input type="text" name="dOutgoingNumber" pattern="^(OUT_\d{8})?$">');
 			e('</div>');
 		e('</div>');
 

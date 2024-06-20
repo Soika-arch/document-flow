@@ -12,9 +12,7 @@ class MainModel {
 	/**
 	 *
 	 */
-	public function __construct () {
-		// dd($this, __FILE__, __LINE__);
-	}
+	public function __construct () {}
 
 	/**
 	 * Повертає дані для сторінки ''.

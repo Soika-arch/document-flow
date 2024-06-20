@@ -33,19 +33,17 @@ class SecurityModel extends MainModel {
 	 */
 	public function visitsListPage (int $pageNum=1) {
 		$d['title'] = 'Адмін-панель - відвідувачі';
+		$tName = DbPrefix .'visitor_routes';
 
-		$SQL = (new RecordSliceRetriever())
-			->from(DbPrefix .'visitor_routes')
-			->columns([DbPrefix .'visitor_routes.*'])
-			->orderBy('vr_add_date desc');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->orderBy('vr_add_date', 'desc');
 
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 20;
-
-		$d['visitors'] = $SQL->select($itemsPerPage, $pageNum);
-
+		$d['visitors'] = $QBSlice->select($itemsPerPage, $pageNum);
 		$url = url('/ap/security/visits-list?pn=(:num)#pagin');
-
-		$Pagin = new Paginator($SQL->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 
 		$d['Pagin'] = $Pagin;
 

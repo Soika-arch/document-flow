@@ -106,20 +106,17 @@ class UsersModel extends MainModel {
 	 */
 	public function listPage (int $pageNum=1) {
 		$d['title'] = 'Адмін-панель - Користувачі';
+		$tName = DbPrefix .'users';
 
-		$SQLUsers = (new RecordSliceRetriever())
-			->from('df_users')
-			->columns(['df_users.*'])
-			->orderBy('us_add_date');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->orderBy('us_add_date', 'desc');
 
+		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
-
-		$d['users'] = $SQLUsers->select($itemsPerPage, $pageNum);
-
-		$url = url('/ap/users/list?pg=(:num)');
-
-		$Pagin = new Paginator($SQLUsers->getRowsCount(), $itemsPerPage, $pageNum, $url);
-
+		$d['users'] = $QBSlice->select($itemsPerPage, $pageNum);
+		$url = url('/ap/users/list?pg=(:num)#pagin');
+		$Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
 		$d['Pagin'] = $Pagin;
 
 		return $d;

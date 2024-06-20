@@ -154,19 +154,23 @@ class CronModel extends MainModel {
 			$superAdmins = users_getByUserStatus('SuperAdmin');
 
 			foreach ($superAdmins as $usRow) {
-				if ($usRow['us_id'] !== 1) continue;
-				sendEmailWithAttachment(
-					$usRow['us_email'],
-					'Виконано автобекап бази даних',
-					'⏰ *Cron завдання*\n\nСтворено повний бекап бази даних. Час створення: '. $dt .'.',
-					$zipFile, basename($zipFile)
-				);
+				// if ($usRow['us_id'] !== 1) continue;
+				if ($usRow['us_email']) {
+					sendEmailWithAttachment(
+						$usRow['us_email'],
+						'Виконано автобекап бази даних',
+						'⏰ *Cron завдання*\n\nСтворено повний бекап бази даних. Час створення: '. $dt .'.',
+						$zipFile, basename($zipFile)
+					);
+				}
 
-				tg_sendMsg(
-					$usRow['us_id_tg'],
-					"⏰ *Cron завдання*\n\nСтворено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
-						"Лист з архівом БД відправлено на email: vladimirovichser@gmail.com."
-				);
+				if ($usRow['us_id_tg']) {
+					tg_sendMsg(
+						$usRow['us_id_tg'],
+						"⏰ *Cron завдання*\n\nСтворено повний бекап бази даних. Час створення: `". $dt ."`.\n\n".
+							"Лист з архівом БД відправлено на email: vladimirovichser@gmail.com."
+					);
+				}
 			}
 		}
 

@@ -6,8 +6,11 @@ var divRecipientExternal = document.getElementById('divRecipientExternal');
 var divRecipientUser = document.getElementById('divRecipientUser');
 
 var notification = document.getElementById('notification');
+var documentDirection = document.getElementById('documentDirection');
+var searchData = document.getElementById('searchData');
+searchData.style.display = 'none';
 
-document.getElementById('documentDirection').addEventListener('change', function(event) {
+documentDirection.addEventListener('change', function(event) {
 	if (clearSelectValues()) {
 		showNotification('Увага! Деякі обрані значення фільтрів були очищені!');
 	}
@@ -74,11 +77,14 @@ function clearSelectValues () {
 	return isClear;
 }
 
-document.getElementById('documentDirection').addEventListener('change', function() {
+documentDirection.addEventListener('change', function() {
 	divSenderUser.style.display = 'none';
 	divSenderExternal.style.display = 'none';
 	divRecipientExternal.style.display = 'none';
 	divRecipientUser.style.display = 'none';
+
+	if (this.value !== '') searchData.style.display = 'block';
+	else searchData.style.display = 'none';
 
 	clearSelectValues();
 
@@ -182,3 +188,4 @@ dDateUntil.addEventListener('input', function() {
 		}, 500); // Задержка 500 мс для завершения scrollIntoView
 	}
 });
+

@@ -39,13 +39,15 @@ class MainModel extends MM {
 	public function mainPage () {
 		$args = funcGetArgs(func_get_args());
 		$pageNum = isset($args['pageNum']) ? $args['pageNum'] : 1;
-		$d['title'] = 'ЕД';
+		$d['title'] = 'Журнал вхідних документів';
 		$tName = DbPrefix . 'incoming_documents_registry';
 		$colPx = db_Db()->getColPxByTableName($tName);
 
 		$QB = db_DTSelect(DbPrefix .'incoming_documents_registry.*')
 			->from($tName)
-			->orderBy('idr_add_date', 'ASC');
+			->where('idr_trash_bin is :trashBin')
+			->orderBy('idr_add_date', 'ASC')
+			->setParameter('trashBin', null);
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
@@ -99,8 +101,8 @@ class MainModel extends MM {
 
 		if (isset($params['d_number'])) {
 			$QB
-				->where($colPx .'number like %:dNumber%')
-				->setParameter('dNumber', $params['d_number']);
+				->where($colPx .'number like :dNumber')
+				->setParameter('dNumber', '%'. $params['d_number'] .'%');
 		}
 
 		if (isset($params['d_age']) || isset($params['d_month']) || isset($params['d_day'])) {

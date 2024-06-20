@@ -2,8 +2,11 @@
 
 namespace modules\df\models;
 
+use \core\db_record\DfDocument;
 use \core\db_record\incoming_documents_registry;
 use \core\RecordSliceRetriever;
+use \Doctrine\DBAL\ArrayParameterType;
+use \Doctrine\DBAL\ParameterType;
 use \libs\Paginator;
 use \modules\df\models\MainModel;
 
@@ -32,13 +35,15 @@ class DocumentsIncomingModel extends MainModel {
 	 * @return array|false
 	 */
 	public function listPage (int $pageNum=1) {
-		$d['title'] = 'Вхідні документи - Список';
+		$d['title'] = 'Журнал вхідних документів';
 		$tName = DbPrefix .'incoming_documents_registry';
 		$colPx = db_Db()->getColPxByTableName($tName);
 
 		$QB = db_DTSelect(DbPrefix .'incoming_documents_registry.*')
 			->from($tName)
-			->orderBy('idr_id');
+			->where('idr_trash_bin is :trashBin')
+			->orderBy('idr_id')
+			->setParameter('trashBin', null);
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
@@ -180,7 +185,10 @@ class DocumentsIncomingModel extends MainModel {
 				}
 			}
 
-			if ($post['dDate']) {
+			if (isset($post['dDateDel']) && ($post['dDateDel'] === 'on')) {
+				$updated['idr_document_date'] = null;
+			}
+			else if ($post['dDate']) {
 				$dt = tm_getDatetime($post['dDate'])->format('Y-m-d');
 
 				if ($dt !== $Doc->_document_date) $updated['idr_document_date'] = $dt;
@@ -202,13 +210,19 @@ class DocumentsIncomingModel extends MainModel {
 				$updated['idr_id_recipient'] = $dIdRecipient;
 			}
 
-			if ($post['dDueDateBefore']) {
+			if (isset($post['dDueDateBeforeDel']) && ($post['dDueDateBeforeDel'] === 'on')) {
+				$updated['idr_control_date'] = null;
+			}
+			else if ($post['dDueDateBefore']) {
 				$dt = tm_getDatetime($post['dDueDateBefore'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_control_date) $updated['idr_control_date'] = $dt;
 			}
 
-			if ($post['dExecutionDate']) {
+			if (isset($post['dExecutionDateDel']) && ($post['dExecutionDateDel'] === 'on')) {
+				$updated['idr_execution_date'] = null;
+			}
+			else if ($post['dExecutionDate']) {
 				$dt = tm_getDatetime($post['dExecutionDate'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_control_date) $updated['idr_execution_date	'] = $dt;
@@ -220,11 +234,17 @@ class DocumentsIncomingModel extends MainModel {
 				$updated['idr_id_execution_control'] = $dIdControlType;
 			}
 
-			$dIdRresolution = intval($post['dIdRresolution']);
+			if (($post['dIdRresolution'] === '') && $Doc->_id_resolution) {
+				$updated['idr_id_resolution'] = null;
+				$updated['idr_resolution_date'] = null;
+			}
+			else {
+				$dIdRresolution = intval($post['dIdRresolution']);
 
-			if ($dIdRresolution && ($dIdRresolution !== $Doc->_id_resolution)) {
-				$updated['idr_id_resolution'] = $dIdRresolution;
-				$updated['idr_resolution_date'] = tm_getDatetime()->format('Y-m-d H:i:s');
+				if ($dIdRresolution && ($dIdRresolution !== $Doc->_id_resolution)) {
+					$updated['idr_id_resolution'] = $dIdRresolution;
+					$updated['idr_resolution_date'] = tm_getDatetime()->format('Y-m-d H:i:s');
+				}
 			}
 		}
 
@@ -240,7 +260,11 @@ class DocumentsIncomingModel extends MainModel {
 				if ($newDocNumber !== $Doc->_number) $updated['idr_number'] = $newDocNumber;
 			}
 
-			if ($post['dIsReceivedExecutorUser'] && ! isset($updated['idr_date_of_receipt_by_executor'])) {
+			if (isset($post['dIsReceivedExecutorUserDel']) &&
+					($post['dIsReceivedExecutorUserDel'] === 'on')) {
+				$updated['idr_date_of_receipt_by_executor'] = null;
+			}
+			else if ($post['dIsReceivedExecutorUser'] && ! isset($updated['idr_date_of_receipt_by_executor'])) {
 				$dt = tm_getDatetime($post['dIsReceivedExecutorUser'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_date_of_receipt_by_executor) {
@@ -267,6 +291,51 @@ class DocumentsIncomingModel extends MainModel {
 				}
 			}
 		}
+
+		return $Doc;
+	}
+
+	/**
+	 * @return int|string The number of affected rows.
+	 */
+	public function toTrashBinDocuments () {
+		$Post = rg_Rg()->get('Post');
+
+		$sql = 'UPDATE '. DbPrefix .
+			'incoming_documents_registry SET idr_trash_bin = ? WHERE idr_id IN (?)';
+
+		/** @var \Doctrine\DBAL\Connection */
+		$Conn = db_Db()->DTConnection;
+
+		return $Conn->executeStatement(
+			$sql,
+			[date('Y-m-d H:i:s'), $Post->post['docsId']],
+			[ParameterType::STRING, ArrayParameterType::INTEGER]
+		);
+	}
+
+	/**
+	 * @return DfDocument
+	 */
+	public function replaceDocumentFile ($Doc) {
+		// Обробка завантаженого файлу документа.
+		$newPathInfo = pathinfo($_FILES['dFile']['name']);
+		$storagePath = $this->get_storagePath();
+		$oldInf = pathinfo($Doc->filePath);
+
+		$toDelFilePath = $oldInf['dirname'] .'/'. $oldInf['filename'] .'_to_delete.'.
+			$oldInf['extension'];
+
+		$newDocName = $oldInf['filename'] .'.'. $newPathInfo['extension'];
+		rename($Doc->filePath, $toDelFilePath);
+
+		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
+		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
+			sess_addErrMessage('Помилка завантаження файла');
+			hd_sendHeader('Location: '. $Doc->cardURL, __FILE__, __LINE__);
+		}
+
+		$Doc->update(['idr_file_extension' => $newPathInfo['extension']]);
 
 		return $Doc;
 	}

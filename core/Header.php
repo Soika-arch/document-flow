@@ -9,8 +9,6 @@ class Header {
 
 	use traits\Singleton_SetGet;
 
-	/** [1] Свойства и константы. */
-
 	// Масив підготовлених до надсилання заголовків.
 	private array $headers;
 

@@ -66,6 +66,22 @@ function tg_sendFromSuperAdmins (string $msg) {
 	$superAdmins = users_getByUserStatus('SuperAdmin');
 
 	foreach ($superAdmins as $row) {
+		// if ($row['us_id'] !== 1) continue;
 		if (isset($row['us_id_tg'])) tg_sendMsg($row['us_id_tg'], $msg);
 	}
+}
+
+/**
+ *
+ */
+function tg_sendExeption (string $fName, string $line, array $data=[]) {
+	$info = "\n\n📍 *Прикріплені дані*";
+
+	foreach ($data as $key => $value) $info .= "\n\n*". $key .":* ". $value;
+
+	$info = trim($info) ."\n\n⏰ події: `". date('d.m.Y H:i:s') ."`";
+
+	tg_sendFromSuperAdmins(
+		"‼️ *Увага - виключення*\n\n*Source:* ". $fName .", line: ". $line ."\n\n". $info
+	);
 }

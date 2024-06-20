@@ -19,14 +19,11 @@ class Db {
 
 	use traits\Singleton_SetGet;
 
-	/** [1] Свойства и константы. */
-
 	private \PDO $PDO;
 	private \libs\query_builder\Connection $Connection;
 	private \Doctrine\DBAL\Connection $DTConnection;
 	private \Doctrine\DBAL\Configuration $DTConfig;
-  // Если true, то будет сгенерировано исключение и выведен текущий sql-запрос.
-	// Массив данных `information_schema` таблиц текущей БД.
+	// Масив даних `information_schema` таблиць поточної БД.
 	private array $tables;
 	// Масив згенерованих даних `information_schema` таблиць поточної БД.
 	private array $tblData;
@@ -35,12 +32,6 @@ class Db {
 	private array $sqlLogs = [];
 	// Масив стовпців таблиць БД ['tbl_1' => ['col_name_1', 'col_name_2', ...], ...].
 	private array $tableColumns;
-
-	/** [1] Магические методы. */
-
-	/** [1] Сеттеры свойств. */
-
-	/** [1] Геттеры свойств. */
 
 	/**
 	 * @return \Doctrine\DBAL\Configuration
@@ -133,10 +124,6 @@ class Db {
 
 	/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	/**
-   * Вместо __construct() этот метод позволяет инициализировать данные класса и объекта.
-   * Автоматически вызывается в $this->instance() только при создании текущего Singleton объекта.
-   */
   private function _init () {
 		$this->PDO = new \PDO('mysql:host='. DbHost .';dbname='. DbName, DbUser, DbPass);
 		$this->Connection = new Connection($this->PDO);

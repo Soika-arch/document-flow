@@ -32,7 +32,7 @@ class DocumentsOutgoingModel extends MainModel {
 	 * @return array
 	 */
 	public function listPage (int $pageNum=1) {
-		$d['title'] = 'Вихідні документи - Список';
+		$d['title'] = 'Журнал вихідних документів';
 		$tName = DbPrefix .'outgoing_documents_registry';
 		$colPx = db_Db()->getColPxByTableName($tName);
 
