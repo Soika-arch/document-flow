@@ -130,7 +130,7 @@ class DocumentRegistrationModel extends MainModel {
 
 			if (! $idOutDoc) {
 				// Відповідний вихідний документ не знайдено.
-				sess_addErrMessage('Не знайдено вказаний номер відповідного вихідного документа');
+				sess_addErrMessage('Не знайдено вказаний номер відповідного вихідного документа', false);
 				hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 			}
 		}
@@ -148,7 +148,7 @@ class DocumentRegistrationModel extends MainModel {
 
 		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
 		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
-			sess_addErrMessage('Помилка завантаження файла');
+			sess_addErrMessage('Помилка завантаження файла', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
 
@@ -206,7 +206,7 @@ class DocumentRegistrationModel extends MainModel {
 			);
 
 			if (! $idIncDoc) {
-				sess_addErrMessage('Не знайдено вказаний номер відповідного вхідного документа');
+				sess_addErrMessage('Не знайдено вказаний номер відповідного вхідного документа', false);
 				hd_sendHeader('Location: '. url('/df/document-registration/outgoing'), __FILE__, __LINE__);
 			}
 		}
@@ -224,7 +224,7 @@ class DocumentRegistrationModel extends MainModel {
 
 		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
 		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
-			sess_addErrMessage('Помилка завантаження файла');
+			sess_addErrMessage('Помилка завантаження файла', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
 
@@ -271,7 +271,7 @@ class DocumentRegistrationModel extends MainModel {
 
 		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
 		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
-			sess_addErrMessage('Помилка завантаження файла');
+			sess_addErrMessage('Помилка завантаження файла', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/internal'), __FILE__, __LINE__);
 		}
 

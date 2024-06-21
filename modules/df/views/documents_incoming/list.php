@@ -24,7 +24,7 @@ if (isset($d['documents']) && $d['documents']) {
 	e('<form name="doc_list" class="tbl doc_list" action="'.
 		url('/df/documents-incoming/list') .'" method="POST">');
 
-		e('<div class="">');
+		e('<div class="tbl-menu">');
 			if ($Us->Status->_access_level < 3) {
 				$delButton = '<img class="img-btn" src="'. url('/img/delete.png') .'">';
 
@@ -68,96 +68,32 @@ if (isset($d['documents']) && $d['documents']) {
 					$delCheckbox = '<span class="del-checkbox"><input type="checkbox" name="docsId[]" value="'.
 						$Doc->_id .'" title="Помітити для видалення"></span>';
 
-					e('<span class="tbl-td d_title"><span class="num">'. $num++ .'</span>'.
+					e('<span class="tbl-td d_title"><span class="num">'. $num++ .'.</span>'.
 						$delCheckbox . $docTitle .'</span>');
 
 					e('<span class="tbl-td d_date" title="Дата документа">'.
 						date('d.m.Y', strtotime($Doc->_document_date)) .'</span>');
 
-					if ($Doc->_date_of_receipt_by_executor) {
-						$isReceivedStyle = 'border:solid 2px #0eff0e;border-radius:7px;';
-						$docNumTitle = "Отримано виконавцем;\n";
-					}
-					else {
-						$isReceivedStyle = 'border:solid 2px red;border-radius:7px;';
-						$docNumTitle = "Не отримано виконавцем;\n";
-					}
+					require $this->getViewFile('inc/initDocNumData');
 
-					if ($isReceivedStyle) $isReceivedStyle = ' style="'. $isReceivedStyle .'"';
-
-					e('<span '. $isReceivedStyle .' class="tbl-td doc_num" title="'. $docNumTitle .'">' .
+					e('<span '. $docNumStyle .' class="tbl-td doc_num" title="'. $docNumTitle .'">' .
 						strtoupper($Doc->displayedNumber) .'</span>');
 
-					// ($Doc->_number === '00000003')
-
-					if ($Doc->isOverdue === 2) {
-						// Дата виконання документа прострочена.
-
-						$isExecutionStyle = 'border:2px solid red;border-radius:7px;';
-						$isExecutionLoginStyle = 'color:red;';
-						$executionTitle = "Дата виконання прострочена;\n";
-						$isExecutionLoginStyle = 'color:red;';
-					}
-					else if (($Doc->isOverdue === 1) && $Doc->remindAboutDueDate) {
-						$isExecutionStyle = 'border:2px solid red;border-radius:7px;';
-						$dt = date('d.m.Y', strtotime($Doc->_control_date));
-						$executionTitle = "Термін виконання ". $dt .";\n";
-						$isExecutionLoginStyle = '';
-					}
-					else if (($Doc->isOverdue === 1) && ! $Doc->remindAboutDueDate) {
-						$isExecutionStyle = 'border:2px solid #0eff0e;border-radius:7px;';
-						$dt = date('d.m.Y', strtotime($Doc->_control_date));
-						$executionTitle = "Термін виконання ". $dt .";\n";
-						$isExecutionLoginStyle = '';
-					}
-					else {
-						$isExecutionStyle = 'border:2px solid #0eff0e;border-radius:7px;';
-						$isExecutionLoginStyle = '';
-
-						if ($Doc->isOverdue === 1) {
-							$dt = date('d.m.Y', strtotime($Doc->_control_date));
-							$executionTitle = "Термін виконання ". $dt .";\n";
-						}
-						else {
-							$executionTitle = "Термін виконання не визначений;\n";
-						}
-					}
-
-					if ($Doc->_number === '00000006') {
-						// dd([$Doc->_id_execution_control && $Doc->NextControlDate], __FILE__, __LINE__,1);
-					}
-
-					if ($Doc->_id_execution_control && $Doc->NextControlDate) {
-						$dt = $Doc->NextControlDate->format('d.m.Y');
-
-						if ($dt === date('d.m.Y')) $s = 'сьогодні';
-						else $s = $dt;
-
-						$executionTitle .= "Чергова дата контроля: ". $s .";\n";
-					}
-
-					if ($isExecutionLoginStyle) {
-						$isExecutionLoginStyle = ' style="'. $isExecutionLoginStyle .'"';
-					}
+					require $this->getViewFile('inc/initExecutionData');
 
 					if ($Doc->ExecutorUser) {
 						$executorLogin = $Doc->ExecutorUser->_login;
 
-						$executorLogin = '<a '. $isExecutionLoginStyle .' href="'.
+						$executorLogin = '<a '. $executionLoginStyle .' href="'.
 							url('/user/profile?l='. $executorLogin) .'">'. $executorLogin .'</a>';
 					}
 					else {
-						$executorLogin = '';
+						$executorLogin = ' - ';
 					}
 
-					if ($isExecutionStyle) $isExecutionStyle = ' style="'. $isExecutionStyle .'"';
-
-					e('<span class="tbl-td d_executor" title="'. $executionTitle .'"'. $isExecutionStyle .'>'.
+					e('<span class="tbl-td d_executor" '. $executionTitle .' '. $executionStyle .'>'.
 						$executorLogin .'</span>');
 
-					$resolution = $Doc->Resolution ? $Doc->Resolution->_content : '';
-
-					e('<span class="tbl-td d_resolution" title="Резолюція">'. $resolution .'</span>');
 				e('</div>');
 			}
 

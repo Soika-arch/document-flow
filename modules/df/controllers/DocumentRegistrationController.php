@@ -218,7 +218,7 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
-			sess_addErrMessage('Отримано некоректні дані форми');
+			sess_addErrMessage('Отримано некоректні дані форми', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
 		}
 
@@ -230,7 +230,7 @@ class DocumentRegistrationController extends MC {
 				__FILE__, __LINE__);
 		}
 		else {
-			sess_addErrMessage('Помилка! Документ не додано до реєстра');
+			sess_addErrMessage('Помилка! Документ не додано до реєстра', false);
 		}
 
 		hd_sendHeader('Location: '. url('/df/document-registration/incoming'), __FILE__, __LINE__);
@@ -321,7 +321,7 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
-			sess_addErrMessage('Отримано некоректні дані форми');
+			sess_addErrMessage('Отримано некоректні дані форми', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/outgoing'), __FILE__, __LINE__);
 		}
 
@@ -331,7 +331,7 @@ class DocumentRegistrationController extends MC {
 			sess_addSysMessage('Документ додано до реєстра');
 		}
 		else {
-			sess_addErrMessage('Помилка! Документ не додано до реєстра');
+			sess_addErrMessage('Помилка! Документ не додано до реєстра', false);
 		}
 
 		hd_sendHeader('Location: '. url('/df/document-registration/outgoing'), __FILE__, __LINE__);
@@ -429,7 +429,7 @@ class DocumentRegistrationController extends MC {
 
 		if ($Post->errors) {
 			dd($Post, __FILE__, __LINE__,1);
-			sess_addErrMessage('Отримано некоректні дані форми');
+			sess_addErrMessage('Отримано некоректні дані форми', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/internal'), __FILE__, __LINE__);
 		}
 
@@ -439,7 +439,7 @@ class DocumentRegistrationController extends MC {
 			sess_addSysMessage('Документ додано до реєстра');
 		}
 		else {
-			sess_addErrMessage('Помилка! Документ не додано до реєстра');
+			sess_addErrMessage('Помилка! Документ не додано до реєстра', false);
 		}
 
 		hd_sendHeader('Location: '. url('/df/document-registration/internal'), __FILE__, __LINE__);

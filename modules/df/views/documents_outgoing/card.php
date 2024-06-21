@@ -4,7 +4,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+/** @var \core\User */
 $Us = rg_Rg()->get('Us');
+/** @var outgoing_documents_registry */
+$Doc = $d['Doc'];
+$docNumber = $Doc->_number;
+$displayedNumber = $Doc->displayedNumber;
 
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
@@ -14,12 +19,7 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-/** @var outgoing_documents_registry */
-$Doc = $d['Doc'];
-$docNumber = $Doc->_number;
-$displayedNumber = $Doc->displayedNumber;
-
-e('<form name="out_card_action" class="fm document-card" action="'.
+e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document-card" action="'.
 	url('/df/documents-outgoing/card-action?n='. $docNumber) .'" method="POST">');
 
 	if (isset($d['documentTypes']) && $d['documentTypes']) {
@@ -90,9 +90,9 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 		e('<div class="label_block">');
 			// Права на редагування у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-				e('<label for="dDescription">Опис або короткий зміст документа</label>');
+				e('<label for="dIdDescription">Опис або короткий зміст документа</label>');
 				e('<div>'. $dDescription .'</div>');
-				e('<select id="dDescription" name="dDescription">');
+				e('<select id="dIdDescription" name="dIdDescription">');
 
 					foreach ($d['descriptions'] as $row) {
 						$subStr = mb_substr($row['dds_description'], 0, 53) .' ...';
@@ -119,7 +119,7 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 	e('<div class="label_block">');
 		if ($d['isAdminRights']) {
 			e('<label for="dNumber">Номер документа</label>');
-			e('<input type="text" id="dNumber" name="dNumber" value="'. $displayedNumber .'">');
+			e('<input type="text" id="dNumber" name="dNumber" value="'. $displayedNumber .'" required>');
 		}
 		else {
 			e('<h3>Номер документа</h3>');
@@ -200,6 +200,8 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 			e('<input type="date" id="dDate" name="dDate" value="'.
 				($DocumentDate ? $DocumentDate->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox" name="dDateDel" title="Видалити">');
 		}
 		else {
 			e('<h3>Дата документа</h3>');
@@ -225,57 +227,11 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 	e('</div>');
 
-	if ($Doc->IncomingDocument) {
-		$docOutURL = $Doc->IncomingDocument->cardURL;
-		$docOutTitle = $Doc->IncomingDocument->DocumentTitle->_title;
-		$displayedNumberOut = $Doc->IncomingDocument->displayedNumber;
-
-		$docOutLink = '<a href="'. $docOutURL .'" target="_blank">'. $displayedNumberOut .'</a>';
-	}
-	else {
-		$docOutLink = '';
-		$displayedNumberOut = '';
-	}
-
-	e('<div class="label_block">');
-
-		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-			e('<label for="dIncNumber">Відповідний вхідний</label>');
-			e('<input type="text" id="dIncNumber" name="dIncNumber" value="'. $displayedNumberOut .'">');
-		}
-		else {
-			e('<h3>Відповідний вхідний</h3>');
-			e('<div>'. ($displayedNumberOut ? $displayedNumberOut : 'Відсутній') .'</div>');
-		}
-
-		if (isset($docOutURL)) {
-			e('<div><a href="'. $docOutURL .'" target="_blank">'. $docOutTitle .'</a></div>');
-		}
-
-	e('</div>');
-
-	e('<div class="label_block">');
-
-		$dRegistrationFormNumber = $Doc->_registration_form_number ? $Doc->_registration_form_number : '';
-
-		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-			e('<label for="dRegistrationFormNumber">Реєстраційний номер бланка</label>');
-
-			e('<input type="text" id="dRegistrationFormNumber" name="dRegistrationFormNumber" value="'.
-				 $dRegistrationFormNumber .'">');
-		}
-		else {
-			e('<h3>Реєстраційний номер бланка</h3>');
-			e('<div>'. ($dRegistrationFormNumber ? $dRegistrationFormNumber : 'Відсутній') .'</div>');
-		}
-
-	e('</div>');
-
 	if (isset($d['departments']) && $d['departments']) {
 		e('<div class="label_block">');
 
 			if ($d['isAdminRights'] || $d['isRegistrarRights']) {
-				e('<label for="dIdDocumentLocation">Фізичне місцезнаходження оригінала</label>');
+				e('<label for="dIdDocumentLocation">Фізичне місцезнаходження документа</label>');
 				e('<select id="dIdDocumentLocation" name="dIdDocumentLocation">');
 
 					if (! $Doc->_id_document_location) e('<option></option>');
@@ -305,7 +261,7 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 		e('<div class="label_block">');
 			// Права на редагування у адміна і реєстратора.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
-				e('<label for="dIdSender">Відправник користувач</label>');
+				e('<label for="dIdSender">Відправник</label>');
 				e('<select id="dIdSender" name="dIdSender">');
 
 					$Sender = $Doc->Sender;
@@ -322,10 +278,10 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				$senderUserLogin = $Doc->Sender ? $Doc->Sender->_login : 'Відсутній';
+				$senderName = $Doc->Sender ? $Doc->Sender->_name : 'Відсутній';
 
-				e('<h3>Відправник користувач</h3>');
-				e('<div>'. $senderUserLogin .'</div>');
+				e('<h3>Відправник</h3>');
+				e('<div>'. $senderName .'</div>');
 			}
 
 		e('</div>');
@@ -352,14 +308,73 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 				e('</select>');
 			}
 			else {
-				$recipientName = $Doc->Recipient ? $Doc->Recipient->_name : 'Відсутній';
+				$recipientUserLogin = $Doc->Recipient ? $Doc->Recipient->_login : 'Відсутній';
 
 				e('<h3>Отримувач</h3>');
-				e('<div>'. $recipientName .'</div>');
+				e('<div>'. $recipientUserLogin .'</div>');
 			}
 
 		e('</div>');
 	}
+
+	if (isset($d['users']) && $d['users']) {
+		e('<div class="label_block">');
+			// Права на редагування у адміна і реєстратора.
+			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+				e('<label for="dIdExecutorUser">Виконавець користувач</label>');
+				e('<select id="dIdExecutorUser" name="dIdExecutorUser">');
+
+					$ExecutorUser = $Doc->ExecutorUser;
+
+					e('<option></option>');
+
+					foreach ($d['users'] as $row) {
+						if ($ExecutorUser && ($row['us_id'] === $Doc->ExecutorUser->_id)) {
+							e('<option value="'. $row['us_id'] .'" selected>'. $row['us_login'] .'</option>');
+						}
+						else {
+							e('<option value="'. $row['us_id'] .'">'.  $row['us_login'] .'</option>');
+						}
+					}
+
+				e('</select>');
+			}
+			else {
+				$executorUserLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : 'Відсутній';
+
+				e('<h3>Виконавець користувач</h3>');
+				e('<div>'. $executorUserLogin .'</div>');
+			}
+
+		e('</div>');
+	}
+
+	e('<div class="label_block">');
+
+		if ($Doc->_date_of_receipt_by_executor) {
+			$ReceivedExecutorUserDate = tm_getDatetime($Doc->_date_of_receipt_by_executor);
+		}
+		else {
+			$ReceivedExecutorUserDate = '';
+		}
+
+		if ($d['isAdminRights']) {
+			e('<label for="dIsReceivedExecutorUser">Отримано виконавцем користувачем</label>');
+
+			e('<input type="date" id="dIsReceivedExecutorUser" name="dIsReceivedExecutorUser" value="'.
+				($ReceivedExecutorUserDate ? $ReceivedExecutorUserDate->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox"'.
+				' name="dIsReceivedExecutorUserDel" title="Видалити">');
+		}
+		else {
+			e('<h3>Отримано виконавцем користувачем</h3>');
+
+			e('<div>'. ($ReceivedExecutorUserDate ?
+				$ReceivedExecutorUserDate->format('d.m.Y H:i') : 'Не отримано') .'</div>');
+		}
+
+	e('</div>');
 
 	if (isset($d['controlTypes']) && $d['controlTypes']) {
 		$controlType = $Doc->ControlType ? $Doc->ControlType->_name : 'Відсутній';
@@ -369,6 +384,8 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
 				e('<label for="dIdControlType">Тип контролю за виконанням</label>');
 				e('<select id="dIdControlType" name="dIdControlType">');
+
+					e('<option></option>');
 
 					foreach ($d['controlTypes'] as $row) {
 						if ($Doc->ControlType && ($row['dct_id'] === $Doc->ControlType->_id)) {
@@ -389,6 +406,16 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 		e('</div>');
 	}
 
+	// Якщо існує тип контролю, то виводити дату контролю.
+	if ($Doc->NextControlDate) {
+		e('<div class="label_block">');
+
+			e('<h3>Поточна дата контролю</h3>');
+			e('<div>'. $Doc->NextControlDate->format('d.m.Y') .'</div>');
+
+		e('</div>');
+	}
+
 	e('<div class="label_block">');
 
 		if ($Doc->_control_date) {
@@ -403,10 +430,38 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 			e('<input type="date" id="dDueDateBefore" name="dDueDateBefore" value="'.
 				($DueDateBefore ? $DueDateBefore->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox"'.
+				' name="dDueDateBeforeDel" title="Видалити">');
 		}
 		else {
 			e('<h3>Отримано виконавцем користувачем</h3>');
 			e('<div>'. ($DueDateBefore ? $DueDateBefore->format('d.m.Y') : 'Не встановлено') .'</div>');
+		}
+
+	e('</div>');
+
+	e('<div class="label_block">');
+
+		if ($Doc->_execution_date) {
+			$ExecutionDate = tm_getDatetime($Doc->_execution_date);
+		}
+		else {
+			$ExecutionDate = '';
+		}
+
+		if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			e('<label id="dExecutionDateAnchor" for="dExecutionDate">Дата виконання</label>');
+
+			e('<input type="date" id="dExecutionDate" name="dExecutionDate" value="'.
+				($ExecutionDate ? $ExecutionDate->format('Y-m-d') : '') .'">');
+
+			e('<input class="checkbox-date-removing" type="checkbox"'.
+				' name="dExecutionDateDel" title="Видалити">');
+		}
+		else {
+			e('<h3 id="dExecutionDateAnchor">Дата виконання</h3>');
+			e('<div>'. ($ExecutionDate ? $ExecutionDate->format('d.m.Y') : 'Не встановлено') .'</div>');
 		}
 
 	e('</div>');
@@ -418,7 +473,8 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 				e('<label for="dIdRresolution">Резолюція</label>');
 				e('<select id="dIdRresolution" name="dIdRresolution">');
 
-					if (! ($Resolution = $Doc->Resolution)) e('<option></option>');
+					$Resolution = $Doc->Resolution;
+					e('<option></option>');
 
 					foreach ($d['resolutions'] as $row) {
 						if ($Resolution && ($row['drs_id'] === $Resolution->_id)) {
@@ -457,6 +513,13 @@ e('<form name="out_card_action" class="fm document-card" action="'.
 
 		e('<div>'. $downloadLink .'.</div>');
 	e('</div>');
+
+	if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+		e('<div class="label_block">');
+			e('<label for="dFile">Замінити файл документу</label>');
+			e('<input type="file" name="dFile">');
+		e('</div>');
+	}
 
 	if ($Us->Status->_access_level < 4) {
 		e('<div>');

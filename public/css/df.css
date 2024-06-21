@@ -97,6 +97,10 @@
 	padding: 5px 10px 0px 15px;
 }
 
+.doc_list .tbl-menu {
+	margin-bottom: 5px;
+}
+
 .doc_list .h-num {
 	width: 40px;
 }

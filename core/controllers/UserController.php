@@ -45,7 +45,7 @@ class UserController extends MainController {
 		if ($Post->errors) dd($Post->errors, __FILE__, __LINE__,1);
 
 		if (! $this->Model->login($Post)) {
-			sess_addErrMessage('Користувача не знайдено або введено неправильний пароль.');
+			sess_addErrMessage('Користувача не знайдено або введено неправильний пароль', false);
 		}
 
 		hd_sendHeader('Location: '. url('/'), __FILE__, __LINE__);

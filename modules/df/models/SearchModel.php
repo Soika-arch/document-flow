@@ -43,7 +43,7 @@ class SearchModel extends MainModel {
 			if (($pos = strpos($post['dNumber'], '_')) !== false) $dNumber = substr($dNumber, ($pos + 1));
 
 			if (! is_numeric($dNumber)) {
-				sess_addErrMessage('У полі номера документа мають бути тильки числа');
+				sess_addErrMessage('У полі номера документа мають бути тильки числа', false);
 				hd_sendHeader('Location: '. url('/df/search'), __FILE__, __LINE__);
 			}
 

@@ -23,8 +23,9 @@ function sess_isSysMessages () {
 /**
  * Додавання нового повідомлення в масив $_SESSION['errors'].
  */
-function sess_addErrMessage (string $msg) {
-	$_SESSION['errors'][] = $msg;
+function sess_addErrMessage (string $msg, bool $isAdmin=true) {
+	if ($isAdmin) $_SESSION['errors'][] = $msg;
+	else $_SESSION['userErrors'][] = $msg;
 }
 
 /**
@@ -33,7 +34,8 @@ function sess_addErrMessage (string $msg) {
  */
 function sess_isErrMessages () {
 
-	return (isset($_SESSION['errors']) && $_SESSION['errors']);
+	return ((isset($_SESSION['errors']) && $_SESSION['errors']) ||
+		isset($_SESSION['userErrors']) && $_SESSION['userErrors']);
 }
 
 /**

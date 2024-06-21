@@ -3,7 +3,7 @@
 namespace modules\df\controllers;
 
 use \core\Get;
-use core\Post;
+use \core\Post;
 use \modules\df\controllers\MainController as MC;
 use \modules\df\models\DocumentsOutgoingModel;
 
@@ -65,7 +65,32 @@ class DocumentsOutgoingController extends MC {
 			],
 		]);
 
-		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
+		if ($_POST) {
+			$Post = new Post('doc_list', [
+				'docsId' => [
+					'type' => 'array',
+					'isRequired' => false,
+					'pattern' => '^\d{1,5}$',
+				],
+				'deleteDocuments' => [
+					'type' => 'varchar',
+					'isRequired' => true,
+					'pattern' => '^$'
+				],
+			]);
+
+			if (isset($_POST['deleteDocuments']) && ($Us->Status->_access_level < 3)) {
+				if (isset($_POST['docsId'])) {
+					$affectedRows = $this->Model->toTrashBinDocuments();
+
+					if ($affectedRows > 0) {
+						sess_addSysMessage('Документи переміщені в корзину');
+					}
+				}
+			}
+
+			hd_sendHeader('Location: '. url('/df/documents-outgoing/list'), __FILE__, __LINE__);
+		}
 
 		$pageNum = isset($_GET['pg']) ? $Get->get['pg'] : 1;
 
@@ -130,7 +155,7 @@ class DocumentsOutgoingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^\d{1,4}$'
 			],
-			'dDescription' => [
+			'dIdDescription' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
@@ -215,15 +240,25 @@ class DocumentsOutgoingController extends MC {
 				'isRequired' => false,
 				'pattern' => '^(\d{1,4})?$'
 			],
-			'dIdRresolution' => [
-				'type' => 'varchar',
-				'isRequired' => false,
-				'pattern' => '^(\d{1,4})?$'
-			],
-			'dResolutionDate' => [
+			'dExecutionDate' => [
 				'type' => 'varchar',
 				'isRequired' => false,
 				'pattern' => '^('. $regexp['date'] .')?$'
+			],
+			'dExecutionDateDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
+			],
+			'dDueDateBeforeDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
+			],
+			'dDateDel' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(on)?$'
 			],
 			'bt_edit' => [
 				'type' => 'varchar',
@@ -242,7 +277,7 @@ class DocumentsOutgoingController extends MC {
 			sess_addSysMessage('Дані змінено.');
 		}
 		else if (! $Doc) {
-			sess_addErrMessage('Помилка зміни даних.');
+			sess_addErrMessage('Помилка зміни даних.', false);
 		}
 
 		hd_sendHeader('Location: '. url('/df/documents-outgoing/card?n='. $num), __FILE__, __LINE__);

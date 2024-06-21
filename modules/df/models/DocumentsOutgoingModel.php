@@ -4,6 +4,8 @@ namespace modules\df\models;
 
 use \core\db_record\outgoing_documents_registry;
 use \core\RecordSliceRetriever;
+use \Doctrine\DBAL\ArrayParameterType;
+use \Doctrine\DBAL\ParameterType;
 use \libs\Paginator;
 use \modules\df\models\MainModel;
 
@@ -38,7 +40,9 @@ class DocumentsOutgoingModel extends MainModel {
 
 		$QB = db_DTSelect($tName .'.*')
 			->from($tName)
-			->orderBy('odr_id');
+			->where('odr_trash_bin is :trashBin')
+			->orderBy('odr_id')
+			->setParameter('trashBin', null);
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
@@ -62,6 +66,25 @@ class DocumentsOutgoingModel extends MainModel {
 	}
 
 	/**
+	 * @return int|string The number of affected rows.
+	 */
+	public function toTrashBinDocuments () {
+		$Post = rg_Rg()->get('Post');
+
+		$sql = 'UPDATE '. DbPrefix .
+			'outgoing_documents_registry SET odr_trash_bin = ? WHERE odr_id IN (?)';
+
+		/** @var \Doctrine\DBAL\Connection */
+		$Conn = db_Db()->DTConnection;
+
+		return $Conn->executeStatement(
+			$sql,
+			[date('Y-m-d H:i:s'), $Post->post['docsId']],
+			[ParameterType::STRING, ArrayParameterType::INTEGER]
+		);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function cardPage () {
@@ -73,6 +96,8 @@ class DocumentsOutgoingModel extends MainModel {
 		);
 
 		$Doc = new outgoing_documents_registry($dbRow['odr_id'], $dbRow);
+
+		if ($Obj = $this->checkCardOpenedByExecutor($Doc)) $Doc = $Obj;
 
 		$d['isRegistrarRights'] = $this->isRegistrarRights($Us, $Doc);
 		$d['isAdminRights'] = $this->isAdminRights($Us);
@@ -131,10 +156,12 @@ class DocumentsOutgoingModel extends MainModel {
 				if ($dIdTitle !== $Doc->_id_title) $updated['odr_id_title'] = $dIdTitle;
 			}
 
-			$dDescription = intval($post['dDescription']);
+			$dIdDescription = intval($post['dIdDescription']);
 
-			if ($dDescription) {
-				if ($dDescription !== $Doc->_id_description) $updated['odr_id_description'] = $dDescription;
+			if ($dIdDescription) {
+				if ($dIdDescription !== $Doc->_id_description) {
+					$updated['odr_id_description'] = $dIdDescription;
+				}
 			}
 
 			$dIdCarrierType = intval($post['dIdCarrierType']);
@@ -145,13 +172,13 @@ class DocumentsOutgoingModel extends MainModel {
 				}
 			}
 
-			if ($post['dIncNumber']) {
+			if (isset($post['dIncNumber']) && $post['dIncNumber']) {
 				$newIncomingId = $this->selectCellByCol(DbPrefix .'incoming_documents_registry',
 					'idr_number', substr($post['dIncNumber'], 4), 'idr_id');
 
 				if (! $newIncomingId) {
 					sess_addErrMessage('Не знайдено відповідний вихідний документ з номером <b>'.
-						strval($post['dIncNumber']) .'</b>');
+						strval($post['dIncNumber']) .'</b>', false);
 
 					return false;
 				}
@@ -161,13 +188,16 @@ class DocumentsOutgoingModel extends MainModel {
 				}
 			}
 
-			if ($post['dRegistrationFormNumber']) {
+			if (isset($post['dRegistrationFormNumber']) && $post['dRegistrationFormNumber']) {
 				if ($post['dRegistrationFormNumber'] !== $Doc->_registration_form_number) {
 					$updated['odr_registration_form_number'] = $post['dRegistrationFormNumber'];
 				}
 			}
 
-			if ($post['dDate']) {
+			if (isset($post['dDateDel']) && ($post['dDateDel'] === 'on')) {
+				$updated['odr_document_date'] = null;
+			}
+			else if ($post['dDate']) {
 				$dt = tm_getDatetime($post['dDate'])->format('Y-m-d');
 
 				if ($dt !== $Doc->_document_date) $updated['odr_document_date'] = $dt;
@@ -184,12 +214,15 @@ class DocumentsOutgoingModel extends MainModel {
 			if ($dIdSender && ($dIdSender !== $Doc->_id_sender)) $updated['odr_id_sender'] = $dIdSender;
 
 			$dIdRecipient = intval($post['dIdRecipient']);
-			// dd([$dIdRecipient, $Doc->_id_recipient, $Doc], __FILE__, __LINE__,1);
+
 			if ($dIdRecipient && ($dIdRecipient !== $Doc->_id_recipient)) {
 				$updated['odr_id_recipient'] = $dIdRecipient;
 			}
 
-			if ($post['dDueDateBefore']) {
+			if (isset($post['dDueDateBeforeDel']) && ($post['dDueDateBeforeDel'] === 'on')) {
+				$updated['odr_control_date'] = null;
+			}
+			else if ($post['dDueDateBefore']) {
 				$dt = tm_getDatetime($post['dDueDateBefore'])->format('Y-m-d H:i:s');
 
 				if ($dt !== $Doc->_control_date) $updated['odr_control_date'] = $dt;
@@ -199,6 +232,15 @@ class DocumentsOutgoingModel extends MainModel {
 
 			if ($dIdControlType && ($dIdControlType !== $Doc->_id_execution_control)) {
 				$updated['odr_id_execution_control'] = $dIdControlType;
+			}
+
+			if (isset($post['dExecutionDateDel']) && ($post['dExecutionDateDel'] === 'on')) {
+				$updated['odr_execution_date'] = null;
+			}
+			else if ($post['dExecutionDate']) {
+				$dt = tm_getDatetime($post['dExecutionDate'])->format('Y-m-d');
+
+				if ($dt !== $Doc->_execution_date) $updated['odr_execution_date'] = $dt;
 			}
 		}
 

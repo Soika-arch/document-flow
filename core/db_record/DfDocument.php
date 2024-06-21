@@ -27,6 +27,11 @@ class DfDocument extends DbRecord {
 	// Ім'я файла документа.
 	protected string $fileName;
 	protected string $filePath;
+	// Якщо прострочена дата виконання - true, інакше - false.
+	// Дата виконання може бути простроченою, тільки якщо є дата, до якої потрібно виконати документ.
+	// Якщо дати виконання не існує, ябо дата виконання пізніша за дату, до якої документ потрібно
+	// виконати, то виконання вважається простроченим і $isDueDateOverdue === true.
+	protected bool $isDueDateOverdue;
 
 	/**
 	 *
@@ -214,6 +219,27 @@ class DfDocument extends DbRecord {
 		}
 
 		return $this->filePath;
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function get_isDueDateOverdue () {
+		if (! isset($this->isDueDateOverdue) && $this->_control_date) {
+			if ($this->_execution_date) {
+				$this->isDueDateOverdue =
+					date('Y-m-d', strtotime($this->_execution_date)) >
+					date('Y-m-d', strtotime($this->_control_date));
+			}
+			else {
+				$this->isDueDateOverdue = date('Y-m-d') > date('Y-m-d', strtotime($this->_control_date));
+			}
+		}
+		else {
+			$this->isDueDateOverdue = false;
+		}
+
+		return $this->isDueDateOverdue;
 	}
 
 	/**

@@ -32,14 +32,16 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0001Page (int $pageNum=1) {
 		$d['title'] = 'Невиконані вхідні документи';
+		$tName = DbPrefix .'incoming_documents_registry';
 
-		$SQLDocs = db_getSelect()
-			->columns([DbPrefix .'incoming_documents_registry.*'])
-			->from(DbPrefix .'incoming_documents_registry')
-			->where('idr_execution_date', '=', null)
-			->orderBy('idr_id');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('idr_execution_date is :executionDate and idr_trash_bin is not :trashBin')
+			->orderBy('idr_id')
+			->setParameter('executionDate', null)
+			->setParameter('trashBin', null);
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$SQLDocs = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0001?pn=(:num)');
@@ -59,9 +61,10 @@ class ReportsModel extends MainModel {
 
 		$QB = db_DTSelect($tName .'.*')
 			->from($tName)
-			->where('idr_execution_date is not :executionDate')
+			->where('idr_execution_date is not :executionDate and idr_trash_bin is not :trashBin')
 			->orderBy('idr_id')
-			->setParameter('executionDate', null);
+			->setParameter('executionDate', null)
+			->setParameter('trashBin', null);
 
 		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
@@ -83,9 +86,10 @@ class ReportsModel extends MainModel {
 
 		$QB = db_DTSelect($tName .'.*')
 			->from($tName)
-			->where('inr_execution_date = :executionDate')
+			->where('inr_execution_date is :executionDate and inr_trash_bin is not :trashBin')
+			->orderBy('inr_id')
 			->setParameter('executionDate', null)
-			->orderBy('inr_id');
+			->setParameter('trashBin', null);
 
 		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
@@ -103,14 +107,16 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0005Page (int $pageNum=1) {
 		$d['title'] = 'Виконані внутрішні документи';
+		$tName = DbPrefix .'internal_documents_registry';
 
-		$SQLDocs = db_getSelect()
-			->columns([DbPrefix .'internal_documents_registry.*'])
-			->from(DbPrefix .'internal_documents_registry')
-			->where('inr_execution_date', '!=', null)
-			->orderBy('inr_id');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('inr_execution_date is not :executionDate and inr_trash_bin is not :trashBin')
+			->orderBy('inr_id')
+			->setParameter('executionDate', null)
+			->setParameter('trashBin', null);
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$SQLDocs = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0005?pn=(:num)#pagin');
@@ -125,19 +131,20 @@ class ReportsModel extends MainModel {
 	 * @return array
 	 */
 	public function r0003Page (int $pageNum=1) {
-		$d['title'] = 'Виконавці, які не виконали документи';
-
+		$d['title'] = 'Виконавці, які не виконали вхідні документи';
+		$tName = DbPrefix .'users';
 		$docTable = DbPrefix .'incoming_documents_registry';
 		$itemsPerPage = 5;
 		$offset = ($itemsPerPage * 2) - $itemsPerPage;
 
-		$QB = db_DTSelect(DbPrefix .'users.*')
-			->from(DbPrefix .'users')
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
 			->innerJoin(DbPrefix .'users', $docTable, 'idr', 'idr_id_assigned_user = us_id')
-			->where('idr_execution_date is null')
+			->where('idr_execution_date is null and idr_trash_bin is not :trashBin')
 			->orderBy('us_id')
 			->setFirstResult($offset)
-			->setMaxResults($itemsPerPage);
+			->setMaxResults($itemsPerPage)
+			->setParameter('trashBin', null);
 
 		$QBSlice = new RecordSliceRetriever($QB);
 
@@ -159,9 +166,11 @@ class ReportsModel extends MainModel {
 
 		$QB = db_DTSelect($tName .'.*')
 			->from($tName)
-			->where('idr_id_execution_control is not :idExecutionControl')
+			->where('idr_id_execution_control is not :idExecutionControl'.
+				' and idr_trash_bin is not :trashBin')
 			->orderBy('idr_id')
-			->setParameter('idExecutionControl', null);
+			->setParameter('idExecutionControl', null)
+			->setParameter('trashBin', null);
 
 		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
@@ -180,14 +189,17 @@ class ReportsModel extends MainModel {
 	 */
 	public function r0007Page (int $pageNum=1) {
 		$d['title'] = 'Внутрішні документи на контролі';
+		$tName = DbPrefix .'internal_documents_registry';
 
-		$SQLDocs = db_getSelect()
-			->columns([DbPrefix .'internal_documents_registry.*'])
-			->from(DbPrefix .'internal_documents_registry')
-			->where('inr_id_execution_control', '!=', null)
-			->orderBy('inr_id');
+		$QB = db_DTSelect($tName .'.*')
+			->from($tName)
+			->where('inr_id_execution_control is not :idExecutionControl'.
+				' and inr_trash_bin is not :trashBin')
+			->orderBy('inr_id')
+			->setParameter('idExecutionControl', null)
+			->setParameter('trashBin', null);
 
-		$SQLDocs = new RecordSliceRetriever($SQLDocs);
+		$SQLDocs = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;
 		$d['documents'] = $SQLDocs->select($itemsPerPage, $pageNum);
 		$url = url('/df/reports/r0007?pn=(:num)#pagin');
@@ -203,7 +215,7 @@ class ReportsModel extends MainModel {
 	 * @return array
 	 */
 	public function r0008Page (int $pageNum=1) {
-		$d['title'] = 'Виконавці, які не виконали документи';
+		$d['title'] = 'Виконавці, які не виконали внутрішні документи';
 		$tName = DbPrefix .'users';
 
 		$docTable = DbPrefix .'internal_documents_registry';
@@ -211,9 +223,10 @@ class ReportsModel extends MainModel {
 		$QB = db_DTSelect($tName .'.*')
 			->from($tName)
 			->join($tName, $docTable, 'inr', 'inr_id_assigned_user = us_id')
-			->where('inr_execution_date = :executionDate')
+			->where('inr_execution_date is :executionDate and inr_trash_bin is not :trashBin')
+			->orderBy('us_id')
 			->setParameter('executionDate', null)
-			->orderBy('us_id');
+			->setParameter('trashBin', null);
 
 		$QBSlice = new RecordSliceRetriever($QB);
 		$itemsPerPage = 5;

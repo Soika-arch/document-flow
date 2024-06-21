@@ -310,7 +310,7 @@ class DocumentsIncomingController extends MC {
 			sess_addSysMessage('Дані змінено.');
 		}
 		else if (! $Doc) {
-			sess_addErrMessage('Помилка зміни даних.');
+			sess_addErrMessage('Помилка зміни даних.', false);
 		}
 
 		hd_sendHeader('Location: '. url('/df/documents-incoming/card?n='. $num), __FILE__, __LINE__);

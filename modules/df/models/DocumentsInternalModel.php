@@ -5,6 +5,8 @@ namespace modules\df\models;
 use \core\db_record\internal_documents_registry;
 use \core\Get;
 use \core\RecordSliceRetriever;
+use \Doctrine\DBAL\ArrayParameterType;
+use \Doctrine\DBAL\ParameterType;
 use \libs\Paginator;
 use \modules\df\models\MainModel;
 
@@ -39,7 +41,9 @@ class DocumentsInternalModel extends MainModel {
 
 		$QB = db_DTSelect($tName .'.*')
 			->from($tName)
-			->orderBy('inr_id');
+			->where('inr_trash_bin is :trashBin')
+			->orderBy('inr_id')
+			->setParameter('trashBin', null);
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
@@ -60,6 +64,25 @@ class DocumentsInternalModel extends MainModel {
 		$d['Pagin'] = $Pagin;
 
 		return $d;
+	}
+
+	/**
+	 * @return int|string The number of affected rows.
+	 */
+	public function toTrashBinDocuments () {
+		$Post = rg_Rg()->get('Post');
+
+		$sql = 'UPDATE '. DbPrefix .
+			'internal_documents_registry SET inr_trash_bin = ? WHERE inr_id IN (?)';
+
+		/** @var \Doctrine\DBAL\Connection */
+		$Conn = db_Db()->DTConnection;
+
+		return $Conn->executeStatement(
+			$sql,
+			[date('Y-m-d H:i:s'), $Post->post['docsId']],
+			[ParameterType::STRING, ArrayParameterType::INTEGER]
+		);
 	}
 
 	/**
@@ -141,7 +164,7 @@ class DocumentsInternalModel extends MainModel {
 
 			if ($post['dAdditionalNumber']) {
 				if (isset($Post->errors['dAdditionalNumber'])) {
-					sess_addErrMessage('Отримано неправильний формат поля "Додатковий номер документа"');
+					sess_addErrMessage('Отримано неправильний формат поля "Додатковий номер документа"', false);
 
 					return false;
 				}
@@ -204,7 +227,7 @@ class DocumentsInternalModel extends MainModel {
 			if ($post['dExecutionDate']) {
 				$dt = tm_getDatetime($post['dExecutionDate'])->format('Y-m-d H:i:s');
 
-				if ($dt !== $Doc->_control_date) $updated['inr_execution_date	'] = $dt;
+				if ($dt !== $Doc->_execution_date) $updated['inr_execution_date'] = $dt;
 			}
 
 			$dIdControlType = intval($post['dIdControlType']);

@@ -59,7 +59,7 @@ h2 {
 
 .tbl-menu {
 	display: flex;
-	border: silver 1px solid;
+	/* border: silver 1px solid; */
 }
 
 .tbl-menu button {
@@ -68,7 +68,7 @@ h2 {
 }
 
 .tbl-menu button:hover {
-	background-color: #ccc;
+	background-color: #f8f6f6;
 }
 
 .tbl .tbl-header {

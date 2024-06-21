@@ -142,7 +142,7 @@ class SearchController extends MC {
 		if ((isset($post['dDateFrom']) && $post['dDateFrom'])) {
 			if ((isset($post['dDateUntil']) && $post['dDateUntil'])) {
 				if (strtotime($post['dDateUntil']) < strtotime($post['dDateFrom'])) {
-					sess_addErrMessage('Період дати документу: дата "Від" повинна бути менше дати "До"');
+					sess_addErrMessage('Період дати документу: дата "Від" повинна бути менше дати "До"', false);
 					hd_sendHeader('Location: '. url('/df/search'), __FILE__, __LINE__);
 				}
 			}

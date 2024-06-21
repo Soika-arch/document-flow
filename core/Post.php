@@ -31,9 +31,7 @@ class Post {
 		$this->validateAndProcessPostData($types);
 		rg_Rg()->add('Post', $this);
 
-		if ((rg_Rg()->get('Us')->Status->_access_level < 3) && isset($this->errors) && $this->errors) {
-			sess_addErrMessage($this->printErrors());
-		}
+		if (isset($this->errors) && $this->errors) sess_addErrMessage($this->printErrors());
 	}
 
 	/**
