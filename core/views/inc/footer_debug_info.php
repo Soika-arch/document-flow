@@ -4,6 +4,6 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-e('<div class="footer-debug-info">');
-	e('Час виконання скрипта: '. round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5) .' сек');
-e('</div>');
+// e('<div class="footer-debug-info">');
+// 	e('Час виконання скрипта: '. round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 5) .' сек');
+// e('</div>');

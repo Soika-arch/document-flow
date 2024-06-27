@@ -30,6 +30,14 @@ if (isset($d['documents']) && $d['documents']) {
 
 				e('<button class="" name="deleteDocuments">'. $delButton .'</button>');
 			}
+
+			e('<span class="img-link">');
+
+				e('<a href="'. url('/df/reports/r0009') .'"><img class="img-btn" src="'.
+					url('/img/doc_overdue.png') .'" title="Прострочені документи"></a>');
+
+			e('</span>');
+
 		e('</div>');
 
 		e('<div class="tbl-header">');
@@ -93,6 +101,10 @@ if (isset($d['documents']) && $d['documents']) {
 
 					e('<span class="tbl-td d_executor" '. $executionTitle .' '. $executionStyle .'>'.
 						$executorLogin .'</span>');
+
+					$dResolution = $Doc->Resolution->_id ? $Doc->Resolution->_content : '';
+
+					e('<span class="tbl-td d_resolution" title="Резолюція">'. $dResolution .'</span>');
 
 				e('</div>');
 			}

@@ -78,8 +78,11 @@ class UsersController extends MainController {
 				]
 			]);
 
-			if ($this->Model->addUser()) {
-				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
+			if ($UserNew = $this->Model->addUser()) {
+				hd_sendHeader('Location: '. url('/ap/users/edit?id=' . $UserNew->_id), __FILE__, __LINE__);
+			}
+			else {
+				hd_sendHeader('Location: '. url('/ap/users/add'), __FILE__, __LINE__);
 			}
 		}
 

@@ -213,7 +213,7 @@ class DocumentsOutgoingController extends MC {
 			'dRegistrationFormNumber' => [
 				'type' => 'varchar',
 				'isRequired' => false,
-				'pattern' => '^([a-zA-Z0-9_]{1,32})?$'
+				'pattern' => '^([a-zA-Z0-9_-]{1,32})?$'
 			],
 			'dIdExecutorUser' => [
 				'type' => 'varchar',
@@ -269,6 +269,12 @@ class DocumentsOutgoingController extends MC {
 
 		/** @var outgoing_documents_registry|false */
 		$Doc = $this->Model->cardActionPage();
+
+		if (isset($_FILES['dFile']) && $_FILES['dFile']['name']) {
+			$replRes = $this->Model->replaceDocumentFile($Doc);
+
+			if ($replRes) sess_addSysMessage('Файл документу замінено');
+		}
 
 		$num = $Doc ? $Doc->_number : $Get->get['n'];
 

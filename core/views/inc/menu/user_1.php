@@ -24,7 +24,14 @@ e('<div class="user-menu-1">');
 	}
 
 	e('<div>');
-		e('<a href="'. url('/user/profile?l='. $Us->_login) .'">'. $Us->_login .'</a>');
+
+		if ($Us->Status->_access_level < 5) {
+			e('<a href="'. url('/user/profile?l='. $Us->_login) .'">'. $Us->_login .'</a>');
+		}
+		else {
+			e('<a href="'. url() .'">'. $Us->_login .'</a>');
+		}
+
 	e('</div>');
 
 e('</div>');

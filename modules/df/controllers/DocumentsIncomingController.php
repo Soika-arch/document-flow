@@ -30,6 +30,7 @@ class DocumentsIncomingController extends MC {
 	}
 
 	public function mainPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;

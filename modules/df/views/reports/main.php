@@ -24,13 +24,14 @@ e('<div class="fm df-selecting_source_document">');
 			e('<select id="documentDirection" name="documentDirection">');
 				e('<option value=""></option>');
 				e('<option value="inc">Вхідні</option>');
-				e('<option value="out">Вихідні</option>');
+				// e('<option value="out">Вихідні</option>');
 				e('<option value="int">Внутрішні</option>');
 			e('</select>');
 		e('</div>');
 	e('</form>');
 
 	e('<div id="incomingDocuments">');
+		e('<a href="'. $url .'/reports/r0009">Прострочені документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0006">Документи на контролі</a><br><br>');
 		e('<a href="'. $url .'/reports/r0004">Виконані документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0001">Невиконані документи</a><br><br>');
@@ -38,10 +39,11 @@ e('<div class="fm df-selecting_source_document">');
 	e('</div>');
 
 	e('<div id="outgoingDocuments">');
-		e('<a href="'. $url .'/reports/r0002">Документи на конткролі</a><br><br>');
+		// e('<a href="'. $url .'/reports/r0002">Документи на конткролі</a><br><br>');
 	e('</div>');
 
 	e('<div id="internalDocuments">');
+		e('<a href="'. $url .'/reports/r0010">Прострочені документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0007">Документи на контролі</a><br><br>');
 		e('<a href="'. $url .'/reports/r0005">Виконані документи</a><br><br>');
 		e('<a href="'. $url .'/reports/r0002">Невиконані документи</a><br><br>');
@@ -50,7 +52,6 @@ e('<div class="fm df-selecting_source_document">');
 
 e('</div>');
 
-e('<script src="/js/main.js"></script>');
 e('<script src="/js/df_reports.js"></script>');
 
 require $this->getViewFile('/inc/footer');

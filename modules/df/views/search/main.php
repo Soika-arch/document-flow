@@ -14,8 +14,6 @@ require $this->getViewFile('inc/menu/main');
 if (sess_isSysMessages()) require $this->getViewFile('/inc/sys_messages');
 if (sess_isErrMessages()) require $this->getViewFile('/inc/errors');
 
-e('<div id="notification" class="notification"></div>');
-
 e('<div class="fm">');
 
 	e('<form name="search_1" action="'. url('/df/search/handler') .'" method="POST">');
@@ -36,7 +34,7 @@ e('<div class="fm">');
 
 				e('<div class="label_block">');
 					e('<label for="dNumber">Номер документа<label>');
-					e('<input id="dNumber" type="text" name="dNumber">');
+					e('<input id="dNumber" type="text" name="dNumber" pattern="(INC_|OUT_|INT_)\d{8}">');
 				e('</div>');
 
 				e('<div class="label_block">');
@@ -166,14 +164,13 @@ e('<div class="fm">');
 		e('</div>');
 
 		e('<div>');
-			e('<button type="submit" name="bt_search">Шукати</button>');
+			e('<button id="bt_search" type="submit" name="bt_search">Шукати</button>');
 		e('</div>');
 
 	e('<form>');
 
 e('</div>');
 
-e('<script src="/js/main.js"></script>');
 e('<script src="/js/df_search.js"></script>');
 
 require $this->getViewFile('/inc/footer');

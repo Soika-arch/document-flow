@@ -2,6 +2,7 @@
 
 namespace modules\ap\models;
 
+use \core\db_record\cron_tasks;
 use \core\RecordSliceRetriever;
 use \libs\Paginator;
 use \modules\df\models\MainModel;
@@ -45,5 +46,56 @@ class CronsModel extends MainModel {
 		$d['Pagin'] = $Pagin;
 
 		return $d;
+	}
+
+	/**
+	 *
+	 */
+	public function addPage () {
+		$d['title'] = 'Cron - додавання нового завдання';
+
+		return $d;
+	}
+
+	/**
+	 * Обробка спроби додавання нового cron завдання в БД.
+	 * @return \core\db_record\cron_tasks|false
+	 */
+	public function addCron () {
+		$Post = rg_Rg()->get('Post');
+
+		$existingId = $this->selectCellByCol(
+			DbPrefix .'cron_tasks', 'crt_task_name', $Post->post['cMethodName'], 'crt_id'
+		);
+
+		if ($existingId) {
+			$userLink = '<a href="'. url('/ap/crons/edit?id='. $existingId) .'" target="_blank">існує</a>';
+
+			sess_addErrMessage('Cron завдання з назвою метода <b>'. $Post->post['cMethodName'] .
+				'</b> вже '. $userLink);
+
+			return false;
+		}
+
+		$dt = date('Y-m-d H:i:s');
+
+		$CronNew = (new cron_tasks(null))->set([
+			'crt_task_name' => $Post->post['cMethodName'],
+			'crt_description' => $Post->post['cDescription'],
+			'crt_schedule' => $Post->post['cSchedule'],
+			'crt_is_active' => $Post->post['isActive'],
+			'crt_last_run' => null,
+			'crt_next_run' => null,
+			'crt_parameters' => $Post->post['cParameters'] ? $Post->post['cParameters'] : null,
+			'crt_add_date' => $dt,
+			'crt_change_date' => $dt
+		]);
+
+		if ($CronNew->_id) {
+			$cronLink = '<a href="'. url('/ap/crons/add') .'">'. $CronNew->_task_name .'</a>';
+			sess_addSysMessage('Створено cron завдання <b>'. $cronLink .'</b>.');
+		}
+
+		return $CronNew;
 	}
 }

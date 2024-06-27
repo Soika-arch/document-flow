@@ -152,4 +152,110 @@ class MainController extends MC {
 
 		require $this->getViewFile('print_card');
 	}
+
+	/**
+	 * Сторінка коментарів до картки
+	 */
+	public function comments () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'd_id' => [
+				'type' => 'int',
+				'isRequired' => true,
+				'pattern' => '^\d{1,6}$'
+			],
+			'pg' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			],
+			'clear' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^y$'
+			],
+		]);
+
+		if ($Get->errors) dd($Get->errors, __FILE__, __LINE__,1);
+
+		$pageNum = isset($Get->get['pg']) ? $Get->get['pg'] : 1;
+
+		$d = $this->Model->mainPage('pageNum:'. $pageNum);
+
+		if (! $d) hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
+
+		require $this->getViewFile('card_comments');
+	}
+
+	/**
+	 * Додавання коментаря до картки документа.
+	 */
+	public function cardAddCommentPage () {
+		$rawData = file_get_contents('php://input');
+		$data = json_decode($rawData, true);
+
+		if ($data) {
+			// Отримано дані коментаря.
+
+			if ($data['dComment'] === '') {
+				$resp['errors'][] = 'Відсутній текст повідомлення';
+			}
+			else {
+				if ($this->Model->addCardComment($data)) {
+					$resp['result'] = true;
+				}
+				else {
+					$resp['errors'][] = 'Помилка! Коментар не додано';
+				}
+			}
+		}
+		else {
+			$resp = ['errors' => ['Помилка отримання даних']];
+		}
+
+		// Відправка відповіді у форматі JSON
+		$this->sendJsonData($resp);
+	}
+
+	/**
+	 *
+	 */
+	public function getCardCommentsPage () {
+		$rawData = file_get_contents('php://input');
+		$data = json_decode($rawData, true);
+
+		if ($data) {
+			// Отримано дані коментаря.
+
+			$cardComments = $this->Model->getCardCommentsPage(
+				$data['docDirection'], $data['docNumber'], $data['pageNumber']
+			);
+
+			if ($cardComments) {
+				$resp['commentsData'] = $cardComments;
+				// $resp['result'] = true;
+			}
+			else {
+				$resp['errors'][] = 'Помилка! Коментар не додано';
+			}
+		}
+		else {
+			$resp = ['errors' => ['Помилка отримання даних']];
+		}
+
+		// Відправка відповіді у форматі JSON
+		$this->sendJsonData($resp);
+	}
+
+	/**
+	 *
+	 */
+	public function sendJsonData ($data) {
+		// hd_Hd()->addHeader('Content-Type: application/json', __FILE__, __LINE__)->send();
+		echo json_encode($data);
+		exit;
+	}
 }

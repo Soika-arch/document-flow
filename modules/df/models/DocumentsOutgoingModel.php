@@ -46,6 +46,8 @@ class DocumentsOutgoingModel extends MainModel {
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
+
+			$QB->andWhere('odr_trash_bin is :trashBin')->setParameter('trashBin', null);
 		}
 
 		$QBSlice = new RecordSliceRetriever($QB);

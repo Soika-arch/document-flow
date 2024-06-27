@@ -31,6 +31,13 @@ else if (($Doc->isOverdue === 1) && ! $Doc->remindAboutDueDate) {
 	$executionLoginStyle .= '';
 }
 
+if (date('Y-m-d', strtotime($Doc->_control_date)) >= date('Y-m-d')) {
+	if (tm_getDiff($Doc->_control_date, date('Y-m-d')) <= 2) {
+		$executionStyle .= 'border:2px solid red;border-radius:7px;';
+		$executionTitle .= "До терміну виконання менше 2 днів;\n";
+	}
+}
+
 if ($Doc->_id_execution_control && $Doc->NextControlDate) {
 	$dt = $Doc->NextControlDate->format('d.m.Y');
 

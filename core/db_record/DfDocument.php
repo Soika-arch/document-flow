@@ -20,6 +20,8 @@ class DfDocument extends DbRecord {
 	protected users $Registrar;
 	// Виконавець користувач.
 	protected users $ExecutorUser;
+	// Відповідальний за виконання користувач.
+	protected users $ResponsibleUser;
 	// Тип контроллю за виконанням.
 	protected document_control_types $ControlType;
 	protected document_resolutions $Resolution;
@@ -32,6 +34,10 @@ class DfDocument extends DbRecord {
 	// Якщо дати виконання не існує, ябо дата виконання пізніша за дату, до якої документ потрібно
 	// виконати, то виконання вважається простроченим і $isDueDateOverdue === true.
 	protected bool $isDueDateOverdue;
+	// Чергова дата контролю, яка вираховується на основі поля idr_add_date.
+	protected \DateTime|false $NextControlDate;
+	/** @var bool Чи дата отримання виконавцем є сьогоднішньою датою. */
+	protected bool|null $isDateReceivedEqualToTodayDate;
 
 	/**
 	 *
@@ -141,6 +147,19 @@ class DfDocument extends DbRecord {
 	}
 
 	/**
+	 * @return users
+	 */
+	protected function get_ResponsibleUser () {
+		if (! isset($this->ResponsibleUser)) {
+			$idResponsibleUser = $this->_id_responsible_user ? $this->_id_responsible_user : null;
+
+			$this->ResponsibleUser = new users($idResponsibleUser);
+		}
+
+		return $this->ResponsibleUser;
+	}
+
+	/**
 	 * @return outgoing_documents_registry
 	 */
 	protected function get_OutgoingDocument () {
@@ -243,6 +262,41 @@ class DfDocument extends DbRecord {
 	}
 
 	/**
+	 * @return bool|null
+	 */
+	protected function get_isDateReceivedEqualToTodayDate () {
+		if (! isset($this->isDateReceivedEqualToTodayDate)) {
+			if ($this->_date_of_receipt_by_executor) {
+				$this->isDateReceivedEqualToTodayDate =
+					date('Y-m-d', strtotime($this->_date_of_receipt_by_executor)) === date('Y-m-d');
+			}
+			else {
+				$this->isDateReceivedEqualToTodayDate = null;
+			}
+		}
+
+		return $this->isDateReceivedEqualToTodayDate;
+	}
+
+	/**
+	 * @return false|$this
+	 */
+	public function initByDocNumber (string $docNumber) {
+		$QB = db_DTSelect($this->tName .'.'. $this->px .'id')
+			->from($this->tName)
+			->where($this->px .'number = :docNumber')
+			->setParameter('docNumber', $docNumber);
+
+		if ($row = $QB->fetchAllNumeric()) {
+			$this->initById($row[0][0]);
+
+			return $this;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Отримання логіна користувача, який зареєстрував документ.
 	 * @return string
 	 */
@@ -256,5 +310,59 @@ class DfDocument extends DbRecord {
 	 */
 	public function getDocumentLocationName () {
 		if ($this->get_DocumentLocation()) return $this->DocumentLocation->_name;
+	}
+
+	/**
+	 * Ініціалізує та повертає об'єкт \DateTime наступної дати контролю.
+	 * Дата контролю починає обчислюватись тільки після отримання документа призначеним виконавцем.
+	 * @return \DateTime|null
+	 */
+	protected function get_NextControlDate () {
+		if (! isset($this->NextControlDate) && ! $this->get_isDueDateOverdue()) {
+			$contrTypeDays = intval($this->get_ControlType()->_seconds / 86400);
+			$daysDiff = tm_getDiff(date('Y-m-d', strtotime($this->_control_date)), date('Y-m-d'));
+
+			if ((($daysDiff < 0) || ($daysDiff < $contrTypeDays))) {
+				$this->NextControlDate = false;
+			}
+			else if ($this->_id_execution_control && ! $this->_execution_date &&
+					$this->_date_of_receipt_by_executor) {
+				$this->get_ControlType();
+
+				$period = $this->ControlType->_seconds;
+
+				// DateTime отримання документа виконавцем.
+				$StartDate = new \DateTime($this->_date_of_receipt_by_executor);
+				$isDateReceivedEqualToTodayDate = $this->get_isDateReceivedEqualToTodayDate();
+
+				// Різниця в секундах між поточною датою та початковою датою.
+				$diffSeconds = (new \DateTime())->getTimestamp() - $StartDate->getTimestamp();
+
+				// Кількість повних періодів, що пройшли з початкової дати.
+				$periodsPassed = $period ? floor($diffSeconds / $period) : 0;
+
+				// Вирахування часу наступної контрольної дати.
+				// Якщо чергова контрольна дата сьогодні - встановлюється сьогоднішня дата,
+				// інакше - додається ще один відповідний період і встановлюється наступна дата.
+				// Але якщо сьогоднішня дата є датою отримання документа виконавцем - встановлюється наступна.
+				if (!$isDateReceivedEqualToTodayDate && $period && ((86400 - ($diffSeconds % $period)) > 0)) {
+					$nextExecutionTime = $StartDate->getTimestamp() + $periodsPassed * $period;
+				}
+				else {
+					$nextExecutionTime = $StartDate->getTimestamp() + ($periodsPassed + 1) * $period;
+				}
+
+				// Преобразуем время следующего выполнения обратно в объект DateTime.
+				$this->NextControlDate = (new \DateTime())->setTimestamp($nextExecutionTime);
+			}
+			else {
+				$this->NextControlDate = false;
+			}
+		}
+		else {
+			$this->NextControlDate = false;
+		}
+
+		return $this->NextControlDate;
 	}
 }

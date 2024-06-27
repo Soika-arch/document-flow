@@ -2,6 +2,9 @@
 
 namespace modules\df\models;
 
+use \core\db_record\card_comments;
+use \core\db_record\incoming_documents_registry;
+use \core\db_record\outgoing_documents_registry;
 use \core\db_record\user_messages;
 use \core\models\MainModel as MM;
 use \core\RecordSliceRetriever;
@@ -286,6 +289,104 @@ class MainModel extends MM {
 		$d['cardData'] = explode('_', $get['n']);
 		$table = 'core\db_record\\'. $documentDirections[$d['cardData'][0]];
 		$d['Doc'] = new $table($d['cardData'][1]);
+
+		return $d;
+	}
+
+	/**
+	 * @return DfDocument
+	 */
+	public function replaceDocumentFile ($Doc) {
+		// Обробка завантаженого файлу документа.
+		$newPathInfo = pathinfo($_FILES['dFile']['name']);
+		$storagePath = $this->get_storagePath();
+		$oldInf = pathinfo($Doc->filePath);
+
+		$toDelFilePath = $oldInf['dirname'] .'/'. $oldInf['filename'] .'_to_delete.'.
+			$oldInf['extension'];
+
+		$newDocName = $oldInf['filename'] .'.'. $newPathInfo['extension'];
+		rename($Doc->filePath, $toDelFilePath);
+
+		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
+		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
+			sess_addErrMessage('Помилка завантаження файла', false);
+			hd_sendHeader('Location: '. $Doc->cardURL, __FILE__, __LINE__);
+		}
+
+		$Doc->update([$Doc->px .'file_extension' => $newPathInfo['extension']]);
+
+		return $Doc;
+	}
+
+	/**
+	 * @return \core\db_record\card_comments|false
+	 */
+	public function addCardComment (array $data) {
+		$Us = rg_Rg()->get('Us');
+
+		$tables = [
+			'INC_' => 'incoming_documents_registry',
+			'OUT_' => 'outgoing_documents_registry',
+			'INT_' => 'internal_documents_registry'
+		];
+
+		$tName = '\core\db_record\\'. $tables[$data['docDirection']];
+		$Doc = (new $tName(null))->initByDocNumber($data['docNumber']);
+		$dt = date('Y-m-d H:i:s');
+
+		return (new card_comments(null))->set([
+			'ccm_id_user' => $Us->_id,
+			'ccm_id_document' => $Doc->_id,
+			'ccm_document_direction' => $data['docDirection'],
+			'ccm_raw' => $data['dComment'],
+			'ccm_comment' => htmlspecialchars($data['dComment']),
+			'ccm_trash_bin' => null,
+			'ccm_add_date' => $dt,
+			'ccm_chage_date' => $dt
+		]);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCardCommentsPage (string $docDirection, string $docNumber, int $pageNum=1) {
+		$Us = rg_Rg()->get('Us');
+		$tName = DbPrefix .'card_comments';
+		$colPx = db_Db()->getColPxByTableName($tName);
+
+		$docClasses = [
+			'INC_' => '\core\db_record\incoming_documents_registry',
+			'OUT_' => '\core\db_record\outgoing_documents_registry',
+			'INT_' => '\core\db_record\internal_documents_registry',
+		];
+
+		$docClassName = $docClasses[$docDirection];
+		$Doc = (new $docClassName(null))->initByDocNumber($docNumber);
+
+		$QB = db_DTSelect($tName .'.*, us_login')
+			->from($tName)
+			->where('ccm_document_direction = :docDirection and ccm_id_document = :idDocument'.
+				' and ccm_trash_bin is :trashBin')
+			->join($tName, DbPrefix .'users', 'us', 'us_id = '. $colPx .'id_user')
+			->orderBy('ccm_id')
+			->setParameter('docDirection', $docDirection)
+			->setParameter('idDocument', $Doc->_id)
+			->setParameter('trashBin', null);
+
+		if (isset($_SESSION['getParameters'])) {
+			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
+
+			$QB->andWhere('ccm_trash_bin is :trashBin')->setParameter('trashBin', null);
+		}
+
+		$QBSlice = new RecordSliceRetriever($QB);
+		$itemsPerPage = 5;
+		$d['comments'] = $QBSlice->select($itemsPerPage, $pageNum);
+		// $url = url('/df/documents-incoming/list?cpn=(:num)');
+		// $Pagin = new Paginator($QBSlice->getRowsCount(), $itemsPerPage, $pageNum, $url);
+		// $Pagin->setMaxPagesToShow(5);
+		// $d['Pagin'] = $Pagin;
 
 		return $d;
 	}

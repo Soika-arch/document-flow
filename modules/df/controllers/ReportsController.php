@@ -221,4 +221,50 @@ class ReportsController extends MC {
 
 		require $this->getViewFile('reports/r0008');
 	}
+
+	/**
+	 * Звіт по простроченим вхідним документам.
+	 */
+	public function r0009Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0009Page($pageNum);
+
+		require $this->getViewFile('reports/r0009');
+	}
+
+	/**
+	 * Звіт по простроченим вхідним документам.
+	 */
+	public function r0010Page () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		$Get = new Get([
+			'pn' => [
+				'type' => 'int',
+				'isRequired' => false,
+				'pattern' => '^\d{1,4}$'
+			]
+		]);
+
+		$pageNum = isset($Get->get['pn']) ? $Get->get['pn'] : 1;
+
+		$d = $this->Model->r0010Page($pageNum);
+
+		require $this->getViewFile('reports/r0010');
+	}
 }

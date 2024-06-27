@@ -21,56 +21,103 @@ require $this->getViewFile('inc/menu/menu_journal_1');
 if (isset($d['documents']) && $d['documents']) {
 	if ($d['Pagin']->getNumPages() > 1) e($d['Pagin']->toHtml());
 
-	e('<div class="document-list">');
+	e('<form name="doc_list" class="tbl doc_list" action="'.
+		url('/df/documents-internal/list') .'" method="POST">');
 
-		e('<div class="doc-header">');
-			e('<span class="header-num">№</span>');
-			e('<span class="header-title">Назва</span>');
-			e('<span class="header-date">Дата документа</span>');
-			e('<span class="header-number">№ документа</span>');
-			e('<span class="header-executor">Призначений виконавець</span>');
-			e('<span class="header-executor">Резолюція</span>');
-			e('<span class="header-location">Місцезнаходження оригінала</span>');
+		e('<div class="tbl-menu">');
+
+			if ($Us->Status->_access_level < 3) {
+				$delButton = '<img class="img-btn" src="'. url('/img/delete.png') .'">';
+
+				e('<button class="" name="deleteDocuments">'. $delButton .'</button>');
+			}
+
+			e('<span class="img-link">');
+
+				e('<a href="'. url('/df/reports/r0010') .'"><img class="img-btn" src="'.
+					url('/img/doc_overdue.png') .'" title="Прострочені документи"></a>');
+
+			e('</span>');
+
+		e('</div>');
+
+		e('<div class="tbl-header">');
+			e('<span class="tbl-th h-num">№</span>');
+			e('<span class="tbl-th h-title">Назва</span>');
+			e('<span class="tbl-th h-date">Дата документа</span>');
+			e('<span class="tbl-th h-d_num">№ документа</span>');
+			e('<span class="tbl-th h-executon_user">Призначений виконавець</span>');
+			e('<span class="tbl-th h-date">Виконання до</span>');
 		e('</div>');
 
 		$num = $d['Pagin']->getCurrentPageFirstItem();
 
-		foreach ($d['documents'] as $docRow) {
-			$Doc = new internal_documents_registry(null, $docRow);
+		e('<div class="tbl-body">');
 
-			$docCardURL = url('/df/documents-internal/card', ['n' => $Doc->_number]);
+			foreach ($d['documents'] as $docRow) {
+				e('<div class="tbl-tr">');
+					$Doc = new internal_documents_registry(null, $docRow);
+					$docCardURL = url('/df/documents-internal/card', ['n' => $Doc->_number]);
 
-			$docTitle = '<a href="'. $docCardURL .'" target="_blank" title="Картка документа">'.
-				$Doc->DocumentTitle->_title .'</a>';
+					$executionIMG = '';
+					$anchorLink = '';
 
-			e('<div class="doc-block">');
-				e('<span class="doc-num">'. $num++ .'. </span>');
-				e('<span class="doc-title">'. $docTitle .'</span>');
+					if ($Doc->_execution_date) {
+						$execDt = date('d.m.Y', strtotime($Doc->_execution_date));
 
-				e('<span class="doc-date" title="Дата документа">'.
-					date('d.m.Y', strtotime($Doc->_document_date)) .'</span>');
+						$executionIMG = '<img class="" src="'. URLHome .'/img/button_active.png">';
 
-				e('<span class="doc-number">'. strtoupper($Doc->displayedNumber) .'</span>');
+						$anchorLink = '<a class="img-btn" title="Виконано: '. $execDt .
+							'" href="'. $docCardURL .'#dExecutionDateAnchor">'. $executionIMG .'</a>';
+					}
 
-				$executorLogin = $Doc->ExecutorUser ? $Doc->ExecutorUser->_login : '';
+					$docTitle = '<a href="'. $docCardURL .'" target="_blank" title="Картка документа">'.
+						$Doc->DocumentTitle->_title .'</a>'. $anchorLink;
 
-				if ($Doc->_date_of_receipt_by_executor) {
-					$isReceivedStyle = ' style="border:solid 1px green;"';
-				}
-				else {
-					$isReceivedStyle = ' style="border:solid 1px red;"';
-				}
+					$delCheckbox = '<span class="del-checkbox"><input type="checkbox" name="docsId[]" value="'.
+						$Doc->_id .'" title="Помітити для видалення"></span>';
 
-				e('<span class="doc-executor" title="Виконавець"'. $isReceivedStyle .'>'.
-					$executorLogin .'</span>');
+					e('<span class="tbl-td d_title"><span class="num">'. $num++ .'.</span>'.
+						$delCheckbox . $docTitle .'</span>');
 
-				$docLocation = $Doc->DocumentLocation ? $Doc->DocumentLocation->_name : '';
+					e('<span class="tbl-td d_date" title="Дата документа">'.
+						date('d.m.Y', strtotime($Doc->_document_date)) .'</span>');
 
-				e('<span class="doc-location" title="Місцезнаходження документа">'. $docLocation .'</span>');
-			e('</div>');
-		}
+					require $this->getViewFile('inc/initDocNumData');
 
-	e('</div>');
+					e('<span '. $docNumStyle .' class="tbl-td doc_num" title="'. $docNumTitle .'">' .
+						strtoupper($Doc->displayedNumber) .'</span>');
+
+					require $this->getViewFile('inc/initExecutionData');
+
+					if ($Doc->ExecutorUser) {
+						$executorLogin = $Doc->ExecutorUser->_login;
+
+						$executorLogin = '<a '. $executionLoginStyle .' href="'.
+							url('/user/profile?l='. $executorLogin) .'">'. $executorLogin .'</a>';
+					}
+					else {
+						$executorLogin = ' - ';
+					}
+
+					if ($executionStyle) $executionStyle = ' '. $executionStyle .' ';
+
+					e('<span class="tbl-td d_executor" '. $executionTitle .' '. $executionStyle .'>'.
+						$executorLogin .'</span>');
+
+					$dControlType = $Doc->_control_date ?
+						date('d.m.Y', strtotime($Doc->_control_date)) : ' - ';
+
+					e('<span class="tbl-td d_date" title="Тип контролю" '.
+						'style="margin-left:4px;background-color:#c0c0da;border-radius:7px;">'.
+						$dControlType .'</span>');
+
+				e('</div>');
+			}
+
+		e('</div>');
+
+	e('</form>');
 }
 
 require $this->getViewFile('/inc/footer');

@@ -31,7 +31,10 @@ class Post {
 		$this->validateAndProcessPostData($types);
 		rg_Rg()->add('Post', $this);
 
-		if (isset($this->errors) && $this->errors) sess_addErrMessage($this->printErrors());
+		if (isset($this->errors) && $this->errors) {
+			if (Debug) sess_addErrMessage($this->printErrors());
+			else hd_Hd()->addHeader('Location: '. url('/not-found'), __FILE__, __LINE__)->send();
+		}
 	}
 
 	/**

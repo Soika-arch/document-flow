@@ -88,4 +88,57 @@ class CronsController extends MainController {
 
 		require $this->getViewFile('cron/list');
 	}
+
+	/**
+	 * Сторінка створення cron завдання.
+	 * @return
+	 */
+	public function addPage () {
+		$Us = rg_Rg()->get('Us');
+
+		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
+
+		if (isset($_POST['bt_addCron'])) {
+			$Post = new Post('fm_userAdd', [
+				'cMethodName' => [
+					'type' => 'varchar',
+					'pattern' => '^t\d{4}$',
+					'isRequired' => true,
+				],
+				'cDescription' => [
+					'type' => 'varchar',
+					'pattern' => '.*',
+					'isRequired' => true,
+				],
+				'cSchedule' => [
+					'type' => 'varchar',
+					'pattern' => '^(\*|([0-5]?\d)) (\*|([01]?\d|2[0-3])) (\*|([01]?\d|2[0-9]|3[01]))'.
+						' (\*|(0?[1-9]|1[0-2])) (\*|([0-7]))$',
+					'isRequired' => true,
+				],
+				'isActive' => [
+					'type' => 'varchar',
+					'pattern' => '^(y|n)$',
+					'isRequired' => true,
+				],
+				'cParameters' => [
+					'type' => 'varchar',
+					'pattern' => '.*',
+					'isRequired' => true,
+				],
+				'bt_addCron' => [
+					'type' => 'varchar',
+					'pattern' => '^$'
+				]
+			]);
+
+			if ($this->Model->addCron()) {
+				hd_sendHeader('Location: '. url(''), __FILE__, __LINE__);
+			}
+		}
+
+		$d = $this->Model->addPage();
+
+		require $this->getViewFile('cron/add');
+	}
 }

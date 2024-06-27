@@ -54,7 +54,8 @@ function tm_getDiff (string $dtMax, string $dtMin, string $value = 'days'): int 
 
   // Отримання різниці між датами як об'єкт DateInterval
   $interval = $dateMax->diff($dateMin);
+	$result = $interval->$value;
 
   // Повернення значення різниці у вказаній одиниці виміру
-  return $interval->$value;
+  return ($dateMax > $dateMin) ? $result : -$result;
 }

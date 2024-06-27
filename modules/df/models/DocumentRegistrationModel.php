@@ -75,15 +75,33 @@ class DocumentRegistrationModel extends MainModel {
 	 * @return string
 	 */
 	public function generateDocumentNumber (string $tName, string $px, int $length) {
-		$SQL = db_getSelect();
+		$tName = DbPrefix . $tName;
+		$QB = db_DTSelect('max('. $px .'id) MAX_ID')->from($tName);
+		$res = $QB->executeQuery()->fetchFirstColumn();
 
-		$SQL
-			->columns([$SQL->raw('max('. $px .'id) MAX_ID')])
-			->from(DbPrefix . $tName);
+		if ($res) $maxId = ++$res[0];
+		else $maxId = 1;
 
-		$maxId = db_selectCell($SQL);
+		$dcoNum = formatWithLeadingZeros($maxId, $length);
 
-		return formatWithLeadingZeros(($maxId + 1), $length);
+		$QB = db_DTSelect($tName .'.'. $px .'number')
+			->from($tName)
+			->where($px .'number = :docNumber')
+			->setParameter('docNumber', $dcoNum);
+
+		if (! $QB->fetchFirstColumn()) {
+
+			return $dcoNum;
+		}
+		else {
+			while ($QB->fetchFirstColumn()) {
+				$QB->setParameters([]);
+				$dcoNum = formatWithLeadingZeros(++$maxId, $length);
+				$QB->setParameter('docNumber', $dcoNum);
+			}
+		}
+
+		return $dcoNum;
 	}
 
 	/**
@@ -215,7 +233,7 @@ class DocumentRegistrationModel extends MainModel {
 			$idIncDoc = null;
 		}
 
-		$newDocNum = $this->generateIncomingNumber();
+		$newDocNum = $this->generateOutgoingNumber();
 
 		// Обробка завантаженого файлу документа.
 		$pathInfo = pathinfo($_FILES['dFile']['name']);

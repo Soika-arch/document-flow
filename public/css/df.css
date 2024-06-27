@@ -1,5 +1,5 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Головне меню ЕД. */
+/* Головне меню Документів. */
 
 .df-main-menu {
 	margin: 10px 10px 0px 20px;
@@ -106,7 +106,7 @@
 }
 
 .doc_list .h-title {
-	width: 400px;
+	width: 380px;
 }
 
 .doc_list .h-date {
@@ -148,7 +148,7 @@
 .doc_list .d_title {
 	display: flex;
 	align-items: center;
-	width: 440px;
+	width: 420px;
 	/* border: silver 1px solid; */
 }
 
@@ -173,6 +173,15 @@
 	display: flex;
 	padding: 3px 3px 3px 3px;
 	text-decoration: none;
+	width: 340px;
+	/* border: silver 1px solid; */
+}
+
+.doc_list .d_title .img-btn {
+	display: flex;
+	padding: 3px 3px 3px 3px;
+	text-decoration: none;
+	width: 35px;
 	/* border: silver 1px solid; */
 }
 
@@ -474,4 +483,51 @@
   .user-list .doc-header {
 		display: none;
 	}
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Коментарі до картки документа. */
+
+.fm_ad-card-comment .bt_add {
+	text-align: center;
+}
+
+.fm_ad-card-comment .bt_add button {
+	display: inline-block;
+	width: 90%;
+	height: 30px;
+  padding: 4px 4px 4px 4px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fm_ad-card-comment .bt_add button:hover {
+  background-color: #0056b3;
+}
+
+.fm_ad-card-comment .bt_add button:active {
+  background-color: #004494;
+}
+
+.doc-card-comments {
+
+}
+
+.doc-card-comments .comment-item {
+	background-color: #f3f3f3;
+	padding: 5px 5px 5px 5px;
+	border-radius: 7px;
+}
+
+.doc-card-comments .comment-info {
+	border-bottom: silver 1px solid;
+	margin-bottom: 5px;
+	font-size: 14px;
+	color: gray;
 }

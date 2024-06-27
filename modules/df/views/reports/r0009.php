@@ -1,10 +1,10 @@
 <?php
 
-// Звіт по невиконаним внутрішнім документам.
+// Звіт по простроченим вхідним документам.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-use \core\db_record\internal_documents_registry;
+use \core\db_record\incoming_documents_registry;
 
 $Us = rg_Rg()->get('Us');
 
@@ -22,7 +22,7 @@ if (isset($d['documents']) && $d['documents']) {
 	if ($d['Pagin']->getNumPages() > 1) e($d['Pagin']->toHtml());
 
 	e('<form name="doc_list" class="tbl doc_list" action="'.
-		url('/df/documents-internal/list') .'" method="POST">');
+		url('/df/documents-incoming/list') .'" method="POST">');
 
 		e('<div class="tbl-menu">');
 
@@ -34,7 +34,7 @@ if (isset($d['documents']) && $d['documents']) {
 
 			e('<span class="img-link">');
 
-				e('<a href="'. url('/df/reports/r0010') .'"><img class="img-btn" src="'.
+				e('<a href="'. url('/df/reports/r0009') .'"><img class="img-btn" src="'.
 					url('/img/doc_overdue.png') .'" title="Прострочені документи"></a>');
 
 			e('</span>');
@@ -47,7 +47,7 @@ if (isset($d['documents']) && $d['documents']) {
 			e('<span class="tbl-th h-date">Дата документа</span>');
 			e('<span class="tbl-th h-d_num">№ документа</span>');
 			e('<span class="tbl-th h-executon_user">Призначений виконавець</span>');
-			e('<span class="tbl-th h-date">Дата виконання</span>');
+			e('<span class="tbl-th h-date">Виконання до</span>');
 		e('</div>');
 
 		$num = $d['Pagin']->getCurrentPageFirstItem();
@@ -56,8 +56,8 @@ if (isset($d['documents']) && $d['documents']) {
 
 			foreach ($d['documents'] as $docRow) {
 				e('<div class="tbl-tr">');
-					$Doc = new internal_documents_registry(null, $docRow);
-					$docCardURL = url('/df/documents-internal/card', ['n' => $Doc->_number]);
+					$Doc = new incoming_documents_registry(null, $docRow);
+					$docCardURL = url('/df/documents-incoming/card', ['n' => $Doc->_number]);
 
 					$executionIMG = '';
 					$anchorLink = '';
@@ -100,15 +100,13 @@ if (isset($d['documents']) && $d['documents']) {
 						$executorLogin = ' - ';
 					}
 
-					if ($executionStyle) $executionStyle = ' '. $executionStyle .' ';
-
 					e('<span class="tbl-td d_executor" '. $executionTitle .' '. $executionStyle .'>'.
 						$executorLogin .'</span>');
 
-					$dControlType = $Doc->_execution_date ?
-						date('d.m.Y', strtotime($Doc->_execution_date)) : ' - ';
+					$dControlType = $Doc->_control_date ?
+						date('d.m.Y', strtotime($Doc->_control_date)) : ' - ';
 
-					e('<span class="tbl-td d_date" title="Дата виконання" '.
+					e('<span class="tbl-td d_date" title="Тип контролю" '.
 						'style="margin-left:4px;background-color:#c0c0da;border-radius:7px;">'.
 						$dControlType .'</span>');
 

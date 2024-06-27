@@ -43,7 +43,7 @@ function classesAutoload() {
   );
 }
 
-function dd (mixed $var, string $fname, string $line, bool $stop=false, bool $saveToFile=false) {
+function dd (mixed $var, string $fname, string $line, bool $stop=false, bool $saveToFile=true) {
 	if (! $stop) global $HTML;
 	else $HTML = '';
 
@@ -64,7 +64,8 @@ function dd (mixed $var, string $fname, string $line, bool $stop=false, bool $sa
 			$match[1] ."</span></div></div>\n";
 	}
 
-	// if ($saveToFile) file_put_contents(PlugPath .'/debug.json', json_encode($var));
+	$varLog = date('d.m.Y H:i:s') .' '. $fname .': '. $line ."\n". json_encode($var);
+	if ($saveToFile) file_put_contents(DirRoot .'/service/php_errors.json', $varLog);
 
 	require_once DirRoot .'/core/Debug.php';
 

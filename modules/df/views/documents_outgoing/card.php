@@ -521,7 +521,7 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 		e('</div>');
 	}
 
-	if ($Us->Status->_access_level < 4) {
+	if (($Us->Status->_access_level < 4) && ($d['isRegistrarRights'] || $d['isAdminRights'])) {
 		e('<div>');
 			e('<button type="submit" name="bt_edit">Змінити</button>');
 		e('</div>');
@@ -529,4 +529,5 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 
 e('</form>');
 
+require $this->getViewFile('inc/card_comments');
 require $this->getViewFile('/inc/footer');

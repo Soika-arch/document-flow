@@ -31,6 +31,25 @@ h2 {
 	accent-color: red;
 }
 
+footer {
+	margin-top: 120px;
+}
+
+.page-404 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.page-404 span {
+	display: flex;
+	margin: 30px 0px 0px 0px;
+	width: 220px;
+	content: url('/img/404.png');
+	justify-content: center;
+	align-items: center;
+}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Стиль для стандартного img-btn. */
 
@@ -63,7 +82,15 @@ h2 {
 }
 
 .tbl-menu button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: 35px;
+	height: 30px;
+	margin-right: 10px;
 	border-radius: 5px;
+	background-color: #f0f0f0;
 	border-color: #e2e5e9;
 }
 
@@ -71,9 +98,42 @@ h2 {
 	background-color: #f8f6f6;
 }
 
+.tbl-menu .img-link a {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: 100%;
+}
+
+.tbl-menu .img-link {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: 33px;
+	height: 28px;
+	margin-right: 10px;
+	background-color: #f0f0f0;
+	border: 1px solid;
+	border-radius: 4px;
+	border-color: #e2e5e9;
+	box-shadow: 2px 2px 2px #a2a6a7;
+}
+
+.tbl-menu .img-link img {
+	display: flex;
+	width: 25px;
+	height: 25px;
+}
+
+.tbl-menu .img-link:hover {
+	background-color: #f8f6f6;
+}
+
 .tbl .tbl-header {
 	display: flex;
-	border: silver 1px solid;
+	/* border: silver 1px solid; */
 	border-radius: 5px;
 }
 
@@ -200,7 +260,7 @@ https://chatgpt.com/c/b49de61f-f935-404a-8386-cd62b708e7de
 }
 
 .fm input[type="date"] {
-  width: 90%;
+  width: 85%;
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -486,7 +546,6 @@ https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
 .user-errors {
 	margin: 20px 10px 20px 10px;
 	font-size: 18px;
-	font-weight: bold;
 	color: red;
 }
 
@@ -588,4 +647,16 @@ https://chatgpt.com/c/172b3458-5d08-4438-b665-dc886892505c
 
 .user-confirmation .buttons .confirm {
 	color: rgb(234, 23, 44);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Блок меню коментарів картки документа. */
+
+.comments-menu-1 {
+	display: flex;
+	justify-content: end;
+}
+
+.comments-menu-1 .img-btn {
+	cursor: pointer;
 }

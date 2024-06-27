@@ -1,10 +1,10 @@
 <?php
 
-// Вид сторінки списка пагінації вхідних документів.
+// Вид сторінки списка пагінації внутрішніх документів.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-use core\db_record\internal_documents_registry;
+use \core\db_record\internal_documents_registry;
 
 $Us = rg_Rg()->get('Us');
 
@@ -25,11 +25,20 @@ if (isset($d['documents']) && $d['documents']) {
 		url('/df/documents-internal/list') .'" method="POST">');
 
 		e('<div class="tbl-menu">');
+
 			if ($Us->Status->_access_level < 3) {
 				$delButton = '<img class="img-btn" src="'. url('/img/delete.png') .'">';
 
 				e('<button class="" name="deleteDocuments">'. $delButton .'</button>');
 			}
+
+			e('<span class="img-link">');
+
+				e('<a href="'. url('/df/reports/r0010') .'"><img class="img-btn" src="'.
+					url('/img/doc_overdue.png') .'" title="Прострочені документи"></a>');
+
+			e('</span>');
+
 		e('</div>');
 
 		e('<div class="tbl-header">');

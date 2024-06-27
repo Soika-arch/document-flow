@@ -10,6 +10,7 @@ $Us = rg_Rg()->get('Us');
 $Doc = $d['Doc'];
 $docNumber = $Doc->_number;
 $displayedNumber = $Doc->displayedNumber;
+$isResponsibleUser = ($Us->_id === $Doc->_id_responsible_user);
 
 require $this->getViewFile('/inc/header');
 require $this->getViewFile('/inc/menu/user_1');
@@ -95,7 +96,7 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 				e('<select id="dIdDescription" name="dIdDescription">');
 
 					foreach ($d['descriptions'] as $row) {
-						$subStr = mb_substr($row['dds_description'], 0, 53) .' ...';
+						$subStr = mb_substr($row['dds_description'], 0, 52) .' ...';
 
 						if ($Doc->Description && ($row['dds_id'] === $Doc->Description->_id)) {
 							e('<option value="'. $row['dds_id'] .'" selected>'. $subStr .'</option>');
@@ -545,6 +546,7 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 			}
 			else {
 				e('<h3>Відділ який відповідає за виконання</h3>');
+
 				e('<div>'. ($ResponsibleDepartament ? $ResponsibleDepartament->_name : 'Відсутній') .
 					'</div>');
 			}
@@ -554,8 +556,9 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 
 	if (isset($d['resolutions']) && $d['resolutions']) {
 		e('<div class="label_block">');
-			// Права на редагування у адміна і реєстратора.
-			if ($d['isRegistrarRights'] || $d['isAdminRights']) {
+			// Права на редагування у адміна, реєстратора і відповідального за виконання.
+
+			if (($d['isRegistrarRights'] || $d['isAdminRights']) || $isResponsibleUser) {
 				e('<label for="dIdRresolution">Резолюція</label>');
 				e('<select id="dIdRresolution" name="dIdRresolution">');
 
@@ -629,7 +632,8 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 		e('</div>');
 	}
 
-	if ($Us->Status->_access_level < 4) {
+	if ((($Us->Status->_access_level < 4) && ($d['isRegistrarRights'] || $d['isAdminRights'])) ||
+			$isResponsibleUser) {
 		e('<div>');
 			e('<button type="submit" name="bt_edit">Змінити</button>');
 		e('</div>');
@@ -637,4 +641,5 @@ e('<form name="inc_card_action" enctype="multipart/form-data" class="fm document
 
 e('</form>');
 
+require $this->getViewFile('inc/card_comments');
 require $this->getViewFile('/inc/footer');

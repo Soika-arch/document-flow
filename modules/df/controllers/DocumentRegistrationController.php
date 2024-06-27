@@ -2,6 +2,7 @@
 
 namespace modules\df\controllers;
 
+use core\Get;
 use \core\Post;
 use \modules\df\controllers\MainController as MC;
 use \modules\df\models\DocumentRegistrationModel;
@@ -29,6 +30,7 @@ class DocumentRegistrationController extends MC {
 	}
 
 	public function sourceSelectionPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -39,6 +41,7 @@ class DocumentRegistrationController extends MC {
 	}
 
 	public function addPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -56,6 +59,7 @@ class DocumentRegistrationController extends MC {
 	}
 
 	public function incomingPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -81,6 +85,7 @@ class DocumentRegistrationController extends MC {
 	}
 
 	public function outgoingPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -108,6 +113,7 @@ class DocumentRegistrationController extends MC {
 	}
 
 	public function internalPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -136,6 +142,7 @@ class DocumentRegistrationController extends MC {
 	 * Додавання вхідного документа до БД.
 	 */
 	public function incomingAddPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -240,6 +247,7 @@ class DocumentRegistrationController extends MC {
 	 * Додавання вихідного документа до БД.
 	 */
 	public function outgoingAddPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -329,6 +337,10 @@ class DocumentRegistrationController extends MC {
 
 		if ($DocNew) {
 			sess_addSysMessage('Документ додано до реєстра');
+
+			hd_sendHeader(
+				'Location: '. url('/df/documents-outgoing/card?n='. $DocNew->_number), __FILE__, __LINE__
+			);
 		}
 		else {
 			sess_addErrMessage('Помилка! Документ не додано до реєстра', false);
@@ -341,6 +353,7 @@ class DocumentRegistrationController extends MC {
 	 * Додавання внутрішнього документа до БД.
 	 */
 	public function internalAddPage () {
+		new Get([]);
 		$Us = rg_Rg()->get('Us');
 
 		if (! $this->checkPageAccess($Us->Status->_name, $this->get_allowedStatuses())) return;
@@ -428,7 +441,6 @@ class DocumentRegistrationController extends MC {
 		]);
 
 		if ($Post->errors) {
-			dd($Post, __FILE__, __LINE__,1);
 			sess_addErrMessage('Отримано некоректні дані форми', false);
 			hd_sendHeader('Location: '. url('/df/document-registration/internal'), __FILE__, __LINE__);
 		}
@@ -437,6 +449,10 @@ class DocumentRegistrationController extends MC {
 
 		if ($DocNew) {
 			sess_addSysMessage('Документ додано до реєстра');
+
+			hd_sendHeader(
+				'Location: '. url('/df/documents-internal/card?n='. $DocNew->_number), __FILE__, __LINE__
+			);
 		}
 		else {
 			sess_addErrMessage('Помилка! Документ не додано до реєстра', false);

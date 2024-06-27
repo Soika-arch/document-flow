@@ -47,6 +47,8 @@ class DocumentsInternalModel extends MainModel {
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
+
+			$QB->andWhere('inr_trash_bin is :trashBin')->setParameter('trashBin', null);
 		}
 
 		$QBSlice = new RecordSliceRetriever($QB);

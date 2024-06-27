@@ -6,6 +6,8 @@
 
 		e("<footer>");
 		e("</footer>");
+
+		e('<script src="'. url('/') .'/js/bootstrap.js"></script>');
+
 	e("</body>");
-	e('<script src="'. url('/') .'/js/bootstrap.js"></script>');
 e("</html>");

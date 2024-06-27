@@ -1,6 +1,6 @@
 <?php
 
-// Головне меню ЕД.
+// Головне меню Документів.
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -14,6 +14,11 @@ $listLinks = [
 ];
 
 $listURL = isset($listLinks[rt_Rt()->controllerURI]) ? $listLinks[rt_Rt()->controllerURI] : $url;
+
+$isCardPage =
+	strpos(URL, '/df/documents-incoming/card?n=') ||
+	strpos(URL, '/df/documents-outgoing/card?n=') ||
+	strpos(URL, '/df/documents-internal/card?n=');
 
 e('<div class="secondary-menu">');
 
@@ -42,8 +47,12 @@ e('<div class="secondary-menu">');
 		e('</div>');
 	}
 
-	if (strpos(URL, '/df/documents-incoming/card?n=') ||
-			strpos(URL, '/df/documents-internal/card?n=')) {
+	if ($isCardPage) {
+		e('<div>');
+			e('<a href="'. url() .'#cardComments"><img class="img-button" src="'.
+				url('/') .'/img/comments_1.png" title="Коментарі"></a>');
+		e('</div>');
+
 		e('<div>');
 			e('<a href="'. url('/df/print-card?n='. strtolower($d['Doc']->displayedNumber)) .
 				'" target="_blank"><img class="img-button" src="'.

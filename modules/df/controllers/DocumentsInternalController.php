@@ -234,6 +234,11 @@ class DocumentsInternalController extends MC {
 				'isRequired' => false,
 				'pattern' => '^('. $regexp['date'] .')?$'
 			],
+			'dIdResponsibleDepartament' => [
+				'type' => 'varchar',
+				'isRequired' => false,
+				'pattern' => '^(\d{1,5})?$'
+			],
 			'bt_edit' => [
 				'type' => 'varchar',
 				'isRequired' => true,
@@ -243,6 +248,12 @@ class DocumentsInternalController extends MC {
 
 		/** @var incoming_documents_registry|false */
 		$Doc = $this->Model->cardActionPage();
+
+		if (isset($_FILES['dFile']) && $_FILES['dFile']['name']) {
+			$replRes = $this->Model->replaceDocumentFile($Doc);
+
+			if ($replRes) sess_addSysMessage('Файл документу замінено');
+		}
 
 		$num = $Doc ? $Doc->_number : $Get->get['n'];
 

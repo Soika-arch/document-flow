@@ -4,44 +4,57 @@ var divSenderUser = document.getElementById('divSenderUser');
 var divSenderExternal = document.getElementById('divSenderExternal');
 var divRecipientExternal = document.getElementById('divRecipientExternal');
 var divRecipientUser = document.getElementById('divRecipientUser');
+var btSearch = document.getElementById('bt_search');
 
 var notification = document.getElementById('notification');
 var documentDirection = document.getElementById('documentDirection');
 var searchData = document.getElementById('searchData');
+
+var CorrectnessIndicator = {
+	dNumber: {
+		isValueCorrect: true,
+		errorMessage: 'Некоректний номеру документа'
+	},
+	dAge: {
+		isValueCorrect: true,
+		errorMessage: 'Некоректний формат року'
+	},
+	dMonth: {
+		isValueCorrect: true,
+		errorMessage: 'Некоректний формат місяця'
+	},
+	dDay: {
+		isValueCorrect: true,
+		errorMessage: 'Некоректний формат номера дня місяця'
+	}
+};
+
 searchData.style.display = 'none';
 
 documentDirection.addEventListener('change', function(event) {
 	if (clearSelectValues()) {
-		showNotification('Увага! Деякі обрані значення фільтрів були очищені!');
+		showNotification('Деякі обрані значення фільтрів були очищені!');
 	}
 });
-
-function showNotification (message) {
-	notification.textContent = message;
-	notification.classList.add('show');
-
-	// Удаляем уведомление при щелчке мыши по странице с небольшой задержкой
-	setTimeout(function() {
-		document.addEventListener('click', hideNotificationOnClick);
-	}, 100); // Задержка в 100 миллисекунд
-
-	// Убираем уведомление через 3 секунды, если не было клика по странице
-	setTimeout(hideNotification, 3000);
-}
-
-function hideNotification() {
-	notification.classList.remove('show');
-	document.removeEventListener('click', hideNotificationOnClick);
-}
-
-function hideNotificationOnClick() {
-  hideNotification();
-}
 
 divSenderUser.style.display = 'none';
 divSenderExternal.style.display = 'none';
 divRecipientExternal.style.display = 'none';
 divRecipientUser.style.display = 'none';
+
+function processFieldForCorrectness (elem, regexpString, idElem) {
+	if ((elem.value === '') || elem.value.match(regexpString)) {
+		CorrectnessIndicator[idElem].isValueCorrect = true;
+
+		return true;
+	} else {
+		CorrectnessIndicator[idElem].isValueCorrect = false;
+		console.log(idElem + ': перевірка не пройдена!');
+		showNotification(CorrectnessIndicator[idElem].errorMessage);
+	}
+
+	return false;
+}
 
 function clearSelectValues () {
 	let isClear = false;
@@ -108,51 +121,73 @@ documentDirection.addEventListener('change', function() {
 	}
 });
 
-function hideElement (elem, v) {
-	if (elem.style.display !== v) elem.style.display = v;
-}
-
 var datePeriod = document.getElementById('datePeriod');
 var dateApart = document.getElementById('dateApart');
 
-document.getElementById('dAge').addEventListener('input', function() {
-	let v = this.value;
+btSearch.addEventListener('click', function(event) {
+	console.log('click');
+	if (! processFieldForCorrectness(dNumber, /^(INC_|OUT_|INT_)\d{8}$/, 'dNumber', this) ||
+			! processFieldForCorrectness(dAge, /^(199\d|20\d\d|2100)$/, 'dAge', this) ||
+			! processFieldForCorrectness(dMonth, /^(1[0-2]|[1-9])$/, 'dMonth', this) ||
+			! processFieldForCorrectness(dDay, /^([1-9]|[12][0-9]|3[01])$/, 'dDay', this)) {
 
-	if (v !== '') {
-		hideElement(datePeriod, 'none');
-
-		if (! v.match(/^(199\d|20\d\d|2100)$/)) showNotification('Увага! Некоректний формат року');
+		console.log('Заборонено!');
+		event.preventDefault(); // Запобігає відправці форми
 	}
 	else {
-		hideElement(datePeriod, 'block');
+		console.log('Дозволено');
+	}
+});
+
+document.getElementById('dNumber').addEventListener('input', function() {
+	if (this.value !== '') {
+		hideElement(datePeriod);
+
+		if (! this.value.match(/^(INC_|OUT_|INT_)\d{8}$/)) this.style = 'background-color:#ffe6e6;';
+		else this.style = '';
+	}
+	else {
+		showElement(datePeriod, 'block');
+		this.style = ''
+	}
+});
+
+document.getElementById('dAge').addEventListener('input', function() {
+	if (this.value !== '') {
+		hideElement(datePeriod);
+
+		if (! this.value.match(/^(199\d|20\d\d|2100)$/)) this.style = 'background-color:#ffe6e6;';
+		else this.style = '';
+	}
+	else {
+		showElement(datePeriod, 'block');
+		this.style = '';
 	}
 });
 
 document.getElementById('dMonth').addEventListener('input', function() {
-	let v = this.value;
+	if (this.value !== '') {
+		hideElement(datePeriod);
 
-	if (v !== '') {
-		hideElement(datePeriod, 'none');
-
-		if (! v.match(/^(1[0-2]|[1-9])$/)) showNotification('Увага! Некоректний формат місяця');
+		if (! this.value.match(/^(1[0-2]|[1-9])$/)) this.style = 'background-color:#ffe6e6;';
+		else this.style = '';
 	}
 	else {
-		hideElement(datePeriod, 'block');
+		showElement(datePeriod, 'block');
+		this.style = '';
 	}
 });
 
 document.getElementById('dDay').addEventListener('input', function() {
-	let v = this.value;
+	if (this.value !== '') {
+		hideElement(datePeriod);
 
-	if (v !== '') {
-		hideElement(datePeriod, 'none');
-
-		if (! v.match(/^([1-9]|[12][0-9]|3[01])$/)) {
-			showNotification('Увага! Некоректний формат числа місяця');
-		}
+		if (! this.value.match(/^([1-9]|[12][0-9]|3[01])$/)) this.style = 'background-color:#ffe6e6;';
+		else this.style = '';
 	}
 	else {
-		hideElement(datePeriod, 'block');
+		showElement(datePeriod, 'block');
+		this.style = '';
 	}
 });
 
@@ -161,11 +196,11 @@ var dDateUntil = document.getElementById('dDateUntil');
 
 dDateFrom.addEventListener('input', function() {
 	if (this.value !== '') {
-		hideElement(dateApart, 'none');
+		hideElement(dateApart);
 	}
 	else {
 		if ((this.value === '') && (dDateUntil.value === '')) {
-			hideElement(dateApart, 'block');
+			showElement(dateApart, 'block');
 			dateApart.scrollIntoView({ behavior: 'smooth' });
 			// Используем setTimeout для корректировки позиции прокрутки после scrollIntoView
 			setTimeout(function() {
@@ -177,10 +212,10 @@ dDateFrom.addEventListener('input', function() {
 
 dDateUntil.addEventListener('input', function() {
 	if (this.value !== '') {
-		hideElement(dateApart, 'none');
+		hideElement(dateApart);
 	}
 	else {
-		hideElement(dateApart, 'block');
+		showElement(dateApart, 'block');
 		dateApart.scrollIntoView({ behavior: 'smooth' });
 		// Используем setTimeout для корректировки позиции прокрутки после scrollIntoView
 		setTimeout(function() {

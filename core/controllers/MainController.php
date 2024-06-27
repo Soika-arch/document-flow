@@ -3,6 +3,7 @@
 namespace core\controllers;
 
 use \core\exceptions\MainException;
+use \core\Get;
 use \core\Router;
 
 /**
@@ -42,6 +43,7 @@ class MainController {
 	 */
 	public function mainPage () {
 		$d = $this->Model->mainPage();
+		new Get([]);
 
 		require $this->getViewFile('/main');
 	}
@@ -50,6 +52,7 @@ class MainController {
 	 * Сторінка 'confirmation'.
 	 */
 	public function confirmationPage () {
+		new Get([]);
 		$d = $this->Model->confirmationPage();
 
 		require $this->getViewFile('/confirmation');
@@ -59,6 +62,7 @@ class MainController {
 	 *
 	 */
 	public function notFoundPage () {
+		new Get([]);
 		$d['title'] = 'Сторінка не знайдена';
 
 		require $this->getViewFile('/page_not_found');

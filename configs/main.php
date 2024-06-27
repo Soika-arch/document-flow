@@ -21,7 +21,7 @@ const TrackUserActivity = true;
 const MaxIdleTime = 600;
 
 /** @var bool Якщо true - сервіс працює в режимі дебага. */
-const Debug = true;
+const Debug = false;
 /** @var bool Чи буде відбуватись логування sql-запитів. */
 const LogSql = true;
 

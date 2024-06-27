@@ -41,13 +41,33 @@ class UsersModel extends MainModel {
 
 	/**
 	 * Обробка спроби додавання нового користувача в БД.
-	 * @return bool
+	 * @return \core\User|false
 	 */
 	public function addUser () {
 		$Post = rg_Rg()->get('Post');
 
 		$login = $Post->sanitizeValue('login');
 		$tgId = (isset($Post->post['tgId']) && $Post->post['tgId']) ? $Post->post['tgId'] : null;
+
+		$existingLogin = $this->selectCellByCol(DbPrefix .'users', 'us_login', $login, 'us_login');
+
+		if ($existingLogin) {
+			$userLink = '<a href="'. url('/user/profile?l='. $login) .'" target="_blank">існує</a>';
+			sess_addErrMessage('Користувач з логіном <b>'. $login .'</b> вже '. $userLink);
+
+			return false;
+		}
+
+		$existingLogin = $this->selectCellByCol(
+			DbPrefix .'users', 'us_email', $Post->post['email'], 'us_login'
+		);
+
+		if ($existingLogin) {
+			$userLink = '<a href="'. url('/user/profile?l='. $existingLogin) .'" target="_blank">існує</a>';
+			sess_addErrMessage('Користувач з email <b>'. $Post->post['email'] .'</b> вже '. $userLink);
+
+			return false;
+		}
 
 		$UserNew = (new User(null))->set([
 			'us_login' => $login,
@@ -68,7 +88,7 @@ class UsersModel extends MainModel {
 			}
 		}
 
-		return true;
+		return $UserNew;
 	}
 
 	/**

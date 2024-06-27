@@ -79,7 +79,7 @@ class CronModel extends MainModel {
 
 		foreach ($documents as $rowData) {
 			$Doc = new $documentType($rowData[$px .'id']);
-			$controlDate = $Doc->NextControlDate->format('Y-m-d');
+			$controlDate = $Doc->NextControlDate ? $Doc->NextControlDate->format('Y-m-d') : null;
 
 			if ($controlDate === tm_getDatetime()->format('Y-m-d')) {
 				$UsTemp = new users($rowData['us_id']);

@@ -2,7 +2,6 @@
 
 namespace modules\df\models;
 
-use \core\db_record\DfDocument;
 use \core\db_record\incoming_documents_registry;
 use \core\RecordSliceRetriever;
 use \Doctrine\DBAL\ArrayParameterType;
@@ -47,6 +46,8 @@ class DocumentsIncomingModel extends MainModel {
 
 		if (isset($_SESSION['getParameters'])) {
 			if (! ($QB = $this->documentsSearchSQLHendler($QB, $tName, $colPx))) return false;
+
+			$QB->andWhere('idr_trash_bin is :trashBin')->setParameter('trashBin', null);
 		}
 
 		$QBSlice = new RecordSliceRetriever($QB);
@@ -67,6 +68,8 @@ class DocumentsIncomingModel extends MainModel {
 		$get = rg_Rg()->get('Get')->get;
 		$Us = rg_Rg()->get('Us');
 		$incNumber = $get['n'];
+		// Номер сторінки коментарів.
+		$cpn = isset($get['cpn']) ? $get['cpn'] : 1;
 
 		$dbRow = $this->selectRowByCol(
 			DbPrefix .'incoming_documents_registry', 'idr_number', $incNumber
@@ -312,31 +315,5 @@ class DocumentsIncomingModel extends MainModel {
 			[date('Y-m-d H:i:s'), $Post->post['docsId']],
 			[ParameterType::STRING, ArrayParameterType::INTEGER]
 		);
-	}
-
-	/**
-	 * @return DfDocument
-	 */
-	public function replaceDocumentFile ($Doc) {
-		// Обробка завантаженого файлу документа.
-		$newPathInfo = pathinfo($_FILES['dFile']['name']);
-		$storagePath = $this->get_storagePath();
-		$oldInf = pathinfo($Doc->filePath);
-
-		$toDelFilePath = $oldInf['dirname'] .'/'. $oldInf['filename'] .'_to_delete.'.
-			$oldInf['extension'];
-
-		$newDocName = $oldInf['filename'] .'.'. $newPathInfo['extension'];
-		rename($Doc->filePath, $toDelFilePath);
-
-		// Спроба переміщення завантаженого файла документа з тимчасового каталога до $storagePath.
-		if (! move_uploaded_file($_FILES['dFile']['tmp_name'], $storagePath .'/'. $newDocName)) {
-			sess_addErrMessage('Помилка завантаження файла', false);
-			hd_sendHeader('Location: '. $Doc->cardURL, __FILE__, __LINE__);
-		}
-
-		$Doc->update(['idr_file_extension' => $newPathInfo['extension']]);
-
-		return $Doc;
 	}
 }

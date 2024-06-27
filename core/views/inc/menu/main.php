@@ -22,7 +22,7 @@ e('<div class="main-menu">');
 
 	if ($Us->_id && ($Us->_id > 0)) {
 		e('<div>');
-			e('<a href="'. url('/df') .'">ЕД</a>');
+			e('<a href="'. url('/df') .'">Документи</a>');
 		e('</div>');
 
 		e('<div>');
